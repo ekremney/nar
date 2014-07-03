@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="ProjectModuleManager">
+    <modules>
+      <module fileurl="file://$PROJECT_DIR$/androidBootstrap/androidBootstrap.iml" filepath="$PROJECT_DIR$/androidBootstrap/androidBootstrap.iml" />
+      <module fileurl="file://$PROJECT_DIR$/nar.iml" filepath="$PROJECT_DIR$/nar.iml" />
+      <module fileurl="file://$PROJECT_DIR$/projectNar/projectNar.iml" filepath="$PROJECT_DIR$/projectNar/projectNar.iml" />
+    </modules>
+  </component>
+</project>
+
