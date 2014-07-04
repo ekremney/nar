@@ -151,10 +151,12 @@ public class MainActivity extends ActionBarActivity {
 	    intent.putExtra("ScanStart", "Scan started");
 	    startActivity(intent);
     }
+
     public void onScanQRCodeWIntentBtnClick(View view) {
         IntentIntegrator integrator = new IntentIntegrator(this);
         integrator.initiateScan();
     }
+
     public void onActivityResult(int requestCode, int resultCode, Intent intent) {
         IntentResult scanResult = IntentIntegrator.parseActivityResult(requestCode, resultCode, intent);
         if (scanResult != null) {
