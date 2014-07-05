@@ -1,5 +1,6 @@
 package net.narlab.projectnar;
 
+import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -20,8 +21,6 @@ import android.widget.Toast;
 import com.beardedhen.androidbootstrap.BootstrapButton;
 import com.beardedhen.androidbootstrap.FontAwesomeText;
 
-import net.narlab.projectnar.scannerwintent.IntentIntegrator;
-import net.narlab.projectnar.scannerwintent.IntentResult;
 import net.narlab.projectnar.utils.NarWifiManager;
 import net.narlab.projectnar.utils.NarWifiManager.IPParser;
 import net.narlab.projectnar.utils.SmartConfigManager;
@@ -30,306 +29,305 @@ import java.util.Locale;
 
 public class MainActivity extends ActionBarActivity {
 
-    /**
-     * The {@link android.support.v4.view.PagerAdapter} that will provide
-     * fragments for each of the sections. We use a
-     * {@link FragmentPagerAdapter} derivative, which will keep every
-     * loaded fragment in memory. If this becomes too memory intensive, it
-     * may be best to switch to a
-     * {@link android.support.v4.app.FragmentStatePagerAdapter}.
-     */
-    SectionsPagerAdapter mSectionsPagerAdapter;
-    NarWifiManager narWifiManager = null;
-    public final static String EXTRA_W_SSID = "com.example.myfirstapp.MESSAGE";
+	/**
+	 * The {@link android.support.v4.view.PagerAdapter} that will provide
+	 * fragments for each of the sections. We use a
+	 * {@link FragmentPagerAdapter} derivative, which will keep every
+	 * loaded fragment in memory. If this becomes too memory intensive, it
+	 * may be best to switch to a
+	 * {@link android.support.v4.app.FragmentStatePagerAdapter}.
+	 */
+	SectionsPagerAdapter mSectionsPagerAdapter;
+	NarWifiManager narWifiManager = null;
+	public final static String EXTRA_W_SSID = "com.example.myfirstapp.MESSAGE";
+    private final static int REQUEST_CODE = 0x0f3a; // request code for QRScanner
 
-    /**
-     * The {@link ViewPager} that will host the section contents.
-     */
-    ViewPager mViewPager;
+	/**
+	 * The {@link ViewPager} that will host the section contents.
+	 */
+	ViewPager mViewPager;
 
-    @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
+	@Override
+	protected void onCreate(Bundle savedInstanceState) {
+		super.onCreate(savedInstanceState);
+		setContentView(R.layout.activity_main);
 
-        // Create the adapter that will return a fragment for each of the three
-        // primary sections of the activity.
-        mSectionsPagerAdapter = new SectionsPagerAdapter(getSupportFragmentManager());
+		// Create the adapter that will return a fragment for each of the three
+		// primary sections of the activity.
+		mSectionsPagerAdapter = new SectionsPagerAdapter(getSupportFragmentManager());
 
-        // Set up the ViewPager with the sections adapter.
-        mViewPager = (ViewPager) findViewById(R.id.pager);
-        mViewPager.setAdapter(mSectionsPagerAdapter);
+		// Set up the ViewPager with the sections adapter.
+		mViewPager = (ViewPager) findViewById(R.id.pager);
+		mViewPager.setAdapter(mSectionsPagerAdapter);
 
 /*		Log.d("NarWInit", "Try init======================");
-        NarWifiManager nWifiManager = new NarWifiManager(this);
+		NarWifiManager nWifiManager = new NarWifiManager(this);
 		Log.d("NarWInit", "End init======================");
 		Log.d("NarWM", "Wifi connected: "+nWifiManager.isWifiConnected());*/
-    }
+	}
 
 
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
+	@Override
+	public boolean onCreateOptionsMenu(Menu menu) {
 
-        // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.main, menu);
-        return true;
-    }
+		// Inflate the menu; this adds items to the action bar if it is present.
+		getMenuInflater().inflate(R.menu.main, menu);
+		return true;
+	}
 
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
-        int id = item.getItemId();
-        if (id == R.id.action_settings) {
-            return true;
-        }
-        return super.onOptionsItemSelected(item);
-    }
+	@Override
+	public boolean onOptionsItemSelected(MenuItem item) {
+		// Handle action bar item clicks here. The action bar will
+		// automatically handle clicks on the Home/Up button, so long
+		// as you specify a parent activity in AndroidManifest.xml.
+		int id = item.getItemId();
+		Log.d("SettingsMenu", ""+item.getItemId());
+		if (id == R.id.action_settings) {
+			return true;
+		} else if (id == R.id.action_empty) {
+			Log.d("SettingsMenu", "Empty Action yey");
+			return true;
+		}
+		return super.onOptionsItemSelected(item);
+	}
 
-    private static long back_pressed = 0;
+	private static long back_pressed = 0;
 
-    @Override
-    public void onBackPressed() {
-        if (back_pressed + 2000 > System.currentTimeMillis()) {
-            super.onBackPressed();
-            finish();
-        } else {
-            Toast.makeText(getBaseContext(), "Press once again to exit!", Toast.LENGTH_SHORT).show();
-        }
-        back_pressed = System.currentTimeMillis();
-    }
+	@Override
+	public void onBackPressed() {
+		if (back_pressed + 2000 > System.currentTimeMillis()) {
+			super.onBackPressed();
+			finish();
+		} else {
+			Toast.makeText(getBaseContext(), "Press once again to exit!", Toast.LENGTH_SHORT).show();
+		}
+		back_pressed = System.currentTimeMillis();
+	}
 
-    private NarWifiManager getNarWifiManager() {
-        if (narWifiManager == null) {
-            narWifiManager = new NarWifiManager(this);
-        }
-        return narWifiManager;
-    }
+	private NarWifiManager getNarWifiManager() {
+		if (narWifiManager == null) {
+			narWifiManager = new NarWifiManager(this);
+		}
+		return narWifiManager;
+	}
 
-    /**
-     * Called when the user clicks the "Setup Device" button
-     * to start activity for SmartConfig
-     */
-    boolean rotating = false;
+	/**
+	 * Called when the user clicks the "Setup Device" button
+	 * to start activity for SmartConfig
+	 */
+	public void onSetupDeviceBtnClick(View view) {
 
-    public void onSetupDeviceBtnClick(View view) {
+		if (!getNarWifiManager().isWifiConnected()) {
+			Toast.makeText(getApplicationContext(), R.string.wifi_offline, Toast.LENGTH_LONG).show();
+			return;
+		}
 
-        BootstrapButton b = (BootstrapButton) findViewById(R.id.setup_device);
-        if (!this.rotating) {
-            b.startRotateIcon(getApplicationContext(), BootstrapButton.BB_ICON_RIGHT,
-                    true, FontAwesomeText.AnimationSpeed.SLOW);
-        } else {
-            b.stopAnimation();
-        }
-        this.rotating = !this.rotating;
-        if (!getNarWifiManager().isWifiConnected()) {
-            Toast.makeText(getApplicationContext(), R.string.wifi_offline, Toast.LENGTH_LONG).show();
-            return;
-        }
-        NarWifiManager nWM = getNarWifiManager();
-        SmartConfigManager sCM = new SmartConfigManager(getApplicationContext());
+
+		// get setup button and animate icon
+		BootstrapButton b = (BootstrapButton) findViewById(R.id.setup_device);
+		b.toggleRotation(BootstrapButton.BB_ICON_RIGHT,
+				true, FontAwesomeText.AnimationSpeed.SLOW);
+
+        // get wifi and smart config managers
+		NarWifiManager nWM = getNarWifiManager();
+		SmartConfigManager sCM = new SmartConfigManager(getApplicationContext());
 
 //		Intent intent = new Intent(this, SmartConfigActivity.class);
-        /* TODO: replace below 2 lines with
-         * String pass = ((EditText) findViewById(R.id.wifi_pass)).getText().toString();
-         */
-        String pass = "3b7GmFY4Mt";
-        EditText et = ((EditText) findViewById(R.id.wifi_pass));
-        et.setText(pass);
-        sCM.startSmartConfig(nWM.getSSID(), pass, nWM.getGatewayString(), null);
-        Toast.makeText(getApplicationContext(), "Trying to connect", Toast.LENGTH_LONG).show();
-//	    String ssid = editText.getText().toString();
-//	    intent.putExtra(EXTRA_W_SSID, ssid);
-//	    startActivity(intent);
+		/* TODO: replace below 2 lines with
+		 * String pass = ((EditText) findViewById(R.id.wifi_pass)).getText().toString();
+		 */
+		String pass = "3b7GmFY4Mt";
+		EditText et = ((EditText) findViewById(R.id.wifi_pass));
+		et.setText(pass);
+		sCM.startSmartConfig(nWM.getSSID(), pass, nWM.getGatewayString(), null);
+		Toast.makeText(getApplicationContext(), "Trying to connect", Toast.LENGTH_LONG).show();
+//		String ssid = editText.getText().toString();
+//		intent.putExtra(EXTRA_W_SSID, ssid);
+//		startActivity(intent);
 
+	}
+
+	public void onScanQRCodeBtnClick(View view) {
+		Intent intent = new Intent(this, QRScannerActivity.class);
+		Toast.makeText(getApplicationContext(), "Scan QR Code!", Toast.LENGTH_LONG).show();
+		intent.putExtra("ScanStart", "Scan started");
+        startActivityForResult(intent, REQUEST_CODE);
     }
 
-    public void onScanQRCodeBtnClick(View view) {
-		Intent intent = new Intent(this, SimpleScannerActivity.class);
-        Toast.makeText(getApplicationContext(), "Scan QR Code!", Toast.LENGTH_LONG).show();
-	    intent.putExtra("ScanStart", "Scan started");
-	    startActivity(intent);
-    }
-
-    public void onScanQRCodeWIntentBtnClick(View view) {
-        IntentIntegrator integrator = new IntentIntegrator(this);
-        integrator.initiateScan();
-    }
-
-    public void onActivityResult(int requestCode, int resultCode, Intent intent) {
-        IntentResult scanResult = IntentIntegrator.parseActivityResult(requestCode, resultCode, intent);
-        if (scanResult != null) {
-            ((TextView)findViewById(R.id.qr_scan_format)).setText(scanResult.getFormatName());
-            ((TextView)findViewById(R.id.qr_scan_result)).setText(scanResult.toString());
-        }
-        // else continue with any other code you need in the method
-        //...
-    }
-    /**
-     * A {@link FragmentPagerAdapter} that returns a fragment corresponding to
-     * one of the sections/tabs/pages.
-     */
-    public class SectionsPagerAdapter extends FragmentPagerAdapter {
-
-        public SectionsPagerAdapter(FragmentManager fm) {
-            super(fm);
-        }
-
-        @Override
-        public Fragment getItem(int position) {
-            // getItem is called to instantiate the fragment for the given page.
-            // Return a PlaceholderFragment (defined as a static inner class below).
-            if (position > 2) {
-                position = 2;
-            } else if (position < 0) {
-                position = 0;
-            }
-            String s[] = {"First", "Second", "Third"};
-            switch (position) {
-                case 0:
-                    return new QRFragment();
-                case 1:
-                    return WifiInfoFragment.newInstance(getNarWifiManager());
-                default:
-                    return PlaceholderFragment.newInstance(position + 1, s[position]);
+	public void onActivityResult(int requestCode, int resultCode, Intent intent) {
+        if (requestCode == REQUEST_CODE) {
+            if (resultCode == Activity.RESULT_OK) {
+                String res = intent.getStringExtra(QRScannerActivity.EXT_QR_RESULT);
+                ((TextView) findViewById(R.id.qr_scan_result)).setText(res);
+                return;
             }
         }
+        Toast.makeText(getApplicationContext(), "QR Scan failed", Toast.LENGTH_LONG).show();
+	}
+	/**
+	 * A {@link FragmentPagerAdapter} that returns a fragment corresponding to
+	 * one of the sections/tabs/pages.
+	 */
+	public class SectionsPagerAdapter extends FragmentPagerAdapter {
 
-        @Override
-        public int getCount() {
-            // Show 3 total pages.
-            return 3;
-        }
+		public SectionsPagerAdapter(FragmentManager fm) {
+			super(fm);
+		}
 
-        @Override
-        public CharSequence getPageTitle(int position) {
-            Locale l = Locale.getDefault();
-            switch (position) {
-                case 0:
-                    return getString(R.string.title_wifi_info).toUpperCase(l);
-                case 1:
-                    return getString(R.string.title_section2).toUpperCase(l);
-                case 2:
-                    return getString(R.string.title_section3).toUpperCase(l);
-            }
-            return null;
-        }
-    }
+		@Override
+		public Fragment getItem(int position) {
+			// getItem is called to instantiate the fragment for the given page.
+			// Return a PlaceholderFragment (defined as a static inner class below).
+			/*if (position > 2) {
+				position = 2;
+			} else if (position < 0) {
+				position = 0;
+			}*/
+			String s[] = {"First", "Second", "Third"};
+			switch (position) {
+				case 0:
+					return QRFragment.newInstance(position, "QR Reader");
+				case 1:
+					return WifiInfoFragment.newInstance(getNarWifiManager());
+				default:
+					return PlaceholderFragment.newInstance(position + 1, s[position]);
+			}
+		}
 
-    /**
-     * A placeholder fragment containing a simple view.
-     */
-    public static class PlaceholderFragment extends Fragment {
-        /**
-         * The fragment argument representing the section number for this
-         * fragment.
-         */
-        private static final String ARG_SECTION_NUMBER = "section_number";
-        private static final String ARG_SECTION_STRING = "section_string";
+		@Override
+		public int getCount() {
+			// Show 3 total pages.
+			return 3;
+		}
 
-        /**
-         * Returns a new instance of this fragment for the given section
-         * number.
-         */
-        public static PlaceholderFragment newInstance(int sectionNumber, String sectionString) {
-            PlaceholderFragment fragment = new PlaceholderFragment();
-            Bundle args = new Bundle();
-            args.putInt(ARG_SECTION_NUMBER, sectionNumber);
-            args.putString(ARG_SECTION_STRING, sectionString);
-            fragment.setArguments(args);
-            return fragment;
-        }
+		@Override
+		public CharSequence getPageTitle(int position) {
+			Locale l = Locale.getDefault();
+			switch (position) {
+				case 0:
+					return getString(R.string.title_qr_code).toUpperCase(l);
+				case 1:
+					return getString(R.string.title_smart_config).toUpperCase(l);
+				case 2:
+					return getString(R.string.title_section3).toUpperCase(l);
+			}
+			return null;
+		}
+	}
 
-        public PlaceholderFragment() {
-        }
+	/**
+	 * A placeholder fragment containing a simple view.
+	 */
+	public static class PlaceholderFragment extends Fragment {
+		/**
+		 * The fragment argument representing the section number for this
+		 * fragment.
+		 */
+		private static final String ARG_SECTION_NUMBER = "section_number";
+		private static final String ARG_SECTION_STRING = "section_string";
 
-        @Override
-        public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                                 Bundle savedInstanceState) {
-            View rootView = inflater.inflate(R.layout.fragment_main, container, false);
+		/**
+		 * Returns a new instance of this fragment for the given section
+		 * number.
+		 */
+		public static PlaceholderFragment newInstance(int sectionNumber, String sectionString) {
+			PlaceholderFragment fragment = new PlaceholderFragment();
+			Bundle args = new Bundle();
+			args.putInt(ARG_SECTION_NUMBER, sectionNumber);
+			args.putString(ARG_SECTION_STRING, sectionString);
+			fragment.setArguments(args);
+			return fragment;
+		}
 
-            TextView textView;
-            textView = (TextView) rootView.findViewById(R.id.section_label);
-            textView.setText(Integer.toString(getArguments().getInt(ARG_SECTION_NUMBER)));
+		public PlaceholderFragment() {
+		}
 
-            textView = (TextView) rootView.findViewById(R.id.section_string);
-            textView.setText(getArguments().getString(ARG_SECTION_STRING));
+		@Override
+		public View onCreateView(LayoutInflater inflater, ViewGroup container,
+								 Bundle savedInstanceState) {
+			View rootView = inflater.inflate(R.layout.fragment_main, container, false);
 
-            return rootView;
-        }
-    }
+			TextView textView;
+			textView = (TextView) rootView.findViewById(R.id.section_label);
+			textView.setText(Integer.toString(getArguments().getInt(ARG_SECTION_NUMBER)));
 
-    /**
-     * @author Fma
-     */
-    public static class WifiInfoFragment extends Fragment {
-        /**
-         * The fragment argument representing the section number for this
-         * fragment.
-         */
-        private static final String ARG_W_SSID = "wifi_ssid";
-        //		private static final String ARG_W_IP = "wifi_ip";
-        private static final String ARG_W_NETMASK = "wifi_netmask";
-        //		private static final String ARG_W_PASS = "wifi_pass";
-        private static final String ARG_W_GATEWAY = "wifi_gateway";
-        private static final String ARG_W_DNS1 = "wifi_dns1";
-        private static final String ARG_W_DNS2 = "wifi_dns2";
+			textView = (TextView) rootView.findViewById(R.id.section_string);
+			textView.setText(getArguments().getString(ARG_SECTION_STRING));
 
-        /**
-         * Returns a new instance of this fragment for the given section
-         * number.
-         */
-        public static WifiInfoFragment newInstance(NarWifiManager nWM) {
-            WifiInfoFragment fragment = new WifiInfoFragment();
-            Bundle args = new Bundle();
+			return rootView;
+		}
+	}
 
-            args.putString(ARG_W_SSID, nWM.getSSID());
-            args.putString(ARG_W_DNS1, nWM.getDNS1String());
-            args.putString(ARG_W_DNS2, nWM.getDNS2String());
-            args.putString(ARG_W_NETMASK, nWM.getNetmaskString());
-            args.putString(ARG_W_GATEWAY, nWM.getGatewayString());
-            fragment.setArguments(args);
+	/**
+	 * @author Fma
+	 */
+	public static class WifiInfoFragment extends Fragment {
+		/**
+		 * The fragment argument representing the section number for this
+		 * fragment.
+		 */
+		private static final String ARG_W_SSID = "wifi_ssid";
+		//		private static final String ARG_W_IP = "wifi_ip";
+		private static final String ARG_W_NETMASK = "wifi_netmask";
+		//		private static final String ARG_W_PASS = "wifi_pass";
+		private static final String ARG_W_GATEWAY = "wifi_gateway";
+		private static final String ARG_W_DNS1 = "wifi_dns1";
+		private static final String ARG_W_DNS2 = "wifi_dns2";
 
-            Log.i("WifiInfoFrag", args.toString());
-            return fragment;
-        }
+		/**
+		 * Returns a new instance of this fragment for the given section
+		 * number.
+		 */
+		public static WifiInfoFragment newInstance(NarWifiManager nWM) {
+			WifiInfoFragment fragment = new WifiInfoFragment();
+			Bundle args = new Bundle();
 
-        @Override
-        public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                                 Bundle savedInstanceState) {
-            View rootView = inflater.inflate(R.layout.fragment_wifi_info, container, false);
+			args.putString(ARG_W_SSID, nWM.getSSID());
+			args.putString(ARG_W_DNS1, nWM.getDNS1String());
+			args.putString(ARG_W_DNS2, nWM.getDNS2String());
+			args.putString(ARG_W_NETMASK, nWM.getNetmaskString());
+			args.putString(ARG_W_GATEWAY, nWM.getGatewayString());
+			fragment.setArguments(args);
 
-            TextView textView;
-            EditText ssidET, passET;
+			Log.i("WifiInfoFrag", args.toString());
+			return fragment;
+		}
 
-            ssidET = (EditText) rootView.findViewById(R.id.wifi_ssid);
-            ssidET.setText(getArguments().getString(ARG_W_SSID));
+		@Override
+		public View onCreateView(LayoutInflater inflater, ViewGroup container,
+								 Bundle savedInstanceState) {
+			View rootView = inflater.inflate(R.layout.fragment_wifi_info, container, false);
 
-            // maybe add a password storage
-            passET = (EditText) rootView.findViewById(R.id.wifi_pass);
-            passET.requestFocus();
+			TextView textView;
+			EditText ssidET, passET;
+
+			ssidET = (EditText) rootView.findViewById(R.id.wifi_ssid);
+			ssidET.setText(getArguments().getString(ARG_W_SSID));
+
+			// maybe add a password storage
+			passET = (EditText) rootView.findViewById(R.id.wifi_pass);
+			passET.requestFocus();
 /*			passET.setText(getArguments().getString(ARG_W_PASS));*/
 
-            textView = (TextView) rootView.findViewById(R.id.wifi_netmask);
-            textView.setText(getArguments().getString(ARG_W_NETMASK));
+			textView = (TextView) rootView.findViewById(R.id.wifi_netmask);
+			textView.setText(getArguments().getString(ARG_W_NETMASK));
 
-            textView = (TextView) rootView.findViewById(R.id.wifi_gateway);
-            textView.setText(getArguments().getString(ARG_W_GATEWAY));
+			textView = (TextView) rootView.findViewById(R.id.wifi_gateway);
+			textView.setText(getArguments().getString(ARG_W_GATEWAY));
 
-            textView = (TextView) rootView.findViewById(R.id.wifi_dns1);
-            textView.setText(getArguments().getString(ARG_W_DNS1));
+			textView = (TextView) rootView.findViewById(R.id.wifi_dns1);
+			textView.setText(getArguments().getString(ARG_W_DNS1));
 
-            String dns2 = getArguments().getString(ARG_W_DNS2);
-            textView = (TextView) rootView.findViewById(R.id.wifi_dns2);
-            if (IPParser.StringToInt(dns2) != 0) {
-                textView.setText(getArguments().getString(ARG_W_DNS2));
-            } else {
-                textView.setVisibility(TextView.INVISIBLE); // or GONE
-            }
+			String dns2 = getArguments().getString(ARG_W_DNS2);
+			textView = (TextView) rootView.findViewById(R.id.wifi_dns2);
+			if (IPParser.StringToInt(dns2) != 0) {
+				textView.setText(getArguments().getString(ARG_W_DNS2));
+			} else {
+				textView.setVisibility(TextView.INVISIBLE); // or GONE
+			}
 
-            return rootView;
-        }
+			return rootView;
+		}
 		/*
 		IP Addr: 192.168.2.180
 		Netmask: 255.255.255.0
@@ -337,5 +335,5 @@ public class MainActivity extends ActionBarActivity {
 		DHCPsrv: 192.168.2.1
 		DNSserv: 192.168.1.1
 		*/
-    }
+	}
 }

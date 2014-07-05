@@ -63,7 +63,7 @@ public class SmartConfigManager implements FirstTimeConfigListener {
             arg1.printStackTrace();
 
         } catch (Exception e) {
-
+            e.printStackTrace();
         }
 
         Log.e("FTC_ARG", "" + arg0);
