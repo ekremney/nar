@@ -158,7 +158,9 @@ public class MainActivity extends ActionBarActivity {
         if (requestCode == REQUEST_CODE) {
             if (resultCode == Activity.RESULT_OK) {
                 String res = intent.getStringExtra(QRScannerActivity.EXT_QR_RESULT);
-                ((TextView) findViewById(R.id.qr_scan_result)).setText(res);
+                String res_l[] = res.split("|");
+                ((TextView) findViewById(R.id.nar_id)).setText(res_l[0]);
+                ((TextView) findViewById(R.id.nar_id)).setText(res_l[1]);
                 return;
             }
         }

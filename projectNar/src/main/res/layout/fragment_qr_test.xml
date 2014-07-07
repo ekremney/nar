@@ -32,9 +32,9 @@
 		android:textSize="16sp"
 		android:onClick="onScanQRCodeBtnClick"
 	/>
-	<!-- Result here -->
+	<!-- Device ID/Name here -->
 	<com.beardedhen.androidbootstrap.BootstrapEditText
-		android:id="@+id/qr_scan_result"
+		android:id="@+id/nar_id"
 		android:layout_width="wrap_content"
 		android:layout_height="wrap_content"
 		android:layout_margin="10dp"
@@ -44,5 +44,17 @@
 		android:textSize="16sp"
 		android:editable="false"
 		/>
+    <!-- Device pass here -->
+    <com.beardedhen.androidbootstrap.BootstrapEditText
+        android:id="@+id/nar_pass"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_margin="10dp"
+        android:hint="result"
+        bootstrapbutton:bb_type="success"
+        android:layout_gravity="center"
+        android:textSize="16sp"
+        android:editable="false"
+        />
 
 </LinearLayout>
