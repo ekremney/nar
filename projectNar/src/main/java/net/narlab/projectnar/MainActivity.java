@@ -40,7 +40,7 @@ public class MainActivity extends ActionBarActivity {
 	SectionsPagerAdapter mSectionsPagerAdapter;
 	NarWifiManager narWifiManager = null;
 	public final static String EXTRA_W_SSID = "com.example.myfirstapp.MESSAGE";
-    private final static int REQUEST_CODE = 0x0f3a; // request code for QRScanner
+	private final static int REQUEST_CODE = 0x0f3a; // request code for QRScanner
 
 	/**
 	 * The {@link ViewPager} that will host the section contents.
@@ -128,7 +128,7 @@ public class MainActivity extends ActionBarActivity {
 		b.toggleRotation(BootstrapButton.BB_ICON_RIGHT,
 				true, FontAwesomeText.AnimationSpeed.SLOW);
 
-        // get wifi and smart config managers
+		// get wifi and smart config managers
 		NarWifiManager nWM = getNarWifiManager();
 		SmartConfigManager sCM = new SmartConfigManager(getApplicationContext());
 
@@ -149,22 +149,37 @@ public class MainActivity extends ActionBarActivity {
 
 	public void onScanQRCodeBtnClick(View view) {
 		Intent intent = new Intent(this, QRScannerActivity.class);
-		Toast.makeText(getApplicationContext(), "Scan QR Code!", Toast.LENGTH_LONG).show();
+        ToastIt("Scan QR Code!");
 		intent.putExtra("ScanStart", "Scan started");
-        startActivityForResult(intent, REQUEST_CODE);
+		startActivityForResult(intent, REQUEST_CODE);
+	}
+
+    public void ToastIt(String s, int len) {
+        Toast.makeText(getApplicationContext(), s, len).show();
+    }
+    public void ToastIt(String s) {
+        ToastIt(s, Toast.LENGTH_SHORT);
     }
 
 	public void onActivityResult(int requestCode, int resultCode, Intent intent) {
-        if (requestCode == REQUEST_CODE) {
-            if (resultCode == Activity.RESULT_OK) {
-                String res = intent.getStringExtra(QRScannerActivity.EXT_QR_RESULT);
-                String res_l[] = res.split("|");
-                ((TextView) findViewById(R.id.nar_id)).setText(res_l[0]);
-                ((TextView) findViewById(R.id.nar_id)).setText(res_l[1]);
-                return;
-            }
-        }
-        Toast.makeText(getApplicationContext(), "QR Scan failed", Toast.LENGTH_LONG).show();
+		if (requestCode == REQUEST_CODE) {
+			if (resultCode == Activity.RESULT_OK) {
+				String res = intent.getStringExtra(QRScannerActivity.EXT_QR_RESULT);
+				String res_l[] = res.split("\\|");
+
+                if (res_l.length >2) {
+                    ((TextView) findViewById(R.id.nar_id)).setText(res_l[0]);
+                    ((TextView) findViewById(R.id.nar_pass)).setText(res_l[1]);
+                    Log.d("Test", res + "=>" + res_l[0] + "__" + res_l[1] + "__" + res_l.length);
+
+                } else {
+                    ToastIt("QR Code is not a valid nar!");
+
+                }
+				return;
+			}
+		}
+        ToastIt("QR Scan failed", Toast.LENGTH_LONG);
 	}
 	/**
 	 * A {@link FragmentPagerAdapter} that returns a fragment corresponding to
@@ -188,7 +203,7 @@ public class MainActivity extends ActionBarActivity {
 			String s[] = {"First", "Second", "Third"};
 			switch (position) {
 				case 0:
-					return QRFragment.newInstance(position, "QR Reader");
+					return QRFragment.newInstance();
 				case 1:
 					return WifiInfoFragment.newInstance(getNarWifiManager());
 				default:
