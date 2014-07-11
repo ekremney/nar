@@ -25,7 +25,16 @@ import net.narlab.projectnar.utils.NarWifiManager;
 import net.narlab.projectnar.utils.NarWifiManager.IPParser;
 import net.narlab.projectnar.utils.SmartConfigManager;
 
+import org.apache.http.NameValuePair;
+import org.apache.http.message.BasicNameValuePair;
+
+import java.nio.charset.MalformedInputException;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Hashtable;
+import java.util.List;
 import java.util.Locale;
+import java.util.Map;
 
 public class MainActivity extends ActionBarActivity {
 
@@ -149,37 +158,53 @@ public class MainActivity extends ActionBarActivity {
 
 	public void onScanQRCodeBtnClick(View view) {
 		Intent intent = new Intent(this, QRScannerActivity.class);
-        ToastIt("Scan QR Code!");
+		ToastIt("Scan QR Code!");
 		intent.putExtra("ScanStart", "Scan started");
 		startActivityForResult(intent, REQUEST_CODE);
 	}
 
-    public void ToastIt(String s, int len) {
-        Toast.makeText(getApplicationContext(), s, len).show();
-    }
-    public void ToastIt(String s) {
-        ToastIt(s, Toast.LENGTH_SHORT);
-    }
+	public void ToastIt(String s, int len) {
+		Toast.makeText(getApplicationContext(), s, len).show();
+	}
+	private void ToastIt(String s) {
+		ToastIt(s, Toast.LENGTH_SHORT);
+	}
 
+	private Map parseNarQRString(String qr_s) {
+		String []qr_sl = qr_s.split("\\|");
+		Map params = new Hashtable();
+		if (qr_sl.length < 2) {
+			ToastIt("QR Code is not from a valid nar!");
+			return params;
+		}
+		for (String s: qr_sl) {
+			String[] pr = s.split("=");
+			if (pr.length == 2) {
+				params.put(pr[0], pr[1]);
+			} else {
+				ToastIt("Malformed paramater: "+s);
+			}
+		}
+		return params;
+	}
 	public void onActivityResult(int requestCode, int resultCode, Intent intent) {
 		if (requestCode == REQUEST_CODE) {
 			if (resultCode == Activity.RESULT_OK) {
 				String res = intent.getStringExtra(QRScannerActivity.EXT_QR_RESULT);
-				String res_l[] = res.split("\\|");
+				Map nar_params = parseNarQRString(res);
 
-                if (res_l.length >2) {
-                    ((TextView) findViewById(R.id.nar_id)).setText(res_l[0]);
-                    ((TextView) findViewById(R.id.nar_pass)).setText(res_l[1]);
-                    Log.d("Test", res + "=>" + res_l[0] + "__" + res_l[1] + "__" + res_l.length);
+				if (nar_params.size() >=2) {
+					String id = (String)nar_params.get("ID");
+					String pass = (String)nar_params.get("PASS");
+					((TextView) findViewById(R.id.nar_id  )).setText( id );
+					((TextView) findViewById(R.id.nar_pass)).setText( pass );
+					Log.d("Test", res + "=>id=" + id + "__pass=" + pass);
 
-                } else {
-                    ToastIt("QR Code is not a valid nar!");
-
-                }
+				}
 				return;
 			}
 		}
-        ToastIt("QR Scan failed", Toast.LENGTH_LONG);
+		ToastIt("QR Scan failed", Toast.LENGTH_LONG);
 	}
 	/**
 	 * A {@link FragmentPagerAdapter} that returns a fragment corresponding to
