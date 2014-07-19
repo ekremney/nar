@@ -3,6 +3,8 @@
   <component name="ProjectModuleManager">
     <modules>
       <module fileurl="file://$PROJECT_DIR$/androidBootstrap/androidBootstrap.iml" filepath="$PROJECT_DIR$/androidBootstrap/androidBootstrap.iml" />
+      <module fileurl="file://$PROJECT_DIR$/androidmqttexample/androidmqttexample.iml" filepath="$PROJECT_DIR$/androidmqttexample/androidmqttexample.iml" />
+      <module fileurl="file://$PROJECT_DIR$/androidmqttpushmaster/androidmqttpushmaster.iml" filepath="$PROJECT_DIR$/androidmqttpushmaster/androidmqttpushmaster.iml" />
       <module fileurl="file://$PROJECT_DIR$/nar.iml" filepath="$PROJECT_DIR$/nar.iml" />
       <module fileurl="file://$PROJECT_DIR$/projectNar/projectNar.iml" filepath="$PROJECT_DIR$/projectNar/projectNar.iml" />
     </modules>

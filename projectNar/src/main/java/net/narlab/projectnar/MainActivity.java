@@ -25,16 +25,7 @@ import net.narlab.projectnar.utils.NarWifiManager;
 import net.narlab.projectnar.utils.NarWifiManager.IPParser;
 import net.narlab.projectnar.utils.SmartConfigManager;
 
-import org.apache.http.NameValuePair;
-import org.apache.http.message.BasicNameValuePair;
-
-import java.nio.charset.MalformedInputException;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Hashtable;
-import java.util.List;
 import java.util.Locale;
-import java.util.Map;
 
 public class MainActivity extends ActionBarActivity {
 
@@ -47,7 +38,6 @@ public class MainActivity extends ActionBarActivity {
 	 * {@link android.support.v4.app.FragmentStatePagerAdapter}.
 	 */
 	SectionsPagerAdapter mSectionsPagerAdapter;
-	NarWifiManager narWifiManager = null;
 	public final static String EXTRA_W_SSID = "com.example.myfirstapp.MESSAGE";
 	private final static int REQUEST_CODE = 0x0f3a; // request code for QRScanner
 
@@ -69,10 +59,6 @@ public class MainActivity extends ActionBarActivity {
 		mViewPager = (ViewPager) findViewById(R.id.pager);
 		mViewPager.setAdapter(mSectionsPagerAdapter);
 
-/*		Log.d("NarWInit", "Try init======================");
-		NarWifiManager nWifiManager = new NarWifiManager(this);
-		Log.d("NarWInit", "End init======================");
-		Log.d("NarWM", "Wifi connected: "+nWifiManager.isWifiConnected());*/
 	}
 
 
@@ -90,7 +76,7 @@ public class MainActivity extends ActionBarActivity {
 		// automatically handle clicks on the Home/Up button, so long
 		// as you specify a parent activity in AndroidManifest.xml.
 		int id = item.getItemId();
-		Log.d("SettingsMenu", ""+item.getItemId());
+		Log.d("SettingsMenu", "" + item.getItemId());
 		if (id == R.id.action_settings) {
 			return true;
 		} else if (id == R.id.action_empty) {
@@ -113,12 +99,16 @@ public class MainActivity extends ActionBarActivity {
 		back_pressed = System.currentTimeMillis();
 	}
 
+	private NarWifiManager narWifiManager = null;
 	private NarWifiManager getNarWifiManager() {
 		if (narWifiManager == null) {
 			narWifiManager = new NarWifiManager(this);
 		}
 		return narWifiManager;
 	}
+
+	// this will be a list of nars
+	private Nar nar;
 
 	/**
 	 * Called when the user clicks the "Setup Device" button
@@ -170,39 +160,38 @@ public class MainActivity extends ActionBarActivity {
 		ToastIt(s, Toast.LENGTH_SHORT);
 	}
 
-	private Map parseNarQRString(String qr_s) {
-		String []qr_sl = qr_s.split("\\|");
-		Map params = new Hashtable();
-		if (qr_sl.length < 2) {
-			ToastIt("QR Code is not from a valid nar!");
-			return params;
-		}
-		for (String s: qr_sl) {
-			String[] pr = s.split("=");
-			if (pr.length == 2) {
-				params.put(pr[0], pr[1]);
-			} else {
-				ToastIt("Malformed paramater: "+s);
-			}
-		}
-		return params;
-	}
 	public void onActivityResult(int requestCode, int resultCode, Intent intent) {
-		if (requestCode == REQUEST_CODE) {
-			if (resultCode == Activity.RESULT_OK) {
-				String res = intent.getStringExtra(QRScannerActivity.EXT_QR_RESULT);
-				Map nar_params = parseNarQRString(res);
+		if (requestCode == REQUEST_CODE) if (resultCode == Activity.RESULT_OK) {
+			String res = intent.getStringExtra(QRScannerActivity.EXT_QR_RESULT);
 
-				if (nar_params.size() >=2) {
-					String id = (String)nar_params.get("ID");
-					String pass = (String)nar_params.get("PASS");
-					((TextView) findViewById(R.id.nar_id  )).setText( id );
-					((TextView) findViewById(R.id.nar_pass)).setText( pass );
-					Log.d("Test", res + "=>id=" + id + "__pass=" + pass);
-
-				}
-				return;
+			try {
+				nar = new Nar(res);
+				((TextView) findViewById(R.id.nar_id)).setText(nar.getId());
+				((TextView) findViewById(R.id.nar_pass)).setText(nar.getPass());
+				Log.d("Test", res + "=>id=" + nar.getId() + "__pass=" + nar.getPass());
+				nar.connMng.login();
+				new Thread(new Runnable() {
+					@Override
+					public void run() {
+						try {
+							Thread.sleep(10000);
+							nar.connMng.sendMessage("id", nar.getId());
+							Thread.sleep(5000);
+							nar.connMng.logout();
+						} catch (InterruptedException e) {
+							e.printStackTrace();
+						}
+					}
+				}).start();
+//					nar.connMng.logout();
+//					nar.connMng.sendMessage("id", nar.getId());
+			} catch (Nar.NarMalformedParameterException e) {
+				ToastIt("Couldn't start nar: " + e.getMessage());
 			}
+
+			return;
+		} else {
+			ToastIt("QR result was not ok: " + resultCode);
 		}
 		ToastIt("QR Scan failed", Toast.LENGTH_LONG);
 	}
