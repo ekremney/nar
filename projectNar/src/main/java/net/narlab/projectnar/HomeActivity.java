@@ -14,20 +14,27 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.EditText;
+import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.beardedhen.androidbootstrap.BootstrapButton;
 import com.beardedhen.androidbootstrap.FontAwesomeText;
 
+import net.narlab.projectnar.utils.DataHolder;
+import net.narlab.projectnar.utils.NarConnManager;
 import net.narlab.projectnar.utils.NarWifiManager;
 import net.narlab.projectnar.utils.NarWifiManager.IPParser;
 import net.narlab.projectnar.utils.SmartConfigManager;
 
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Locale;
 
-public class MainActivity extends ActionBarActivity {
+public class HomeActivity extends ActionBarActivity {
 
 	/**
 	 * The {@link android.support.v4.view.PagerAdapter} that will provide
@@ -39,7 +46,12 @@ public class MainActivity extends ActionBarActivity {
 	 */
 	SectionsPagerAdapter mSectionsPagerAdapter;
 	public final static String EXTRA_W_SSID = "com.example.myfirstapp.MESSAGE";
-	private final static int REQUEST_CODE = 0x0f3a; // request code for QRScanner
+
+	//DEFINING A STRING ADAPTER WHICH WILL HANDLE THE DATA OF THE LISTVIEW
+	ArrayAdapter<String> devListAdapter;
+
+	//RECORDING HOW MANY TIMES THE BUTTON HAS BEEN CLICKED
+	int clickCounter=0;
 
 	/**
 	 * The {@link ViewPager} that will host the section contents.
@@ -49,7 +61,44 @@ public class MainActivity extends ActionBarActivity {
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		setContentView(R.layout.activity_main);
+
+		boolean state = true;
+
+		if (state) {
+			setContentView(R.layout.fragment_device_list);
+
+
+			final ListView listview = (ListView) findViewById(R.id.listView);
+			String[] values = new String[] { "Test item 1", "Test item 2" };
+
+			final ArrayList<String> list = new ArrayList<String>();
+			Collections.addAll(list, values);
+
+			devListAdapter = new ArrayAdapter(this,
+					android.R.layout.simple_list_item_1, list);
+			listview.setAdapter(devListAdapter);
+
+			listview.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+				/// TODO: show information of clicked Nar
+				@Override
+				public void onItemClick(AdapterView<?> parent, final View view,
+										int position, long id) {
+					final String item = (String) parent.getItemAtPosition(position);
+					devListAdapter.remove(item);
+/*					view.animate().setDuration(2000).alpha(0)
+							.withEndAction(new Runnable() {
+								@Override
+								public void run() {
+									devListAdapter.remove(item);
+									view.setAlpha(1);
+								}
+							});*/
+				}
+
+			});
+			return;
+		}
+		setContentView(R.layout.activity_home);
 
 		// Create the adapter that will return a fragment for each of the three
 		// primary sections of the activity.
@@ -60,7 +109,6 @@ public class MainActivity extends ActionBarActivity {
 		mViewPager.setAdapter(mSectionsPagerAdapter);
 
 	}
-
 
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
@@ -86,6 +134,8 @@ public class MainActivity extends ActionBarActivity {
 		return super.onOptionsItemSelected(item);
 	}
 
+/*	disable for now
+
 	private static long back_pressed = 0;
 
 	@Override
@@ -98,6 +148,7 @@ public class MainActivity extends ActionBarActivity {
 		}
 		back_pressed = System.currentTimeMillis();
 	}
+*/
 
 	private NarWifiManager narWifiManager = null;
 	private NarWifiManager getNarWifiManager() {
@@ -108,7 +159,7 @@ public class MainActivity extends ActionBarActivity {
 	}
 
 	// this will be a list of nars
-	private Nar nar;
+	private NarConnManager narConnMng;
 
 	/**
 	 * Called when the user clicks the "Setup Device" button
@@ -135,7 +186,7 @@ public class MainActivity extends ActionBarActivity {
 		/* TODO: replace below 2 lines with
 		 * String pass = ((EditText) findViewById(R.id.wifi_pass)).getText().toString();
 		 */
-		String pass = "3b7GmFY4Mt";
+		String pass = "narlab.net1";
 		EditText et = ((EditText) findViewById(R.id.wifi_pass));
 		et.setText(pass);
 		sCM.startSmartConfig(nWM.getSSID(), pass, nWM.getGatewayString(), null);
@@ -146,14 +197,24 @@ public class MainActivity extends ActionBarActivity {
 
 	}
 
+	// TODO: remove this since it is moved to RegisterNarActivity
 	public void onScanQRCodeBtnClick(View view) {
 		Intent intent = new Intent(this, QRScannerActivity.class);
-		ToastIt("Scan QR Code!");
-		intent.putExtra("ScanStart", "Scan started");
-		startActivityForResult(intent, REQUEST_CODE);
+		startActivityForResult(intent, DataHolder.SCANNER_REQ_CODE);
 	}
 
-	public void ToastIt(String s, int len) {
+	// start add new nar dialog
+	public void onRegisterNar(View view) {
+
+		Intent intent = new Intent(this, RegisterNarActivity.class);
+		ToastIt("Register Nar!");
+		intent.putExtra("Nar", "RegisterStart");
+		startActivityForResult(intent, DataHolder.REGISTER_NAR_REQ_CODE);
+
+		devListAdapter.add("List item: "+ clickCounter++);
+	}
+
+	private void ToastIt(String s, int len) {
 		Toast.makeText(getApplicationContext(), s, len).show();
 	}
 	private void ToastIt(String s) {
@@ -161,37 +222,45 @@ public class MainActivity extends ActionBarActivity {
 	}
 
 	public void onActivityResult(int requestCode, int resultCode, Intent intent) {
-		if (requestCode == REQUEST_CODE) if (resultCode == Activity.RESULT_OK) {
-			String res = intent.getStringExtra(QRScannerActivity.EXT_QR_RESULT);
+		if (requestCode == DataHolder.SCANNER_REQ_CODE) {
+			if (resultCode == Activity.RESULT_OK) {
+				String res = intent.getStringExtra(QRScannerActivity.EXT_QR_RESULT);
 
-			try {
-				nar = new Nar(res);
-				((TextView) findViewById(R.id.nar_id)).setText(nar.getId());
-				((TextView) findViewById(R.id.nar_pass)).setText(nar.getPass());
-				Log.d("Test", res + "=>id=" + nar.getId() + "__pass=" + nar.getPass());
-				nar.connMng.login();
-				new Thread(new Runnable() {
-					@Override
-					public void run() {
-						try {
-							Thread.sleep(10000);
-							nar.connMng.sendMessage("id", nar.getId());
-							Thread.sleep(5000);
-							nar.connMng.logout();
-						} catch (InterruptedException e) {
-							e.printStackTrace();
+				try {
+					Nar nar = new Nar(res);
+					((TextView) findViewById(R.id.nar_id)).setText(nar.getId());
+					((TextView) findViewById(R.id.nar_pass)).setText(nar.getPass());
+					Log.d("Test", res + "=>id=" + nar.getId() + "__pass=" + nar.getPass());
+					narConnMng = DataHolder.getConnMng();
+					narConnMng.register(nar);
+					narConnMng.test();
+					final Nar f_nar = nar;
+					new Thread(new Runnable() {
+
+						@Override
+						public void run() {
+							try {
+								Thread.sleep(10000);
+								narConnMng.sendMessage(f_nar.getId(), "TestMessage", "TestContent");
+								Thread.sleep(10000);
+								narConnMng.logout();
+								Thread.sleep(10000);
+								narConnMng.checkState(f_nar.getId());
+							} catch (InterruptedException e) {
+								e.printStackTrace();
+							}
 						}
-					}
-				}).start();
-//					nar.connMng.logout();
-//					nar.connMng.sendMessage("id", nar.getId());
-			} catch (Nar.NarMalformedParameterException e) {
-				ToastIt("Couldn't start nar: " + e.getMessage());
-			}
+					}).start();
+//					connManager.logout();
+//					connManager.sendMessage("id", nar.getId());
+				} catch (Nar.NarMalformedParameterException e) {
+					ToastIt("Couldn't start nar: " + e.getMessage());
+				}
 
-			return;
-		} else {
-			ToastIt("QR result was not ok: " + resultCode);
+				return;
+			} else {
+				ToastIt("QR result was not ok: " + resultCode);
+			}
 		}
 		ToastIt("QR Scan failed", Toast.LENGTH_LONG);
 	}
@@ -217,7 +286,7 @@ public class MainActivity extends ActionBarActivity {
 			String s[] = {"First", "Second", "Third"};
 			switch (position) {
 				case 0:
-					return QRFragment.newInstance();
+					return AddDeviceFragment.newInstance();
 				case 1:
 					return WifiInfoFragment.newInstance(getNarWifiManager());
 				default:
@@ -276,7 +345,7 @@ public class MainActivity extends ActionBarActivity {
 		@Override
 		public View onCreateView(LayoutInflater inflater, ViewGroup container,
 								 Bundle savedInstanceState) {
-			View rootView = inflater.inflate(R.layout.fragment_main, container, false);
+			View rootView = inflater.inflate(R.layout.fragment_home, container, false);
 
 			TextView textView;
 			textView = (TextView) rootView.findViewById(R.id.section_label);

@@ -2,65 +2,61 @@ package net.narlab.projectnar.utils;
 
 import android.os.AsyncTask;
 import android.util.Log;
-import android.widget.Toast;
 
-import net.narlab.projectnar.MainActivity;
 import net.narlab.projectnar.Nar;
+import net.narlab.projectnar.NarList;
 
-import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
 import org.apache.http.NameValuePair;
 import org.apache.http.StatusLine;
-import org.apache.http.client.ClientProtocolException;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.entity.UrlEncodedFormEntity;
-import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpPost;
-import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.message.BasicNameValuePair;
 import org.apache.http.util.EntityUtils;
 
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.io.UnsupportedEncodingException;
 import java.net.HttpURLConnection;
-import java.net.URL;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Iterator;
-import java.util.List;
 
 /**
- * Created by fma on 11/07/14.
+ * @author fma
+ * @date 11/07/14.
  */
 public class NarConnManager {
-	private Nar nar;
-	private final String BASE_URL = "http://88.231.14.118";
+	private NarList narList;
+	private final String BASE_URL = DataHolder.getServerUrl();
 	private final String TAG = "NarConnMng";
-	private HttpClient httpClient;
 
+	public NarConnManager() {
+		narList = new NarList();
+	}
 	public NarConnManager(Nar nar) {
-		this.nar = nar;
+		this();
+		narList.add(nar);
 	}
 
-	private HttpClient getHttpClient() {
-		if (httpClient == null) {
-			httpClient = new DefaultHttpClient();
-		}
-		return httpClient;
+	public void addNar(Nar nar) {
+		narList.add(nar);
+	}
+	
+	public Nar getNar(String narId) {
+		return narList.get(narId);
 	}
 
-	public void login() {
+	public void register(String narId) {
+		Nar nar = narList.get(narId);
+		register(nar);
+	}
+	public void register(Nar nar) {
 		Log.d("Login:", nar.getId() + "|" + nar.getPass());
 		Log.e(TAG, "Try to send command");
+
 		// set url
-		String url = BASE_URL+"/android/login";
+		String url = BASE_URL+"/android/add_nar/"+nar.getId();
 
 		// Add post data
 		HashMap<String, String> data = new HashMap<String, String>();
-		data.put("username", nar.getId());
 		data.put("password", nar.getPass());
 		data.put("mesg", "Log me in pls");
 
@@ -69,7 +65,9 @@ public class NarConnManager {
 		asyncHttpPost.execute(url);
 	}
 
-	public void sendMessage(String topic, String message) {
+	public void sendMessage(String narId, String topic, String message) {
+		Nar nar = narList.get(narId);
+
 		Log.e(TAG, "Try to send command");
 		// set url
 		String url = BASE_URL+"/android/message";
@@ -86,10 +84,11 @@ public class NarConnManager {
 
 	}
 
-	public void checkState() {
+	public void checkState(String narId) {
+		Nar nar = narList.get(narId);
 		Log.e(TAG, "Check login state");
 		// set url
-		String url = BASE_URL+"/android/state";
+		String url = BASE_URL+"/android/nar_state/"+nar.getId();
 
 		AsyncHttpPost asyncHttpPost = new AsyncHttpPost(null);
 
@@ -98,10 +97,19 @@ public class NarConnManager {
 	}
 
 	public void logout() {
-		Log.d("Logout:", nar.getId() + "|" + nar.getPass());
 		Log.e(TAG, "Try to logout");
 		// set url
 		String url = BASE_URL+"/android/logout";
+
+		AsyncHttpPost asyncHttpPost = new AsyncHttpPost(null);
+
+		asyncHttpPost.execute(url);
+	}
+
+	public void test() {
+		Log.e(TAG, "Test server!");
+		// set url
+		String url = BASE_URL+"/android/test";
 
 		AsyncHttpPost asyncHttpPost = new AsyncHttpPost(null);
 
@@ -125,7 +133,7 @@ public class NarConnManager {
 		protected String doInBackground(String... params) {
 			byte[] result;
 			String str = "";
-			HttpClient client = getHttpClient();
+			HttpClient client = DataHolder.getHttpClient();
 			HttpPost post = new HttpPost(params[0]);// in this case, params[0] is URL
 
 			Log.w("Url", params[0]);

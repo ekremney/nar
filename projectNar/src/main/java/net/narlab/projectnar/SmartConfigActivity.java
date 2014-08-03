@@ -14,7 +14,7 @@ public class SmartConfigActivity extends ActionBarActivity {
 
         // Get the message from the intent
         Intent intent = getIntent();
-        String message = intent.getStringExtra(MainActivity.EXTRA_W_SSID);
+        String message = intent.getStringExtra(HomeActivity.EXTRA_W_SSID);
 
         // Create the text view
         TextView textView = new TextView(this);

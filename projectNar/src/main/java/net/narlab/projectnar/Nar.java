@@ -2,15 +2,12 @@ package net.narlab.projectnar;
 
 import android.util.Log;
 
-import net.narlab.projectnar.utils.NarConnManager;
-
 /**
  * @author Fma
  */
 public class Nar {
 	private String id, pass;
 	static private final String TAG = "NarObj";
-	public NarConnManager connMng;
 
 	/**
 	 * 	take parameters already parsed
@@ -20,7 +17,6 @@ public class Nar {
 	public Nar(String id, String pass) {
 		this.id = id;
 		this.pass = pass;
-		this.connMng = new NarConnManager(this);
 	}
 
 	/**
@@ -45,7 +41,6 @@ public class Nar {
 		if (id == null || pass == null) {
 			throw new NarMalformedParameterException("id or pass cannot be parsed from params string");
 		}
-		this.connMng = new NarConnManager(this);
 	}
 
 	/**
@@ -57,7 +52,6 @@ public class Nar {
 	}
 
 	/**
-	 *
 	 * @return pass of nar (may need to encrypt in future)
 	 */
 	public String getPass() {

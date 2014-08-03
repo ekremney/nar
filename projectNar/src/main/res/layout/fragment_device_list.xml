@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+			  xmlns:bootstrapbutton="http://schemas.android.com/apk/res-auto"
+			  android:orientation="vertical"
+			  android:layout_width="match_parent"
+			  android:layout_height="match_parent">
+
+	<com.beardedhen.androidbootstrap.BootstrapButton
+		android:layout_width="match_parent"
+		android:layout_height="64dp"
+		android:text="@string/add_new_nar"
+		bootstrapbutton:bb_icon_right="fa-plus-circle"
+		android:layout_margin="0dp"
+		bootstrapbutton:bb_size="large"
+		bootstrapbutton:bb_type="success"
+		android:onClick="onRegisterNar"
+		/>
+
+	<ListView
+		android:layout_width="match_parent"
+		android:layout_height="wrap_content"
+		android:id="@+id/listView"
+		android:layout_gravity="center_horizontal"/>
+
+</LinearLayout>
