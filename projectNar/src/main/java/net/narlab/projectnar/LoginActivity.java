@@ -1,5 +1,7 @@
 package net.narlab.projectnar;
 
+import android.accounts.Account;
+import android.accounts.AccountManager;
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.annotation.TargetApi;
@@ -12,8 +14,8 @@ import android.content.Loader;
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.AsyncTask;
-import android.os.Build.VERSION;
 import android.os.Build;
+import android.os.Build.VERSION;
 import android.os.Bundle;
 import android.provider.ContactsContract;
 import android.text.TextUtils;
@@ -37,6 +39,9 @@ import org.apache.http.client.entity.UrlEncodedFormEntity;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.message.BasicNameValuePair;
 import org.apache.http.util.EntityUtils;
+import org.json.JSONArray;
+import org.json.JSONObject;
+import org.json.JSONTokener;
 
 import java.net.HttpURLConnection;
 import java.util.ArrayList;
@@ -53,6 +58,7 @@ public class LoginActivity extends Activity implements LoaderCallbacks<Cursor>{
 	 * Keep track of the register task to ensure we can cancel it if requested.
 	 */
 	private UserLoginTask mAuthTask = null;
+	private final String TAG = "LoginActivity";
 
 	// UI references.
 	private EditText mEmailView;
@@ -65,6 +71,13 @@ public class LoginActivity extends Activity implements LoaderCallbacks<Cursor>{
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_login);
 		setupActionBar();
+
+		Log.v(TAG, "Account List");
+		AccountManager accMng = AccountManager.get(getApplicationContext());
+		for(Account acc : accMng.getAccountsByType("*")) {
+			Log.v(TAG, acc.toString());
+		}
+		Log.v(TAG, "=====");
 
 		// Set up the register form.
 		mEmailView = (EditText) findViewById(R.id.email);
@@ -176,7 +189,7 @@ public class LoginActivity extends Activity implements LoaderCallbacks<Cursor>{
 		}
 	}
 	private boolean isEmailValid(String email) {
-		return email.toLowerCase().matches("^[a-z0-9._%+-]+@[a-z0-9.-]+\\.[a-z]{2,4}$");
+		return email.toLowerCase().matches("^[a-z0-9._%+-]+@[a-z0-9.-]+\\.[a-z]{2,4}(\\..+)*$");
 	}
 
 	private int isPasswordValid(String password) {
@@ -327,14 +340,15 @@ public class LoginActivity extends Activity implements LoaderCallbacks<Cursor>{
 
 		@Override
 		protected Boolean doInBackground(Void... params) {
+			// TODO: remove after tests
 			if (DataHolder.LOGIN_TEST) {
 				return true;
 			}
 			// attempt authentication against a network service.
 
-			byte[] result;
+			byte[] resEnt;
 			boolean loggedIn = false;
-			String str;
+			String resStr;
 			HttpClient client = DataHolder.getHttpClient();
 			HttpPost post = new HttpPost(LOGIN_URL);
 
@@ -349,12 +363,16 @@ public class LoginActivity extends Activity implements LoaderCallbacks<Cursor>{
 				HttpResponse response = client.execute(post);
 				StatusLine statusLine = response.getStatusLine();
 				if(statusLine.getStatusCode() == HttpURLConnection.HTTP_OK){
-					result = EntityUtils.toByteArray(response.getEntity());
-					str = new String(result, "UTF-8");
-					Log.w("Login", str);
+					resEnt = EntityUtils.toByteArray(response.getEntity());
+					resStr = new String(resEnt, "UTF-8");
+					Log.w("Login", resStr);
+					Object json = new JSONTokener(resStr).nextValue();
 
-					if (str.equals("logged_in")) {
+					if (json instanceof JSONArray) {
+						DataHolder.addNars((JSONArray)json);
 						loggedIn = true;
+					} else {
+						Log.e(TAG, ((JSONObject)json).optString("error", "no error message sent"));
 					}
 				}
 			}

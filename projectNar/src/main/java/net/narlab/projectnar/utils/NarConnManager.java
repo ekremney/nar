@@ -46,10 +46,10 @@ public class NarConnManager {
 
 	public void register(String narId) {
 		Nar nar = narList.get(narId);
-		register(nar);
+//		register(nar);
 	}
-	public void register(Nar nar) {
-		Log.d("Login:", nar.getId() + "|" + nar.getPass());
+/*	public void register(Nar nar) {
+		Log.d("Login", nar.getId() + "|" + nar.getPass());
 		Log.e(TAG, "Try to send command");
 
 		// set url
@@ -64,7 +64,7 @@ public class NarConnManager {
 
 		asyncHttpPost.execute(url);
 	}
-
+*/
 	public void sendMessage(String narId, String topic, String message) {
 		Nar nar = narList.get(narId);
 

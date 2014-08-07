@@ -7,7 +7,7 @@ import java.util.List;
  * @author fma
  * @date 21.07.2014.
  */
-public class NarList {
+public class NarList extends ArrayList<Nar> {
 
 	private List<Nar> narList;
 
@@ -25,6 +25,10 @@ public class NarList {
 		return true;
 	}
 
+	@Override
+	public Nar get(int position) {
+		return narList.get(position);
+	}
 	public Nar get(Nar nar) {
 		return get(nar.getId());
 	}
@@ -48,5 +52,10 @@ public class NarList {
 			}
 		}
 		return false;
+	}
+
+	@Override
+	public int size() {
+		return narList.size();
 	}
 }

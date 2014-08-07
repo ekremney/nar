@@ -3,6 +3,7 @@ package net.narlab.projectnar;
 import android.app.Activity;
 import android.content.Intent;
 import android.net.Uri;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
@@ -12,22 +13,33 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.beardedhen.androidbootstrap.BootstrapButton;
-import com.beardedhen.androidbootstrap.FontAwesomeText;
-
 import net.narlab.projectnar.utils.DataHolder;
-import net.narlab.projectnar.utils.NarConnManager;
 import net.narlab.projectnar.utils.NarWifiManager;
 import net.narlab.projectnar.utils.OnFragmentInteractionListener;
-import net.narlab.projectnar.utils.SmartConfigManager;
+
+import org.apache.http.HttpResponse;
+import org.apache.http.NameValuePair;
+import org.apache.http.StatusLine;
+import org.apache.http.client.HttpClient;
+import org.apache.http.client.entity.UrlEncodedFormEntity;
+import org.apache.http.client.methods.HttpPost;
+import org.apache.http.message.BasicNameValuePair;
+import org.apache.http.util.EntityUtils;
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.net.HttpURLConnection;
+import java.sql.Timestamp;
+import java.util.ArrayList;
 
 public class RegisterNarActivity extends FragmentActivity implements OnFragmentInteractionListener {
 
-	private Nar newNar;
+	public static final String REG_NAR_EXT_NAR_ID = "RegNar_ext_nar_id";
+	public static final String REG_NAR_EXT_LASTALIVE = "RegNar_ext_lastalive";
+
 	@Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -73,7 +85,7 @@ public class RegisterNarActivity extends FragmentActivity implements OnFragmentI
 
 	public void onScanQRCodeBtnClick(View view) {
 		Intent intent = new Intent(this, QRScannerActivity.class);
-		startActivityForResult(intent, DataHolder.REGISTER_NAR_REQ_CODE);
+		startActivityForResult(intent, DataHolder.REG_NAR_QR_REQ_CODE);
 	}
 
 	private NarWifiManager narWifiManager = null;
@@ -84,13 +96,19 @@ public class RegisterNarActivity extends FragmentActivity implements OnFragmentI
 		return narWifiManager;
 	}
 
-	public void onStartSmartConfig(View view) {
-		if (newNar == null) {
+	public void onAddNewNar(View view) {
+		String narId   = ((TextView)findViewById(R.id.nar_id  )).getText().toString();
+		String narPass = ((TextView)findViewById(R.id.nar_pass)).getText().toString();
+
+		if (narId.length() > 0 && narPass.length() > 0) {
+			new AsyncAddActivateNar(narId, narPass).execute();
+		} else {
 			ToastIt("You should enter nar info or scan device qr code");
-			return;
 		}
 
+/*		// TODO: put this part to after return of RegisterNarAct
 		Fragment fragment = NewNarWifiFragment.newInstance(getNarWifiManager());
+
 
 		FragmentManager fm = getSupportFragmentManager();
 		FragmentTransaction transaction = fm.beginTransaction();
@@ -113,9 +131,9 @@ public class RegisterNarActivity extends FragmentActivity implements OnFragmentI
 		SmartConfigManager sCM = new SmartConfigManager(getApplicationContext());
 
 //		Intent intent = new Intent(this, SmartConfigActivity.class);
-		/* TODO: replace below 2 lines with
-		 * String pass = ((EditText) findViewById(R.id.wifi_pass)).getText().toString();
-		 */
+		// TODO: replace below 2 lines with
+		// String pass = ((EditText) findViewById(R.id.wifi_pass)).getText().toString();
+
 		String pass = "narlab.net1";
 		EditText et = ((EditText) findViewById(R.id.wifi_pass));
 		et.setText(pass);
@@ -124,52 +142,134 @@ public class RegisterNarActivity extends FragmentActivity implements OnFragmentI
 //		String ssid = editText.getText().toString();
 //		intent.putExtra(EXTRA_W_SSID, ssid);
 //		startActivity(intent);
+		*/
 	}
 
 
 	// get result from qr scan and generate a new Nar object
 	public void onActivityResult(int requestCode, int resultCode, Intent intent) {
-		if (requestCode == DataHolder.REGISTER_NAR_REQ_CODE) {
+		if (requestCode == DataHolder.REG_NAR_QR_REQ_CODE) {
 			if (resultCode == Activity.RESULT_OK) {
-				String res = intent.getStringExtra(QRScannerActivity.EXT_QR_RESULT);
+				String narId = intent.getStringExtra(QRScannerActivity.EXT_QR_RESULT_NAR_ID);
+				String narPass = intent.getStringExtra(QRScannerActivity.EXT_QR_RESULT_NAR_PASS);
 
-				try {
-					newNar = new Nar(res);
-					((TextView) findViewById(R.id.nar_id)).setText(newNar.getId());
-					((TextView) findViewById(R.id.nar_pass)).setText(newNar.getPass());
-					Log.d("Test", res + "=>id=" + newNar.getId() + "__pass=" + newNar.getPass());
-					final NarConnManager narConnMng = DataHolder.getConnMng();
-					narConnMng.register(newNar);
-					narConnMng.test();
-					final Nar f_nar = newNar;
-					new Thread(new Runnable() {
+				Log.d("Test", "id=" + narId + "__pass=" + narPass);
 
-						@Override
-						public void run() {
-							try {
-								Thread.sleep(10000);
-								narConnMng.sendMessage(f_nar.getId(), "TestMessage", "TestContent");
-								Thread.sleep(10000);
-								narConnMng.logout();
-								Thread.sleep(10000);
-								narConnMng.checkState(f_nar.getId());
-							} catch (InterruptedException e) {
-								e.printStackTrace();
-							}
+				((TextView) findViewById(R.id.nar_id)).setText(narId);
+				((TextView) findViewById(R.id.nar_pass)).setText(narPass);
+
+/*				final NarConnManager narConnMng = DataHolder.getConnMng();
+				Nar newNar = new Nar(narId, new Date().getTime());
+//				narConnMng.register(newNar);
+				narConnMng.test();
+				final Nar f_nar = newNar;
+				new Thread(new Runnable() {
+
+					@Override
+					public void run() {
+						try {
+							Thread.sleep(10000);
+							narConnMng.sendMessage(f_nar.getId(), "TestMessage", "TestContent");
+							Thread.sleep(10000);
+							narConnMng.logout();
+							Thread.sleep(10000);
+							narConnMng.checkState(f_nar.getId());
+						} catch (InterruptedException e) {
+							e.printStackTrace();
 						}
-					}).start();
-//					connManager.logout();
-//					connManager.sendMessage("id", nar.getId());
-				} catch (Nar.NarMalformedParameterException e) {
-					ToastIt("Couldn't start nar: " + e.getMessage(), Toast.LENGTH_LONG);
-				}
-
+					}
+				}).start();
+//				connManager.logout();
+//				connManager.sendMessage("id", nar.getId());
+*/
 				return;
 			} else {
 				ToastIt("QR result was not ok: " + resultCode);
 			}
 		}
 		ToastIt("QR Scan failed", Toast.LENGTH_LONG);
+	}
+
+	public class AsyncAddActivateNar extends AsyncTask<Void, Void, String> {
+		private ArrayList<NameValuePair> mData = new ArrayList<NameValuePair>();
+		private static final String TAG = "AsyncAddActiveNar";
+
+		/**
+		 * constructor
+		 */
+		public AsyncAddActivateNar(String narId, String narPass) {
+			// Parse Data from qr string and add to post data
+
+			mData.add(new BasicNameValuePair("nar_id", narId));
+			mData.add(new BasicNameValuePair("nar_pass", narPass));
+		}
+
+		/**
+		 * background
+		 */
+		@Override
+		protected String doInBackground(Void... voids) {
+			byte[] result;
+			String str = "";
+			HttpClient client = DataHolder.getHttpClient();
+			HttpPost post = new HttpPost(DataHolder.getServerUrl()+"/android/register_nar");
+
+			try {
+				// set up post data
+				post.setEntity(new UrlEncodedFormEntity(mData, "UTF-8"));
+
+				HttpResponse response = client.execute(post);
+				StatusLine statusLine = response.getStatusLine();
+				if(statusLine.getStatusCode() == HttpURLConnection.HTTP_OK){
+					result = EntityUtils.toByteArray(response.getEntity());
+					str = new String(result, "UTF-8");
+				}
+			}
+			catch (Exception e) {
+				e.printStackTrace();
+			}
+			return str;
+		}
+
+		/**
+		 * on getting result
+		 */
+		@Override
+		protected void onPostExecute(String result) {
+			if (result.equals("logged_out")) {
+				android.os.Process.killProcess(android.os.Process.myPid());
+				System.exit(0);
+			}
+
+			JSONObject json;
+			Log.i(TAG+"_res", result);
+			try {
+				json = new JSONObject(result);
+				String err = json.optString("error", null);
+				Log.e(TAG+"_err", ""+err);
+				if (err == null) {
+					String narId = json.optString("nar_id", null);
+					String lastalive_s = json.optString("lastalive", null);
+					if (narId == null || lastalive_s == null) {
+						return;
+					}
+					Long lastalive = Timestamp.valueOf(lastalive_s).getTime()/1000;
+					Log.i(TAG, narId+"\n"+lastalive_s+"=>"+lastalive);
+
+					Intent resultIntent = new Intent();
+					resultIntent.putExtra(REG_NAR_EXT_NAR_ID, narId);
+					resultIntent.putExtra(REG_NAR_EXT_LASTALIVE, lastalive);
+					setResult(Activity.RESULT_OK, resultIntent);
+					RegisterNarActivity.this.finish();
+
+				} else {
+					ToastIt(err);
+				}
+			} catch (JSONException e) {
+				e.printStackTrace();
+			}
+
+		}
 	}
 
 }

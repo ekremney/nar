@@ -1,18 +1,29 @@
 package net.narlab.projectnar.utils;
 
+import net.narlab.projectnar.Nar;
+
 import org.apache.http.client.HttpClient;
 import org.apache.http.impl.client.DefaultHttpClient;
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.util.ArrayList;
 
 /**
  * @author fma
  * @since 21.07.2014.
  */
 public class DataHolder {
-	public static final boolean LOGIN_TEST = true;
-	static private NarConnManager connMng;
-	static private HttpClient httpClient;
-	static final private String serverUrl = "http://88.231.19.113";
-	public final static int REGISTER_NAR_REQ_CODE = 0x0f3b, SCANNER_REQ_CODE = 0x0f3a; // request codes
+	public static final boolean LOGIN_TEST = false;
+
+	public static final int REG_NAR_REQ_CODE = 0x0f3b; // RegisterNarAct request code
+	public static final int REG_NAR_QR_REQ_CODE = 0x0f3a; // QRScannerAct request code
+
+	private static NarConnManager connMng;
+	private static HttpClient httpClient;
+	private static final String serverUrl = "http://88.226.237.106";
+	private static final ArrayList<Nar> narList = new ArrayList<Nar>();
 
 	public static NarConnManager getConnMng() {
 		if (connMng == null) {
@@ -31,6 +42,30 @@ public class DataHolder {
 
 	public static String getServerUrl() {
 		return serverUrl;
+	}
+
+	public static void addNars(JSONArray json) {
+		try {
+			for (int i=0; i<json.length(); ++i) {
+				JSONObject jsonOb = json.getJSONObject(i);
+				narList.add(new Nar(jsonOb.getString("nar_id"), 0));
+			}
+		} catch (JSONException e) {
+			e.printStackTrace();
+		}
+	}
+	public static void addNars(String narListStr) {
+		try {
+			JSONArray json = new JSONArray(narListStr);
+			addNars(json);
+		} catch (JSONException e) {
+			e.printStackTrace();
+		}
+	}
+
+
+	public static ArrayList<Nar> getNarList() {
+		return narList;
 	}
 
 }

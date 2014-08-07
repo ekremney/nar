@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+			  xmlns:bootstrapbutton="http://schemas.android.com/apk/res-auto"
+			  android:orientation="horizontal"
+			  android:layout_width="match_parent"
+			  android:layout_height="48dp"
+			  android:background="#F3F3F3">
+
+		<!-- icon -->
+		<ImageView
+			android:id="@+id/item_icon"
+			android:layout_width="32dp"
+			android:layout_height="32dp"
+			android:layout_marginLeft="8dp"
+			android:layout_marginRight="8dp"
+			android:layout_marginTop="8dp"
+			android:contentDescription="icon"
+			android:src="@drawable/ic_launcher"
+			/>
+
+		<!-- title -->
+		<TextView
+			android:id="@+id/nar_item_id"
+			android:layout_height="wrap_content"
+			android:textSize="18sp"
+			android:paddingTop="16dp"
+			android:text="Nar item"
+			android:layout_width="0dp"
+			android:layout_weight="1"/>
+
+		<!-- counter -->
+		<com.beardedhen.androidbootstrap.FontAwesomeText
+			android:id="@+id/item_counter"
+			android:layout_width="32dp"
+			android:layout_height="match_parent"
+			bootstrapbutton:fa_icon="fa-angle-double-right"
+			android:textSize="16sp"
+			android:textColor="#ffffff"
+			android:paddingLeft="8dp"
+			android:background="@color/bbutton_primary"
+			/>
+
+</LinearLayout>

@@ -116,24 +116,24 @@ public final class R {
 		public static final int edittext_background_success = 0x7f020086;
 		public static final int edittext_background_warning = 0x7f020087;
 		public static final int ic_launcher = 0x7f020088;
-		public static final int thumbnail_circle = 0x7f02008d;
-		public static final int thumbnail_circle_container = 0x7f02008e;
-		public static final int thumbnail_circle_minimal = 0x7f02008f;
+		public static final int thumbnail_circle = 0x7f02008e;
+		public static final int thumbnail_circle_container = 0x7f02008f;
+		public static final int thumbnail_circle_minimal = 0x7f020090;
 	}
 	public static final class id {
-		public static final int action_settings = 0x7f070067;
+		public static final int action_settings = 0x7f07006a;
 		public static final int container = 0x7f070049;
 		public static final int dimensionsLabel = 0x7f070050;
 		public static final int image = 0x7f07002a;
 		public static final int layout = 0x7f07004a;
-		public static final int lblColA = 0x7f070064;
-		public static final int lblColB = 0x7f070065;
+		public static final int lblColA = 0x7f070067;
+		public static final int lblColB = 0x7f070068;
 		public static final int lblLeft = 0x7f07004b;
 		public static final int lblMiddle = 0x7f07004c;
 		public static final int lblRight = 0x7f07004d;
-		public static final int lblSubTitle = 0x7f070063;
+		public static final int lblSubTitle = 0x7f070066;
 		public static final int lblText = 0x7f070051;
-		public static final int lblTitle = 0x7f070062;
+		public static final int lblTitle = 0x7f070065;
 		public static final int placeholder = 0x7f07004f;
 		public static final int txtText = 0x7f07004e;
 	}
@@ -144,9 +144,9 @@ public final class R {
 		public static final int bootstrap_thumbnail = 0x7f03001f;
 		public static final int bootstrap_thumbnail_circle = 0x7f030020;
 		public static final int font_awesome_text = 0x7f030021;
-		public static final int row_title = 0x7f030029;
-		public static final int row_title_and_subtitle = 0x7f03002a;
-		public static final int row_two_columns = 0x7f03002b;
+		public static final int row_title = 0x7f03002a;
+		public static final int row_title_and_subtitle = 0x7f03002b;
+		public static final int row_two_columns = 0x7f03002c;
 	}
 	public static final class menu {
 		public static final int main = 0x7f0c0000;

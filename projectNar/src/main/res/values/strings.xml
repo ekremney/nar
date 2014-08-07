@@ -33,6 +33,6 @@
 	<string name="add_new_nar">Add new Nar</string>
 	<string name="new_nar_id">ID:</string>
 	<string name="new_nar_pass">Pass:</string>
-	<string name="new_nar_setup_device">Connect device Wifi</string>
+	<string name="new_nar_activate">Add and active Nar</string>
 
 </resources>

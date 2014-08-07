@@ -15,7 +15,6 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
 import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.TextView;
@@ -24,14 +23,13 @@ import android.widget.Toast;
 import com.beardedhen.androidbootstrap.BootstrapButton;
 import com.beardedhen.androidbootstrap.FontAwesomeText;
 
+import net.narlab.projectnar.adapters.NarListAdapter;
 import net.narlab.projectnar.utils.DataHolder;
-import net.narlab.projectnar.utils.NarConnManager;
 import net.narlab.projectnar.utils.NarWifiManager;
 import net.narlab.projectnar.utils.NarWifiManager.IPParser;
 import net.narlab.projectnar.utils.SmartConfigManager;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.Locale;
 
 public class HomeActivity extends ActionBarActivity {
@@ -44,60 +42,55 @@ public class HomeActivity extends ActionBarActivity {
 	 * may be best to switch to a
 	 * {@link android.support.v4.app.FragmentStatePagerAdapter}.
 	 */
-	SectionsPagerAdapter mSectionsPagerAdapter;
+//	SectionsPagerAdapter mSectionsPagerAdapter;
 	public final static String EXTRA_W_SSID = "com.example.myfirstapp.MESSAGE";
 
 	//DEFINING A STRING ADAPTER WHICH WILL HANDLE THE DATA OF THE LISTVIEW
-	ArrayAdapter<String> devListAdapter;
-
-	//RECORDING HOW MANY TIMES THE BUTTON HAS BEEN CLICKED
-	int clickCounter=0;
+	NarListAdapter narListAdapter;
 
 	/**
 	 * The {@link ViewPager} that will host the section contents.
 	 */
-	ViewPager mViewPager;
+//	ViewPager mViewPager;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 
-		boolean state = true;
-
-		if (state) {
-			setContentView(R.layout.fragment_device_list);
+		setContentView(R.layout.fragment_device_list);
 
 
-			final ListView listview = (ListView) findViewById(R.id.listView);
-			String[] values = new String[] { "Test item 1", "Test item 2" };
+		final ListView listview = (ListView) findViewById(R.id.listView);
 
-			final ArrayList<String> list = new ArrayList<String>();
-			Collections.addAll(list, values);
+		// 1. pass context and data to the custom adapter
+		// get data from global nar list
+		ArrayList<Nar> narList = DataHolder.getNarList();
+		narListAdapter = new NarListAdapter(this, narList);
+		Log.e("TEST", ""+narList.size());
 
-			devListAdapter = new ArrayAdapter(this,
-					android.R.layout.simple_list_item_1, list);
-			listview.setAdapter(devListAdapter);
+		// = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, list);
+		listview.setAdapter(narListAdapter);
 
-			listview.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-				/// TODO: show information of clicked Nar
-				@Override
-				public void onItemClick(AdapterView<?> parent, final View view,
-										int position, long id) {
-					final String item = (String) parent.getItemAtPosition(position);
-					devListAdapter.remove(item);
+		listview.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+			/// TODO: show information of clicked Nar
+			@Override
+			public void onItemClick(AdapterView<?> parent, final View view,
+									int position, long id) {
+//				final String item = (String) parent.getItemAtPosition(position);
+				final String item = ((TextView)view.findViewById(R.id.nar_item_id)).getText().toString();
+				narListAdapter.remove(item);
 /*					view.animate().setDuration(2000).alpha(0)
-							.withEndAction(new Runnable() {
-								@Override
-								public void run() {
-									devListAdapter.remove(item);
-									view.setAlpha(1);
-								}
-							});*/
-				}
+						.withEndAction(new Runnable() {
+							@Override
+							public void run() {
+								narListAdapter.remove(item);
+								view.setAlpha(1);
+							}
+						});*/
+			}
 
-			});
-			return;
-		}
+		});
+/*
 		setContentView(R.layout.activity_home);
 
 		// Create the adapter that will return a fragment for each of the three
@@ -107,7 +100,7 @@ public class HomeActivity extends ActionBarActivity {
 		// Set up the ViewPager with the sections adapter.
 		mViewPager = (ViewPager) findViewById(R.id.pager);
 		mViewPager.setAdapter(mSectionsPagerAdapter);
-
+*/
 	}
 
 	@Override
@@ -159,7 +152,7 @@ public class HomeActivity extends ActionBarActivity {
 	}
 
 	// this will be a list of nars
-	private NarConnManager narConnMng;
+//	private NarConnManager narConnMng;
 
 	/**
 	 * Called when the user clicks the "Setup Device" button
@@ -197,21 +190,19 @@ public class HomeActivity extends ActionBarActivity {
 
 	}
 
-	// TODO: remove this since it is moved to RegisterNarActivity
+/*	// remove this since it is moved to RegisterNarActivity
 	public void onScanQRCodeBtnClick(View view) {
 		Intent intent = new Intent(this, QRScannerActivity.class);
-		startActivityForResult(intent, DataHolder.SCANNER_REQ_CODE);
+		startActivityForResult(intent, DataHolder.REG_NAR_SCANNER_REQ_CODE);
 	}
-
+*/
 	// start add new nar dialog
 	public void onRegisterNar(View view) {
 
 		Intent intent = new Intent(this, RegisterNarActivity.class);
 		ToastIt("Register Nar!");
 		intent.putExtra("Nar", "RegisterStart");
-		startActivityForResult(intent, DataHolder.REGISTER_NAR_REQ_CODE);
-
-		devListAdapter.add("List item: "+ clickCounter++);
+		startActivityForResult(intent, DataHolder.REG_NAR_REQ_CODE);
 	}
 
 	private void ToastIt(String s, int len) {
@@ -222,9 +213,12 @@ public class HomeActivity extends ActionBarActivity {
 	}
 
 	public void onActivityResult(int requestCode, int resultCode, Intent intent) {
-		if (requestCode == DataHolder.SCANNER_REQ_CODE) {
+		if (requestCode == DataHolder.REG_NAR_REQ_CODE) {
 			if (resultCode == Activity.RESULT_OK) {
-				String res = intent.getStringExtra(QRScannerActivity.EXT_QR_RESULT);
+				String narId = intent.getStringExtra(RegisterNarActivity.REG_NAR_EXT_NAR_ID);
+				long lastalive = intent.getLongExtra(RegisterNarActivity.REG_NAR_EXT_LASTALIVE, 0);
+				narListAdapter.add(narId, lastalive);
+/*				String res = intent.getStringExtra(QRScannerActivity.EXT_QR_RESULT);
 
 				try {
 					Nar nar = new Nar(res);
@@ -256,7 +250,7 @@ public class HomeActivity extends ActionBarActivity {
 				} catch (Nar.NarMalformedParameterException e) {
 					ToastIt("Couldn't start nar: " + e.getMessage());
 				}
-
+*/
 				return;
 			} else {
 				ToastIt("QR result was not ok: " + resultCode);

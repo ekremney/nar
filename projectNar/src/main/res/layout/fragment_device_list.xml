@@ -10,7 +10,7 @@
 		android:layout_width="match_parent"
 		android:layout_height="64dp"
 		android:text="@string/add_new_nar"
-		bootstrapbutton:bb_icon_right="fa-plus-circle"
+		bootstrapbutton:bb_icon_right="fa-plus-square"
 		android:layout_margin="0dp"
 		bootstrapbutton:bb_size="large"
 		bootstrapbutton:bb_type="success"

@@ -1355,9 +1355,10 @@ containing a value of this type.
         public static final int ic_plusone_small_off_client=0x7f02008a;
         public static final int ic_plusone_standard_off_client=0x7f02008b;
         public static final int ic_plusone_tall_off_client=0x7f02008c;
-        public static final int thumbnail_circle=0x7f02008d;
-        public static final int thumbnail_circle_container=0x7f02008e;
-        public static final int thumbnail_circle_minimal=0x7f02008f;
+        public static final int rectangle=0x7f02008d;
+        public static final int thumbnail_circle=0x7f02008e;
+        public static final int thumbnail_circle_container=0x7f02008f;
+        public static final int thumbnail_circle_minimal=0x7f020090;
     }
     public static final class id {
         public static final int action_bar=0x7f07001f;
@@ -1368,11 +1369,11 @@ containing a value of this type.
         public static final int action_bar_subtitle=0x7f070026;
         public static final int action_bar_title=0x7f070025;
         public static final int action_context_bar=0x7f070020;
-        public static final int action_empty=0x7f070066;
+        public static final int action_empty=0x7f070069;
         public static final int action_menu_divider=0x7f070018;
         public static final int action_menu_presenter=0x7f070019;
         public static final int action_mode_close_button=0x7f070027;
-        public static final int action_settings=0x7f070067;
+        public static final int action_settings=0x7f07006a;
         public static final int activity_chooser_view_content=0x7f070028;
         public static final int always=0x7f070012;
         public static final int beginning=0x7f07000a;
@@ -1398,15 +1399,17 @@ containing a value of this type.
         public static final int icon=0x7f07002d;
         public static final int ifRoom=0x7f070011;
         public static final int image=0x7f07002a;
+        public static final int item_counter=0x7f070064;
+        public static final int item_icon=0x7f070062;
         public static final int layout=0x7f07004a;
-        public static final int lblColA=0x7f070064;
-        public static final int lblColB=0x7f070065;
+        public static final int lblColA=0x7f070067;
+        public static final int lblColB=0x7f070068;
         public static final int lblLeft=0x7f07004b;
         public static final int lblMiddle=0x7f07004c;
         public static final int lblRight=0x7f07004d;
-        public static final int lblSubTitle=0x7f070063;
+        public static final int lblSubTitle=0x7f070066;
         public static final int lblText=0x7f070051;
-        public static final int lblTitle=0x7f070062;
+        public static final int lblTitle=0x7f070065;
         public static final int listMode=0x7f070001;
         public static final int listView=0x7f070055;
         public static final int list_item=0x7f07002c;
@@ -1415,6 +1418,7 @@ containing a value of this type.
         public static final int login_progress=0x7f070040;
         public static final int middle=0x7f07000b;
         public static final int nar_id=0x7f070053;
+        public static final int nar_item_id=0x7f070063;
         public static final int nar_pass=0x7f070054;
         public static final int never=0x7f070010;
         public static final int new_nar_progress=0x7f070048;
@@ -1513,10 +1517,11 @@ containing a value of this type.
         public static final int fragment_new_nar_wifi=0x7f030026;
         public static final int fragment_wifi_info=0x7f030027;
         public static final int merge_camera_preview_view_finder=0x7f030028;
-        public static final int row_title=0x7f030029;
-        public static final int row_title_and_subtitle=0x7f03002a;
-        public static final int row_two_columns=0x7f03002b;
-        public static final int support_simple_spinner_dropdown_item=0x7f03002c;
+        public static final int nar_list_item=0x7f030029;
+        public static final int row_title=0x7f03002a;
+        public static final int row_title_and_subtitle=0x7f03002b;
+        public static final int row_two_columns=0x7f03002c;
+        public static final int support_simple_spinner_dropdown_item=0x7f03002d;
     }
     public static final class menu {
         public static final int main=0x7f0c0000;
@@ -1578,9 +1583,9 @@ containing a value of this type.
         public static final int hello_blank_fragment=0x7f0a0032;
         public static final int hello_world=0x7f0a0033;
         public static final int login_title=0x7f0a0034;
-        public static final int new_nar_id=0x7f0a0035;
-        public static final int new_nar_pass=0x7f0a0036;
-        public static final int new_nar_setup_device=0x7f0a0037;
+        public static final int new_nar_activate=0x7f0a0035;
+        public static final int new_nar_id=0x7f0a0036;
+        public static final int new_nar_pass=0x7f0a0037;
         public static final int prompt_email=0x7f0a0038;
         public static final int prompt_password=0x7f0a0039;
         public static final int qr_scan_btn=0x7f0a003a;
