@@ -26,23 +26,29 @@ import android.view.View.OnClickListener;
 import android.view.inputmethod.EditorInfo;
 import android.widget.EditText;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.beardedhen.androidbootstrap.BootstrapButton;
 
 import net.narlab.projectnar.utils.DataHolder;
+import net.narlab.projectnar.utils.NarWifiManager;
 
 import org.apache.http.HttpResponse;
 import org.apache.http.NameValuePair;
 import org.apache.http.StatusLine;
+import org.apache.http.client.ClientProtocolException;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.entity.UrlEncodedFormEntity;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.message.BasicNameValuePair;
 import org.apache.http.util.EntityUtils;
 import org.json.JSONArray;
+import org.json.JSONException;
 import org.json.JSONObject;
 import org.json.JSONTokener;
 
+import java.io.IOException;
+import java.io.UnsupportedEncodingException;
 import java.net.HttpURLConnection;
 import java.util.ArrayList;
 import java.util.List;
@@ -105,6 +111,7 @@ public class LoginActivity extends Activity implements LoaderCallbacks<Cursor>{
 
 		mLoginFormView = findViewById(R.id.login_form);
 		mProgressView = findViewById(R.id.login_progress);
+
 	}
 
 	private void populateAutoComplete() {
@@ -138,6 +145,12 @@ public class LoginActivity extends Activity implements LoaderCallbacks<Cursor>{
 	 * errors are presented and no actual register attempt is made.
 	 */
 	public void attemptLogin() {
+		NarWifiManager wifiManager = DataHolder.getNewWifiManager(getApplicationContext());
+
+		if (!wifiManager.isInternetConnected()) {
+			Toast.makeText(getApplicationContext(), getString(R.string.internet_disconnected), Toast.LENGTH_LONG).show();
+		}
+
 		if (mAuthTask != null) {
 			return;
 		}
@@ -175,7 +188,7 @@ public class LoginActivity extends Activity implements LoaderCallbacks<Cursor>{
 			focusView = mEmailView;
 			cancel = true;
 		}
-		Log.w("LoginVals", email+":"+password);
+
 		if (cancel) {
 			// There was an error; don't attempt register and focus the first
 			// form field with an error.
@@ -332,6 +345,7 @@ public class LoginActivity extends Activity implements LoaderCallbacks<Cursor>{
 		private final String email;
 		private final String password;
 		private final String LOGIN_URL = DataHolder.getServerUrl()+"/android/login";
+		private Exception e;
 
 		UserLoginTask(String email, String password) {
 			this.email = email;
@@ -369,15 +383,25 @@ public class LoginActivity extends Activity implements LoaderCallbacks<Cursor>{
 					Object json = new JSONTokener(resStr).nextValue();
 
 					if (json instanceof JSONArray) {
+						DataHolder.getNarList().clear();
 						DataHolder.addNars((JSONArray)json);
 						loggedIn = true;
 					} else {
 						Log.e(TAG, ((JSONObject)json).optString("error", "no error message sent"));
 					}
 				}
-			}
-			catch (Exception e) {
-				e.printStackTrace();
+			} // separate so we can do custom stuff
+			catch (JSONException e) {
+				Log.e(TAG, ".\nJSONException\nCause: "+e.getCause()+"\nMessage: "+e.getMessage());
+//				e.printStackTrace();
+			} catch (UnsupportedEncodingException e) {
+				Log.e(TAG, ".\nUnsupportedEncodingException\nCause: "+e.getCause()+"\nMessage: "+e.getMessage());
+			} catch (ClientProtocolException e) {
+				Log.e(TAG, ".\nClientProtocolException\nCause: "+e.getCause()+"\nMessage: "+e.getMessage());
+			} catch (IOException e) {
+				this.e = e;
+				Log.e(TAG, ".\nIOException\nCause: "+e.getCause()+"\nMessage: "+e.getMessage());
+				return false;
 			}
 
 /*			for (String credential : DUMMY_CREDENTIALS) {
@@ -402,9 +426,14 @@ public class LoginActivity extends Activity implements LoaderCallbacks<Cursor>{
 				startActivity(new Intent(LoginActivity.this, HomeActivity.class));
 				finish();
 			} else {
-				mPasswordView.setError(getString(R.string.error_incorrect_password));
-				mPasswordView.requestFocus();
+				if (this.e == null) {
+					mPasswordView.setError(getString(R.string.error_incorrect_password));
+					mPasswordView.requestFocus();
+				} else if (e instanceof IOException) {
+					Toast.makeText(getApplicationContext(), getString(R.string.server_unreachable), Toast.LENGTH_LONG).show();
+				}
 			}
+			this.e = null;
 		}
 
 		@Override

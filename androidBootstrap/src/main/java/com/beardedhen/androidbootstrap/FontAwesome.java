@@ -380,6 +380,7 @@ public class FontAwesome {
 		faMap.put("fa-dot-circle-o", "\uf192");
 		faMap.put("fa-wheelchair", "\uf193");
 		faMap.put("fa-vimeo-square", "\uf194");
+		faMap.put("fa-circle-o-notch", "\uf1ce");
 	}
 		
 	public static Map<String, String> getFaMap()

@@ -9,6 +9,8 @@ public class Nar {
 	private String id;
 	private Date lastalive;
 	static private final String TAG = "NarObj";
+	// holds the current state of nar device (could be changed in future)
+	private boolean state;
 
 	/**
 	 * 	take parameters already parsed
@@ -52,4 +54,11 @@ public class Nar {
 		return "id="+this.id+"|lastalive="+this.lastalive;
 	}
 
+	public void setState(boolean state) {
+		this.state = state;
+	}
+
+	public boolean getState() {
+		return state;
+	}
 }

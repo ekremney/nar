@@ -4,7 +4,6 @@ import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.ActionBarActivity;
@@ -30,7 +29,6 @@ import net.narlab.projectnar.utils.NarWifiManager.IPParser;
 import net.narlab.projectnar.utils.SmartConfigManager;
 
 import java.util.ArrayList;
-import java.util.Locale;
 
 public class HomeActivity extends ActionBarActivity {
 
@@ -47,7 +45,6 @@ public class HomeActivity extends ActionBarActivity {
 
 	//DEFINING A STRING ADAPTER WHICH WILL HANDLE THE DATA OF THE LISTVIEW
 	NarListAdapter narListAdapter;
-
 	/**
 	 * The {@link ViewPager} that will host the section contents.
 	 */
@@ -59,6 +56,7 @@ public class HomeActivity extends ActionBarActivity {
 
 		setContentView(R.layout.fragment_device_list);
 
+		NarWifiManager wM = DataHolder.getWifiManager();
 
 		final ListView listview = (ListView) findViewById(R.id.listView);
 
@@ -78,7 +76,15 @@ public class HomeActivity extends ActionBarActivity {
 									int position, long id) {
 //				final String item = (String) parent.getItemAtPosition(position);
 				final String item = ((TextView)view.findViewById(R.id.nar_item_id)).getText().toString();
-				narListAdapter.remove(item);
+				ToastIt(item+"__"+position);
+
+				Intent intent = new Intent(HomeActivity.this, NarControlPanelActivity.class);
+				intent.putExtra(NarControlPanelActivity.EXT_NAR_ID, item);
+				intent.putExtra(NarControlPanelActivity.EXT_NAR_POSITION, position);
+				startActivityForResult(intent, DataHolder.NAR_CTRL_PANEL_REQ);
+				overridePendingTransition (R.anim.open_next, R.anim.close_main);
+
+//				narListAdapter.remove(item);
 /*					view.animate().setDuration(2000).alpha(0)
 						.withEndAction(new Runnable() {
 							@Override
@@ -155,9 +161,18 @@ public class HomeActivity extends ActionBarActivity {
 //	private NarConnManager narConnMng;
 
 	/**
-	 * Called when the user clicks the "Setup Device" button
-	 * to start activity for SmartConfig
+	 * Called when the user clicks a button-used for generic button click events-
 	 */
+	public void onButtonClicked(View view) {
+		switch (view.getId()) {
+			case R.id.home_button_add_new:
+				Intent intent = new Intent(this, RegisterNarActivity.class);
+				startActivityForResult(intent, DataHolder.REG_NAR_REQ_CODE);
+				overridePendingTransition (R.anim.open_next, R.anim.close_main);
+				break;
+		}
+	}
+
 	public void onSetupDeviceBtnClick(View view) {
 
 		if (!getNarWifiManager().isWifiConnected()) {
@@ -190,21 +205,6 @@ public class HomeActivity extends ActionBarActivity {
 
 	}
 
-/*	// remove this since it is moved to RegisterNarActivity
-	public void onScanQRCodeBtnClick(View view) {
-		Intent intent = new Intent(this, QRScannerActivity.class);
-		startActivityForResult(intent, DataHolder.REG_NAR_SCANNER_REQ_CODE);
-	}
-*/
-	// start add new nar dialog
-	public void onRegisterNar(View view) {
-
-		Intent intent = new Intent(this, RegisterNarActivity.class);
-		ToastIt("Register Nar!");
-		intent.putExtra("Nar", "RegisterStart");
-		startActivityForResult(intent, DataHolder.REG_NAR_REQ_CODE);
-	}
-
 	private void ToastIt(String s, int len) {
 		Toast.makeText(getApplicationContext(), s, len).show();
 	}
@@ -215,54 +215,31 @@ public class HomeActivity extends ActionBarActivity {
 	public void onActivityResult(int requestCode, int resultCode, Intent intent) {
 		if (requestCode == DataHolder.REG_NAR_REQ_CODE) {
 			if (resultCode == Activity.RESULT_OK) {
-				String narId = intent.getStringExtra(RegisterNarActivity.REG_NAR_EXT_NAR_ID);
-				long lastalive = intent.getLongExtra(RegisterNarActivity.REG_NAR_EXT_LASTALIVE, 0);
+				String narId = intent.getStringExtra(RegisterNarActivity.EXT_NAR_ID);
+				long lastalive = intent.getLongExtra(RegisterNarActivity.EXT_LASTALIVE, 0);
 				narListAdapter.add(narId, lastalive);
-/*				String res = intent.getStringExtra(QRScannerActivity.EXT_QR_RESULT);
-
-				try {
-					Nar nar = new Nar(res);
-					((TextView) findViewById(R.id.nar_id)).setText(nar.getId());
-					((TextView) findViewById(R.id.nar_pass)).setText(nar.getPass());
-					Log.d("Test", res + "=>id=" + nar.getId() + "__pass=" + nar.getPass());
-					narConnMng = DataHolder.getConnMng();
-					narConnMng.register(nar);
-					narConnMng.test();
-					final Nar f_nar = nar;
-					new Thread(new Runnable() {
-
-						@Override
-						public void run() {
-							try {
-								Thread.sleep(10000);
-								narConnMng.sendMessage(f_nar.getId(), "TestMessage", "TestContent");
-								Thread.sleep(10000);
-								narConnMng.logout();
-								Thread.sleep(10000);
-								narConnMng.checkState(f_nar.getId());
-							} catch (InterruptedException e) {
-								e.printStackTrace();
-							}
-						}
-					}).start();
-//					connManager.logout();
-//					connManager.sendMessage("id", nar.getId());
-				} catch (Nar.NarMalformedParameterException e) {
-					ToastIt("Couldn't start nar: " + e.getMessage());
-				}
-*/
-				return;
+			} else if (resultCode == Activity.RESULT_CANCELED) {
+				ToastIt("Canceled");
 			} else {
-				ToastIt("QR result was not ok: " + resultCode);
+				ToastIt("Add nar failed with result code: " + resultCode);
+			}
+		} else if (requestCode == DataHolder.NAR_CTRL_PANEL_REQ) {
+			if (resultCode == Activity.RESULT_OK) {
+				boolean isDeleted;
+				isDeleted = intent.getBooleanExtra(NarControlPanelActivity.EXT_NAR_DELETED, false);
+				String narId = intent.getStringExtra(NarControlPanelActivity.EXT_NAR_ID);
+				if (isDeleted) {
+					narListAdapter.remove(narId);
+					ToastIt("Nar with id deleted: "+narId, Toast.LENGTH_LONG);
+				}
 			}
 		}
-		ToastIt("QR Scan failed", Toast.LENGTH_LONG);
 	}
 	/**
 	 * A {@link FragmentPagerAdapter} that returns a fragment corresponding to
 	 * one of the sections/tabs/pages.
 	 */
-	public class SectionsPagerAdapter extends FragmentPagerAdapter {
+/*	public class SectionsPagerAdapter extends FragmentPagerAdapter {
 
 		public SectionsPagerAdapter(FragmentManager fm) {
 			super(fm);
@@ -272,11 +249,6 @@ public class HomeActivity extends ActionBarActivity {
 		public Fragment getItem(int position) {
 			// getItem is called to instantiate the fragment for the given page.
 			// Return a PlaceholderFragment (defined as a static inner class below).
-			/*if (position > 2) {
-				position = 2;
-			} else if (position < 0) {
-				position = 0;
-			}*/
 			String s[] = {"First", "Second", "Third"};
 			switch (position) {
 				case 0:
@@ -308,22 +280,15 @@ public class HomeActivity extends ActionBarActivity {
 			return null;
 		}
 	}
+*/
+/*	// A placeholder fragment containing a simple view.
 
-	/**
-	 * A placeholder fragment containing a simple view.
-	 */
 	public static class PlaceholderFragment extends Fragment {
-		/**
-		 * The fragment argument representing the section number for this
-		 * fragment.
-		 */
+		 // The fragment argument representing the section number for this fragment.
 		private static final String ARG_SECTION_NUMBER = "section_number";
 		private static final String ARG_SECTION_STRING = "section_string";
 
-		/**
-		 * Returns a new instance of this fragment for the given section
-		 * number.
-		 */
+		// Returns a new instance of this fragment for the given section number.
 		public static PlaceholderFragment newInstance(int sectionNumber, String sectionString) {
 			PlaceholderFragment fragment = new PlaceholderFragment();
 			Bundle args = new Bundle();
@@ -351,7 +316,7 @@ public class HomeActivity extends ActionBarActivity {
 			return rootView;
 		}
 	}
-
+*/
 	/**
 	 * @author Fma
 	 */

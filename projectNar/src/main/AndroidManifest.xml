@@ -1,67 +1,81 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="net.narlab.projectnar"
-    android:versionCode="1"
-    android:versionName="1.0" >
+	package="net.narlab.projectnar"
+	android:versionCode="1"
+	android:versionName="1.0" >
 
-    <!--
-        uses-sdk
+	<!--
+		uses-sdk
 		android:minSdkVersion="10"
 		android:targetSdkVersion="19" /
-    -->
+	-->
 
-    <uses-permission android:name="android.permission.INTERNET" />
-    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
-    <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
-    <uses-permission android:name="android.permission.CHANGE_WIFI_MULTICAST_STATE" />
-    <uses-permission android:name="android.permission.CHANGE_WIFI_STATE" />
-    <uses-permission android:name="android.permission.CAMERA" />
-    <uses-permission android:name="android.permission.VIBRATE" />
-    <uses-permission android:name="android.permission.WAKE_LOCK" />
+	<uses-permission android:name="android.permission.INTERNET" />
+	<uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+	<uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
+	<uses-permission android:name="android.permission.CHANGE_WIFI_MULTICAST_STATE" />
+	<uses-permission android:name="android.permission.CHANGE_WIFI_STATE" />
+	<uses-permission android:name="android.permission.CAMERA" />
+	<uses-permission android:name="android.permission.VIBRATE" />
+	<uses-permission android:name="android.permission.WAKE_LOCK" />
 
-    <application
-        android:allowBackup="true"
-        android:icon="@drawable/ic_launcher"
-        android:label="@string/app_name"
-        android:theme="@style/AppTheme" >
-        <activity
-            android:name=".HomeActivity"
-            android:label="@string/app_name" >
-        </activity>
-        <activity
-            android:name=".SmartConfigActivity"
-            android:label="@string/title_activity_smart_config" >
-        </activity>
-        <activity
-            android:name=".QRScannerActivity"
-            android:label="@string/title_activity_simple_scanner" >
-            <meta-data
-                android:name="android.support.PARENT_ACTIVITY"
-                android:value="net.narlab.projectnar.HomeActivity" />
-        </activity>
-        <activity
-            android:name=".LoginActivity"
-            android:label="@string/app_name"
-            android:windowSoftInputMode="adjustResize|stateVisible" >
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
+	<!-- To auto-complete the email text field in the register form with the user's emails -->
+	<uses-permission android:name="android.permission.GET_ACCOUNTS" />
+	<uses-permission android:name="android.permission.READ_PROFILE" />
+	<uses-permission android:name="android.permission.READ_CONTACTS" />
 
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
-        </activity>
-        <activity
-            android:name=".RegisterNarActivity"
-            android:label="@string/title_activity_new_nar"
-            android:parentActivityName=".HomeActivity" >
-            <meta-data
-                android:name="android.support.PARENT_ACTIVITY"
-                android:value="net.narlab.projectnar.HomeActivity" />
-        </activity>
-    </application>
+	<application
+		android:allowBackup="true"
+		android:icon="@drawable/ic_launcher"
+		android:label="@string/app_name"
+		android:theme="@style/AppTheme" >
+		<activity
+			android:name=".HomeActivity"
+			android:label="@string/app_name"
+			android:screenOrientation="portrait" >
+		</activity>
+		<activity
+			android:name=".SmartConfigActivity"
+			android:label="@string/title_activity_smart_config"
+			android:screenOrientation="portrait" >
+		</activity>
+		<activity
+			android:name=".QRScannerActivity"
+			android:label="@string/title_activity_simple_scanner"
+			android:screenOrientation="portrait" >
+			<meta-data
+				android:name="android.support.PARENT_ACTIVITY"
+				android:value="net.narlab.projectnar.HomeActivity" />
+		</activity>
+		<activity
+			android:name=".LoginActivity"
+			android:label="@string/app_name"
+			android:windowSoftInputMode="adjustResize|stateVisible"
+			android:screenOrientation="portrait" >
+			<intent-filter>
+				<action android:name="android.intent.action.MAIN" />
 
-    <!-- To auto-complete the email text field in the register form with the user's emails -->
-    <uses-permission android:name="android.permission.GET_ACCOUNTS" />
-    <uses-permission android:name="android.permission.READ_PROFILE" />
-    <uses-permission android:name="android.permission.READ_CONTACTS" />
+				<category android:name="android.intent.category.LAUNCHER" />
+			</intent-filter>
+		</activity>
+		<activity
+			android:name=".RegisterNarActivity"
+			android:label="@string/title_activity_new_nar"
+			android:parentActivityName=".HomeActivity"
+			android:screenOrientation="portrait">
+			<meta-data
+				android:name="android.support.PARENT_ACTIVITY"
+				android:value="net.narlab.projectnar.HomeActivity" />
+		</activity>
+		<activity
+			android:name=".NarControlPanelActivity"
+			android:label="@string/title_activity_nar_control_panel"
+			android:parentActivityName=".HomeActivity"
+			android:screenOrientation="portrait" >
+			<meta-data
+				android:name="android.support.PARENT_ACTIVITY"
+				android:value="net.narlab.projectnar.HomeActivity" />
+		</activity>
+	</application>
 
 </manifest>

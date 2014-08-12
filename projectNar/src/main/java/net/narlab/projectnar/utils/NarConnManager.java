@@ -36,10 +36,6 @@ public class NarConnManager {
 		narList.add(nar);
 	}
 
-	public void addNar(Nar nar) {
-		narList.add(nar);
-	}
-	
 	public Nar getNar(String narId) {
 		return narList.get(narId);
 	}
@@ -47,6 +43,9 @@ public class NarConnManager {
 	public void register(String narId) {
 		Nar nar = narList.get(narId);
 //		register(nar);
+	}
+	public void unregister(String narId) {
+
 	}
 /*	public void register(Nar nar) {
 		Log.d("Login", nar.getId() + "|" + nar.getPass());
@@ -66,15 +65,12 @@ public class NarConnManager {
 	}
 */
 	public void sendMessage(String narId, String topic, String message) {
-		Nar nar = narList.get(narId);
-
 		Log.e(TAG, "Try to send command");
 		// set url
-		String url = BASE_URL+"/android/message";
+		String url = BASE_URL+"/android/message/"+narId;
 
 		// Add post data
 		HashMap<String, String> data = new HashMap<String, String>();
-		data.put("id", nar.getId());
 		data.put("topic", topic);
 		data.put("message", message);
 

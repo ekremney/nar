@@ -1,5 +1,7 @@
 package net.narlab.projectnar.utils;
 
+import android.content.Context;
+
 import net.narlab.projectnar.Nar;
 
 import org.apache.http.client.HttpClient;
@@ -17,12 +19,14 @@ import java.util.ArrayList;
 public class DataHolder {
 	public static final boolean LOGIN_TEST = false;
 
-	public static final int REG_NAR_REQ_CODE = 0x0f3b; // RegisterNarAct request code
 	public static final int REG_NAR_QR_REQ_CODE = 0x0f3a; // QRScannerAct request code
+	public static final int REG_NAR_REQ_CODE = 0x0f3b; // RegisterNarAct request code
+	public static final int NAR_CTRL_PANEL_REQ = 0x0f3c; // QRScannerAct request code
 
 	private static NarConnManager connMng;
+	private static NarWifiManager wifiManager;
 	private static HttpClient httpClient;
-	private static final String serverUrl = "http://88.226.237.106";
+	private static final String serverUrl = "http://88.230.148.11";
 	private static final ArrayList<Nar> narList = new ArrayList<Nar>();
 
 	public static NarConnManager getConnMng() {
@@ -54,6 +58,7 @@ public class DataHolder {
 			e.printStackTrace();
 		}
 	}
+
 	public static void addNars(String narListStr) {
 		try {
 			JSONArray json = new JSONArray(narListStr);
@@ -63,9 +68,18 @@ public class DataHolder {
 		}
 	}
 
-
 	public static ArrayList<Nar> getNarList() {
 		return narList;
 	}
 
+	public static NarWifiManager getNewWifiManager(Context c) {
+		if (wifiManager == null) {
+			wifiManager = new NarWifiManager(c);
+		}
+		return wifiManager;
+	}
+
+	public static NarWifiManager getWifiManager() {
+		return wifiManager;
+	}
 }

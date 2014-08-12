@@ -37,8 +37,8 @@ import java.util.ArrayList;
 
 public class RegisterNarActivity extends FragmentActivity implements OnFragmentInteractionListener {
 
-	public static final String REG_NAR_EXT_NAR_ID = "RegNar_ext_nar_id";
-	public static final String REG_NAR_EXT_LASTALIVE = "RegNar_ext_lastalive";
+	public static final String EXT_NAR_ID = "RegNar_ext_nar_id";
+	public static final String EXT_LASTALIVE = "RegNar_ext_lastalive";
 
 	@Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -76,6 +76,12 @@ public class RegisterNarActivity extends FragmentActivity implements OnFragmentI
 		Log.d("onFragmentInteraction", uri.toString());
 	}
 
+	@Override
+	public void onBackPressed() {
+		super.onBackPressed();
+		overridePendingTransition(R.anim.open_main, R.anim.close_next);
+	}
+
 	private void ToastIt(String s, int len) {
 		Toast.makeText(getApplicationContext(), s, len).show();
 	}
@@ -101,6 +107,7 @@ public class RegisterNarActivity extends FragmentActivity implements OnFragmentI
 		String narPass = ((TextView)findViewById(R.id.nar_pass)).getText().toString();
 
 		if (narId.length() > 0 && narPass.length() > 0) {
+			view.setEnabled(false);
 			new AsyncAddActivateNar(narId, narPass).execute();
 		} else {
 			ToastIt("You should enter nar info or scan device qr code");
@@ -182,12 +189,10 @@ public class RegisterNarActivity extends FragmentActivity implements OnFragmentI
 //				connManager.logout();
 //				connManager.sendMessage("id", nar.getId());
 */
-				return;
 			} else {
-				ToastIt("QR result was not ok: " + resultCode);
+				ToastIt("QR result was not ok: " + resultCode, Toast.LENGTH_LONG);
 			}
 		}
-		ToastIt("QR Scan failed", Toast.LENGTH_LONG);
 	}
 
 	public class AsyncAddActivateNar extends AsyncTask<Void, Void, String> {
@@ -241,6 +246,8 @@ public class RegisterNarActivity extends FragmentActivity implements OnFragmentI
 				System.exit(0);
 			}
 
+			findViewById(R.id.new_nar_btn_add).setEnabled(true);
+
 			JSONObject json;
 			Log.i(TAG+"_res", result);
 			try {
@@ -256,11 +263,14 @@ public class RegisterNarActivity extends FragmentActivity implements OnFragmentI
 					Long lastalive = Timestamp.valueOf(lastalive_s).getTime()/1000;
 					Log.i(TAG, narId+"\n"+lastalive_s+"=>"+lastalive);
 
+					ToastIt("Nar with id added: "+narId);
+
 					Intent resultIntent = new Intent();
-					resultIntent.putExtra(REG_NAR_EXT_NAR_ID, narId);
-					resultIntent.putExtra(REG_NAR_EXT_LASTALIVE, lastalive);
+					resultIntent.putExtra(EXT_NAR_ID, narId);
+					resultIntent.putExtra(EXT_LASTALIVE, lastalive);
 					setResult(Activity.RESULT_OK, resultIntent);
 					RegisterNarActivity.this.finish();
+					overridePendingTransition(R.anim.open_main, R.anim.close_next);
 
 				} else {
 					ToastIt(err);

@@ -117,7 +117,7 @@ public class BootstrapButton extends FrameLayout {
 	
 	private void initialise( AttributeSet attrs )
 	{
-		LayoutInflater inflator = (LayoutInflater)getContext().getSystemService(
+		LayoutInflater inflater = (LayoutInflater)getContext().getSystemService(
 				Context.LAYOUT_INFLATER_SERVICE);
 
 		//get font
@@ -208,9 +208,9 @@ public class BootstrapButton extends FrameLayout {
 		a.recycle();
 		View v;
 		if(fillparent){
-			v = inflator.inflate(R.layout.bootstrap_button_fill, null, false);
+			v = inflater.inflate(R.layout.bootstrap_button_fill, null, false);
 		} else {
-			 v = inflator.inflate(R.layout.bootstrap_button, null, false);
+			 v = inflater.inflate(R.layout.bootstrap_button, null, false);
 		}
 		
 		
@@ -288,7 +288,7 @@ public class BootstrapButton extends FrameLayout {
 		}
 
 		//set up the padding
-
+		// TODO: modify padding for rotating button icons
 		if (iconLeft.length() > 0) {
 			//lblLeft.setText(iconLeft);
 			setLeftIcon(iconLeft);
@@ -360,7 +360,7 @@ public class BootstrapButton extends FrameLayout {
 	public void setText(String text) {
 		lblMiddle.setText(text);
 	}
-	
+	public String getText() { return (String)lblMiddle.getText(); }
 
 	/**
 	 * Changes the left icon on a BootstrapButton
@@ -511,7 +511,7 @@ public class BootstrapButton extends FrameLayout {
 		BootstrapTypes type;
 		
 		//get the correct background type
-		if (!roundedCorners) {
+		if (roundedCorners) {
 			type = bbuttonTypeMapRounded.get(bootstrapType);
 		} else {
 			type = bbuttonTypeMap.get(bootstrapType);

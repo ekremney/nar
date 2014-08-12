@@ -13,7 +13,7 @@ public class NarWifiManager {
 
 	public static class IPParser {
 		public static String IntToString(int ip) {
-			// for logical shift use >>> but since we take last 8 bits it doesnt matter
+			// for logical shift use >>> but since we take last 8 bits it doesn't matter
 			return String.format(Locale.US, "%d.%d.%d.%d", (ip & 0xff), (ip >> 8 & 0xff), (ip >> 16 & 0xff), (ip >> 24 & 0xff));
 		}
 
@@ -32,13 +32,15 @@ public class NarWifiManager {
 		}
 	}
 
-	private Context C;
+//	private Context C;
 	private WifiManager wManager;
+	private ConnectivityManager wConnManager;
 	private WifiInfo wInfo;
 
 	public NarWifiManager(Context C) {
-		this.C = C;
+//		this.C = C;
 		this.wManager = (WifiManager) C.getSystemService(Context.WIFI_SERVICE);
+		this.wConnManager = (ConnectivityManager) C.getSystemService(Context.CONNECTIVITY_SERVICE);
 		this.wInfo = wManager.getConnectionInfo();
 
 		Log.v("NarWM", "Init test================");
@@ -60,10 +62,17 @@ public class NarWifiManager {
 	 * @return boolean state of wifi connection
 	 */
 	public boolean isWifiConnected() {
-		ConnectivityManager connManager = (ConnectivityManager) C.getSystemService(Context.CONNECTIVITY_SERVICE);
-		NetworkInfo wifiConnInfo = connManager.getNetworkInfo(ConnectivityManager.TYPE_WIFI);
+		NetworkInfo wifiConnInfo = wConnManager.getNetworkInfo(ConnectivityManager.TYPE_WIFI);
 
         return wifiConnInfo.isConnected();
+	}
+
+	public boolean isInternetConnected() {
+		try {
+			return wConnManager.getActiveNetworkInfo().isConnected();
+		} catch (NullPointerException e) {
+			return false;
+		}
 	}
 
 	// Maybe check connection before all?

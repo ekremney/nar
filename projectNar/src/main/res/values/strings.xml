@@ -29,10 +29,19 @@
     <string name="title_activity_new_nar">NewNarActivity</string>
     <string name="hello_world">Hello world!</string>
     <string name="hello_blank_fragment">Hello blank fragment</string>
-	<string name="login_title">Login to Your Account</string>
-	<string name="add_new_nar">Add new Nar</string>
-	<string name="new_nar_id">ID:</string>
-	<string name="new_nar_pass">Pass:</string>
-	<string name="new_nar_activate">Add and active Nar</string>
+    <string name="login_title">Login to Your Account</string>
+    <string name="add_new_nar">Add new Nar</string>
+    <string name="new_nar_id">ID:</string>
+    <string name="new_nar_pass">Pass:</string>
+    <string name="new_nar_activate">Add and active Nar</string>
+    <string name="title_activity_nar_panel">NarPanelActivity</string>
+    <string name="title_activity_nar_control_panel">NarControlPanelActivity</string>
+	<string name="new_nar_id_hint">Nar ID</string>
+	<string name="new_nar_pass_hint">Nar pass</string>
+	<string name="nar_ctrl_btn_on">On</string>
+	<string name="nar_ctrl_btn_off">Off</string>
+	<string name="nar_ctrl_unregister">Delete</string>
+	<string name="nar_ctrl_btn_on_icon">fa-circle-o-notch</string>
+	<string name="nar_ctrl_btn_off_icon">fa-power-off</string>
 
 </resources>
