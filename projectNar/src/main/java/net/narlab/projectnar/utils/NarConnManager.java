@@ -3,8 +3,8 @@ package net.narlab.projectnar.utils;
 import android.os.AsyncTask;
 import android.util.Log;
 
-import net.narlab.projectnar.Nar;
-import net.narlab.projectnar.NarList;
+import net.narlab.projectnar.general.Nar;
+import net.narlab.projectnar.general.NarList;
 
 import org.apache.http.HttpResponse;
 import org.apache.http.NameValuePair;
@@ -110,6 +110,10 @@ public class NarConnManager {
 		AsyncHttpPost asyncHttpPost = new AsyncHttpPost(null);
 
 		asyncHttpPost.execute(url);
+	}
+
+	public String login(String username, String password, String authTokenType) {
+		return null;
 	}
 
 	public class AsyncHttpPost extends AsyncTask<String, String, String> {

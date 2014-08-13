@@ -1,15 +1,8 @@
 package net.narlab.projectnar.services;
 
-import android.app.Notification;
-import android.app.NotificationManager;
-import android.app.PendingIntent;
 import android.app.Service;
 import android.content.Intent;
-import android.content.IntentFilter;
-import android.net.ConnectivityManager;
 import android.os.IBinder;
-
-import net.narlab.projectnar.R;
 
 /**
  * Created by fma on 17.07.2014.

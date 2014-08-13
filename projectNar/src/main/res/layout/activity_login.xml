@@ -61,7 +61,7 @@
                     android:layout_height="wrap_content"
                     android:hint="@string/prompt_password"
                     android:imeActionId="@+id/login"
-                    android:imeActionLabel="@string/action_sign_in_short"
+                    android:imeActionLabel="@string/action_user_login"
                     android:imeOptions="actionUnspecified"
                     android:inputType="textPassword"
                     android:maxLines="1"
@@ -70,18 +70,39 @@
 					android:text="aaaaaa"
 					/>
 
-                <com.beardedhen.androidbootstrap.BootstrapButton
-                    android:id="@+id/email_sign_in_button"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
+				<LinearLayout
+					android:layout_width="wrap_content"
+					android:layout_height="wrap_content"
+					android:orientation="horizontal"
 					android:layout_gravity="center"
-                    android:layout_marginTop="16dp"
-                    android:text="@string/action_sign_in_short"
-                    android:textStyle="bold"
-					bootstrapbutton:bb_icon_right="fa-sign-in"
-					bootstrapbutton:bb_roundedCorners="true"
-					bootstrapbutton:bb_type="success"
-					/>
+					>
+
+					<com.beardedhen.androidbootstrap.BootstrapButton
+						android:id="@+id/nar_user_login_btn"
+						android:layout_width="wrap_content"
+						android:layout_height="wrap_content"
+						android:layout_marginTop="16dp"
+						android:text="@string/action_user_login"
+						android:textStyle="bold"
+						bootstrapbutton:bb_icon_right="fa-sign-in"
+						bootstrapbutton:bb_roundedCorners="true"
+						bootstrapbutton:bb_type="success"
+						android:layout_margin="5dp"
+						/>
+
+					<com.beardedhen.androidbootstrap.BootstrapButton
+						android:id="@+id/nar_user_btn_register"
+						android:layout_width="wrap_content"
+						android:layout_height="wrap_content"
+						android:layout_marginTop="16dp"
+						android:text="@string/action_user_register"
+						android:textStyle="bold"
+						bootstrapbutton:bb_icon_right="fa-sign-in"
+						bootstrapbutton:bb_roundedCorners="true"
+						bootstrapbutton:bb_type="success"
+						android:layout_margin="5dp"
+						/>
+				</LinearLayout>
 
             </LinearLayout>
     </ScrollView>

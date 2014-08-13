@@ -5,11 +5,11 @@
     <string name="prompt_email">Email</string>
     <string name="prompt_password">Password</string>
     <string name="action_sign_in">Sign in or register</string>
-    <string name="action_sign_in_short">Sign in</string>
+    <string name="action_user_login">Sign in</string>
 
     <string name="error_invalid_email">This email address is invalid</string>
     <string name="error_password_short">This password is too short</string>
 	<string name="error_password_invalid">Password have to contain</string>
-    <string name="error_incorrect_password">This password is incorrect</string>
+    <string name="error_incorrect_info">Username or password is incorrect</string>
     <string name="error_field_required">This field is required</string>
 </resources>

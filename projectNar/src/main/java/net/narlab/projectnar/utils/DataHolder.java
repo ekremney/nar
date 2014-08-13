@@ -2,7 +2,7 @@ package net.narlab.projectnar.utils;
 
 import android.content.Context;
 
-import net.narlab.projectnar.Nar;
+import net.narlab.projectnar.general.Nar;
 
 import org.apache.http.client.HttpClient;
 import org.apache.http.impl.client.DefaultHttpClient;
@@ -26,8 +26,10 @@ public class DataHolder {
 	private static NarConnManager connMng;
 	private static NarWifiManager wifiManager;
 	private static HttpClient httpClient;
-	private static final String serverUrl = "http://88.230.148.11";
+	private static final String serverUrl = "http://192.168.1.206";
 	private static final ArrayList<Nar> narList = new ArrayList<Nar>();
+
+	private static Context C;
 
 	public static NarConnManager getConnMng() {
 		if (connMng == null) {
@@ -82,4 +84,5 @@ public class DataHolder {
 	public static NarWifiManager getWifiManager() {
 		return wifiManager;
 	}
+
 }

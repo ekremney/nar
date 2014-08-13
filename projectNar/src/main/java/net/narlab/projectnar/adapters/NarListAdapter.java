@@ -7,8 +7,8 @@ import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.TextView;
 
-import net.narlab.projectnar.Nar;
 import net.narlab.projectnar.R;
+import net.narlab.projectnar.general.Nar;
 
 import java.util.ArrayList;
 

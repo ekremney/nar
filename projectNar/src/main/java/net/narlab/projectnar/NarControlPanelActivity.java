@@ -13,7 +13,9 @@ import android.widget.Toast;
 
 import com.beardedhen.androidbootstrap.BootstrapButton;
 
+import net.narlab.projectnar.general.Nar;
 import net.narlab.projectnar.utils.DataHolder;
+import net.narlab.projectnar.utils.Helper;
 
 import org.apache.http.HttpResponse;
 import org.apache.http.NameValuePair;
@@ -273,7 +275,7 @@ public class NarControlPanelActivity extends Activity {
 						reply = "No reply";
 					}
 					// TODO: update view and values according to reply
-					Toast.makeText(getApplicationContext(), reply, Toast.LENGTH_SHORT).show();
+					Helper.toastIt(reply);
 
 					BootstrapButton onOffBtn = (BootstrapButton) findViewById(R.id.nar_ctrl_on_off);
 					if (newState) {
@@ -287,7 +289,8 @@ public class NarControlPanelActivity extends Activity {
 					}
 
 				} else {
-					Toast.makeText(getApplicationContext(), err, Toast.LENGTH_LONG).show();
+					Toast.makeText(getApplicationContext(), R.string.new_nar_id, Toast.LENGTH_SHORT);
+					Helper.toastIt(err, Toast.LENGTH_LONG);
 				}
 			} catch (JSONException e) {
 				e.printStackTrace();

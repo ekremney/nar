@@ -31,24 +31,22 @@ import android.widget.Toast;
 import com.beardedhen.androidbootstrap.BootstrapButton;
 
 import net.narlab.projectnar.utils.DataHolder;
+import net.narlab.projectnar.utils.Helper;
 import net.narlab.projectnar.utils.NarWifiManager;
 
 import org.apache.http.HttpResponse;
 import org.apache.http.NameValuePair;
 import org.apache.http.StatusLine;
-import org.apache.http.client.ClientProtocolException;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.entity.UrlEncodedFormEntity;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.message.BasicNameValuePair;
 import org.apache.http.util.EntityUtils;
 import org.json.JSONArray;
-import org.json.JSONException;
 import org.json.JSONObject;
 import org.json.JSONTokener;
 
 import java.io.IOException;
-import java.io.UnsupportedEncodingException;
 import java.net.HttpURLConnection;
 import java.util.ArrayList;
 import java.util.List;
@@ -101,7 +99,7 @@ public class LoginActivity extends Activity implements LoaderCallbacks<Cursor>{
 			}
 		});
 
-		BootstrapButton mEmailSignInButton = (BootstrapButton) findViewById(R.id.email_sign_in_button);
+		BootstrapButton mEmailSignInButton = (BootstrapButton) findViewById(R.id.nar_user_login_btn);
 		mEmailSignInButton.setOnClickListener(new OnClickListener() {
 			@Override
 			public void onClick(View view) {
@@ -112,6 +110,8 @@ public class LoginActivity extends Activity implements LoaderCallbacks<Cursor>{
 		mLoginFormView = findViewById(R.id.login_form);
 		mProgressView = findViewById(R.id.login_progress);
 
+		// set this for toasts
+		Helper.setContext(getApplicationContext());
 	}
 
 	private void populateAutoComplete() {
@@ -148,7 +148,7 @@ public class LoginActivity extends Activity implements LoaderCallbacks<Cursor>{
 		NarWifiManager wifiManager = DataHolder.getNewWifiManager(getApplicationContext());
 
 		if (!wifiManager.isInternetConnected()) {
-			Toast.makeText(getApplicationContext(), getString(R.string.internet_disconnected), Toast.LENGTH_LONG).show();
+			Helper.toastIt(R.string.internet_disconnected, Toast.LENGTH_LONG);
 		}
 
 		if (mAuthTask != null) {
@@ -340,11 +340,13 @@ public class LoginActivity extends Activity implements LoaderCallbacks<Cursor>{
 	 * Represents an asynchronous register/registration task used to authenticate
 	 * the user.
 	 */
-	public class UserLoginTask extends AsyncTask<Void, Void, Boolean> {
+	public class UserLoginTask extends AsyncTask<Void, Void, String> {
 
 		private final String email;
 		private final String password;
 		private final String LOGIN_URL = DataHolder.getServerUrl()+"/android/login";
+
+		private String toastMsg; // message for toast in postExecute
 		private Exception e;
 
 		UserLoginTask(String email, String password) {
@@ -353,15 +355,10 @@ public class LoginActivity extends Activity implements LoaderCallbacks<Cursor>{
 		}
 
 		@Override
-		protected Boolean doInBackground(Void... params) {
-			// TODO: remove after tests
-			if (DataHolder.LOGIN_TEST) {
-				return true;
-			}
+		protected String doInBackground(Void... params) {
 			// attempt authentication against a network service.
 
 			byte[] resEnt;
-			boolean loggedIn = false;
 			String resStr;
 			HttpClient client = DataHolder.getHttpClient();
 			HttpPost post = new HttpPost(LOGIN_URL);
@@ -376,33 +373,23 @@ public class LoginActivity extends Activity implements LoaderCallbacks<Cursor>{
 
 				HttpResponse response = client.execute(post);
 				StatusLine statusLine = response.getStatusLine();
+
 				if(statusLine.getStatusCode() == HttpURLConnection.HTTP_OK){
 					resEnt = EntityUtils.toByteArray(response.getEntity());
 					resStr = new String(resEnt, "UTF-8");
-					Log.w("Login", resStr);
-					Object json = new JSONTokener(resStr).nextValue();
-
-					if (json instanceof JSONArray) {
-						DataHolder.getNarList().clear();
-						DataHolder.addNars((JSONArray)json);
-						loggedIn = true;
-					} else {
-						Log.e(TAG, ((JSONObject)json).optString("error", "no error message sent"));
-					}
+//					Log.w("Login", resStr);
+					return resStr;
 				}
 			} // separate so we can do custom stuff
-			catch (JSONException e) {
-				Log.e(TAG, ".\nJSONException\nCause: "+e.getCause()+"\nMessage: "+e.getMessage());
-//				e.printStackTrace();
-			} catch (UnsupportedEncodingException e) {
+			catch (IOException e) {
+				this.e = e;
+				Log.e(TAG, ".\nIOException\nCause: "+e.getCause()+"\nMessage: "+e.getMessage());
+				return null;
+			}/* catch (UnsupportedEncodingException e) {
 				Log.e(TAG, ".\nUnsupportedEncodingException\nCause: "+e.getCause()+"\nMessage: "+e.getMessage());
 			} catch (ClientProtocolException e) {
 				Log.e(TAG, ".\nClientProtocolException\nCause: "+e.getCause()+"\nMessage: "+e.getMessage());
-			} catch (IOException e) {
-				this.e = e;
-				Log.e(TAG, ".\nIOException\nCause: "+e.getCause()+"\nMessage: "+e.getMessage());
-				return false;
-			}
+			}*/
 
 /*			for (String credential : DUMMY_CREDENTIALS) {
 				String[] pieces = credential.split(":");
@@ -412,25 +399,51 @@ public class LoginActivity extends Activity implements LoaderCallbacks<Cursor>{
 				}
 			}*/
 
-			return loggedIn;
+			return null;
 		}
 
 		@Override
-		protected void onPostExecute(final Boolean success) {
+		protected void onPostExecute(final String resStr) {
+			boolean success = false;
+
+			try {
+				Object json = new JSONTokener(resStr).nextValue();
+
+				if (json instanceof JSONArray) {
+					DataHolder.getNarList().clear();
+					DataHolder.addNars((JSONArray)json);
+					success = true;
+				} else if (json instanceof JSONObject) {
+					toastMsg = ((JSONObject)json).optString("error"
+							,"no error message sent");
+					Log.e(TAG, toastMsg);
+					Helper.toastIt(toastMsg);
+				} else {
+					// there was an error with server
+					Log.e(TAG, "Unknown error: "+json);
+					Helper.toastIt("There was a server error try again later");
+				}
+			} catch (Exception e) {
+				Log.e(TAG, Helper.getExceptionString(e));
+//				e.printStackTrace();
+			}
+
 			mAuthTask = null;
 			showProgress(false);
 
 			if (success) {
 				// start application and kill login activity
-//				Intent regactivity = new Intent(LoginActivity.this, HomeActivity.class);
 				startActivity(new Intent(LoginActivity.this, HomeActivity.class));
 				finish();
 			} else {
-				if (this.e == null) {
-					mPasswordView.setError(getString(R.string.error_incorrect_password));
-					mPasswordView.requestFocus();
+				if (toastMsg != null) {
+					Helper.toastIt(toastMsg);
+				} else if (this.e == null) {
+					mEmailView.setError(getString(R.string.error_incorrect_info));
+					mPasswordView.setError(getString(R.string.error_incorrect_info));
+					mEmailView.requestFocus();
 				} else if (e instanceof IOException) {
-					Toast.makeText(getApplicationContext(), getString(R.string.server_unreachable), Toast.LENGTH_LONG).show();
+					Helper.toastIt(R.string.server_unreachable);
 				}
 			}
 			this.e = null;

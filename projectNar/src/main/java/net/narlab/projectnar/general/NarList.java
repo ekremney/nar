@@ -1,4 +1,4 @@
-package net.narlab.projectnar;
+package net.narlab.projectnar.general;
 
 import java.util.ArrayList;
 import java.util.List;

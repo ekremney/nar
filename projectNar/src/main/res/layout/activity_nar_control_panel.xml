@@ -24,6 +24,7 @@
 		android:padding="10dp"
 		bootstrapbutton:be_roundedCorners="true"
 		android:editable="false"
+		android:focusable="false"
 		/>
 
 	<LinearLayout
@@ -74,6 +75,8 @@
 		bootstrapbutton:be_roundedCorners="true"
 		android:text="Lastalive time"
 		android:layout_gravity="center"
-		android:editable="false"/>
+		android:editable="false"
+		android:focusable="false"
+		/>
 
 </LinearLayout>

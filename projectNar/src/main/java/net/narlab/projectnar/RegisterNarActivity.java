@@ -249,11 +249,11 @@ public class RegisterNarActivity extends FragmentActivity implements OnFragmentI
 			findViewById(R.id.new_nar_btn_add).setEnabled(true);
 
 			JSONObject json;
-			Log.i(TAG+"_res", result);
+//			Log.i(TAG+"_res", result);
 			try {
 				json = new JSONObject(result);
 				String err = json.optString("error", null);
-				Log.e(TAG+"_err", ""+err);
+//				Log.e(TAG+"_err", ""+err);
 				if (err == null) {
 					String narId = json.optString("nar_id", null);
 					String lastalive_s = json.optString("lastalive", null);

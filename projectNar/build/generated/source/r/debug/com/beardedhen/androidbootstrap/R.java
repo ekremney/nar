@@ -28,66 +28,66 @@ public final class R {
 		public static final int fa_icon = 0x7f01006e;
 	}
 	public static final class color {
-		public static final int bbutton_danger = 0x7f060003;
-		public static final int bbutton_danger_disabled = 0x7f060004;
-		public static final int bbutton_danger_disabled_edge = 0x7f060005;
-		public static final int bbutton_danger_edge = 0x7f060006;
-		public static final int bbutton_danger_pressed = 0x7f060007;
-		public static final int bbutton_danger_pressed_edge = 0x7f060008;
-		public static final int bbutton_default = 0x7f060009;
-		public static final int bbutton_default_disabled = 0x7f06000a;
-		public static final int bbutton_default_disabled_edge = 0x7f06000b;
-		public static final int bbutton_default_edge = 0x7f06000c;
-		public static final int bbutton_default_pressed = 0x7f06000d;
-		public static final int bbutton_default_pressed_edge = 0x7f06000e;
-		public static final int bbutton_edittext_border = 0x7f06000f;
-		public static final int bbutton_edittext_disabled = 0x7f060010;
-		public static final int bbutton_info = 0x7f060011;
-		public static final int bbutton_info_disabled = 0x7f060012;
-		public static final int bbutton_info_disabled_edge = 0x7f060013;
-		public static final int bbutton_info_edge = 0x7f060014;
-		public static final int bbutton_info_pressed = 0x7f060015;
-		public static final int bbutton_info_pressed_edge = 0x7f060016;
-		public static final int bbutton_inverse = 0x7f060017;
-		public static final int bbutton_inverse_disabled = 0x7f060018;
-		public static final int bbutton_inverse_disabled_edge = 0x7f060019;
-		public static final int bbutton_inverse_edge = 0x7f06001a;
-		public static final int bbutton_inverse_pressed = 0x7f06001b;
-		public static final int bbutton_inverse_pressed_edge = 0x7f06001c;
-		public static final int bbutton_primary = 0x7f06001d;
-		public static final int bbutton_primary_disabled = 0x7f06001e;
-		public static final int bbutton_primary_disabled_edge = 0x7f06001f;
-		public static final int bbutton_primary_edge = 0x7f060020;
-		public static final int bbutton_primary_pressed = 0x7f060021;
-		public static final int bbutton_primary_pressed_edge = 0x7f060022;
-		public static final int bbutton_success = 0x7f060023;
-		public static final int bbutton_success_disabled = 0x7f060024;
-		public static final int bbutton_success_disabled_edge = 0x7f060025;
-		public static final int bbutton_success_edge = 0x7f060026;
-		public static final int bbutton_success_pressed = 0x7f060027;
-		public static final int bbutton_success_pressed_edge = 0x7f060028;
-		public static final int bbutton_warning = 0x7f060029;
-		public static final int bbutton_warning_disabled = 0x7f06002a;
-		public static final int bbutton_warning_disabled_edge = 0x7f06002b;
-		public static final int bbutton_warning_edge = 0x7f06002c;
-		public static final int bbutton_warning_pressed = 0x7f06002d;
-		public static final int bbutton_warning_pressed_edge = 0x7f06002e;
-		public static final int black = 0x7f06002f;
-		public static final int bthumbnail_background = 0x7f060030;
-		public static final int bthumbnail_border = 0x7f060031;
-		public static final int bthumbnail_font = 0x7f060032;
-		public static final int bthumbnail_placeholder = 0x7f060033;
-		public static final int white = 0x7f060041;
+		public static final int bbutton_danger = 0x7f070003;
+		public static final int bbutton_danger_disabled = 0x7f070004;
+		public static final int bbutton_danger_disabled_edge = 0x7f070005;
+		public static final int bbutton_danger_edge = 0x7f070006;
+		public static final int bbutton_danger_pressed = 0x7f070007;
+		public static final int bbutton_danger_pressed_edge = 0x7f070008;
+		public static final int bbutton_default = 0x7f070009;
+		public static final int bbutton_default_disabled = 0x7f07000a;
+		public static final int bbutton_default_disabled_edge = 0x7f07000b;
+		public static final int bbutton_default_edge = 0x7f07000c;
+		public static final int bbutton_default_pressed = 0x7f07000d;
+		public static final int bbutton_default_pressed_edge = 0x7f07000e;
+		public static final int bbutton_edittext_border = 0x7f07000f;
+		public static final int bbutton_edittext_disabled = 0x7f070010;
+		public static final int bbutton_info = 0x7f070011;
+		public static final int bbutton_info_disabled = 0x7f070012;
+		public static final int bbutton_info_disabled_edge = 0x7f070013;
+		public static final int bbutton_info_edge = 0x7f070014;
+		public static final int bbutton_info_pressed = 0x7f070015;
+		public static final int bbutton_info_pressed_edge = 0x7f070016;
+		public static final int bbutton_inverse = 0x7f070017;
+		public static final int bbutton_inverse_disabled = 0x7f070018;
+		public static final int bbutton_inverse_disabled_edge = 0x7f070019;
+		public static final int bbutton_inverse_edge = 0x7f07001a;
+		public static final int bbutton_inverse_pressed = 0x7f07001b;
+		public static final int bbutton_inverse_pressed_edge = 0x7f07001c;
+		public static final int bbutton_primary = 0x7f07001d;
+		public static final int bbutton_primary_disabled = 0x7f07001e;
+		public static final int bbutton_primary_disabled_edge = 0x7f07001f;
+		public static final int bbutton_primary_edge = 0x7f070020;
+		public static final int bbutton_primary_pressed = 0x7f070021;
+		public static final int bbutton_primary_pressed_edge = 0x7f070022;
+		public static final int bbutton_success = 0x7f070023;
+		public static final int bbutton_success_disabled = 0x7f070024;
+		public static final int bbutton_success_disabled_edge = 0x7f070025;
+		public static final int bbutton_success_edge = 0x7f070026;
+		public static final int bbutton_success_pressed = 0x7f070027;
+		public static final int bbutton_success_pressed_edge = 0x7f070028;
+		public static final int bbutton_warning = 0x7f070029;
+		public static final int bbutton_warning_disabled = 0x7f07002a;
+		public static final int bbutton_warning_disabled_edge = 0x7f07002b;
+		public static final int bbutton_warning_edge = 0x7f07002c;
+		public static final int bbutton_warning_pressed = 0x7f07002d;
+		public static final int bbutton_warning_pressed_edge = 0x7f07002e;
+		public static final int black = 0x7f07002f;
+		public static final int bthumbnail_background = 0x7f070030;
+		public static final int bthumbnail_border = 0x7f070031;
+		public static final int bthumbnail_font = 0x7f070032;
+		public static final int bthumbnail_placeholder = 0x7f070033;
+		public static final int white = 0x7f07004e;
 	}
 	public static final class dimen {
-		public static final int activity_horizontal_margin = 0x7f080011;
-		public static final int activity_vertical_margin = 0x7f080012;
-		public static final int bbuton_rounded_corner_radius = 0x7f080013;
-		public static final int bthumbnail_rounded_corner_radius = 0x7f080014;
-		public static final int padding_large = 0x7f08001a;
-		public static final int padding_medium = 0x7f08001b;
-		public static final int padding_micro = 0x7f08001c;
-		public static final int padding_small = 0x7f08001d;
+		public static final int activity_horizontal_margin = 0x7f090011;
+		public static final int activity_vertical_margin = 0x7f090012;
+		public static final int bbuton_rounded_corner_radius = 0x7f090013;
+		public static final int bthumbnail_rounded_corner_radius = 0x7f090014;
+		public static final int padding_large = 0x7f09001a;
+		public static final int padding_medium = 0x7f09001b;
+		public static final int padding_micro = 0x7f09001c;
+		public static final int padding_small = 0x7f09001d;
 	}
 	public static final class drawable {
 		public static final int bbuton_danger = 0x7f020057;
@@ -116,48 +116,47 @@ public final class R {
 		public static final int edittext_background_success = 0x7f020086;
 		public static final int edittext_background_warning = 0x7f020087;
 		public static final int ic_launcher = 0x7f020088;
-		public static final int thumbnail_circle = 0x7f02008f;
-		public static final int thumbnail_circle_container = 0x7f020090;
-		public static final int thumbnail_circle_minimal = 0x7f020091;
+		public static final int thumbnail_circle = 0x7f020091;
+		public static final int thumbnail_circle_container = 0x7f020092;
+		public static final int thumbnail_circle_minimal = 0x7f020093;
 	}
 	public static final class id {
-		public static final int action_settings = 0x7f07006e;
-		public static final int container = 0x7f07004d;
-		public static final int dimensionsLabel = 0x7f070054;
-		public static final int image = 0x7f07002a;
-		public static final int layout = 0x7f07004e;
-		public static final int lblColA = 0x7f07006b;
-		public static final int lblColB = 0x7f07006c;
-		public static final int lblLeft = 0x7f07004f;
-		public static final int lblMiddle = 0x7f070050;
-		public static final int lblRight = 0x7f070051;
-		public static final int lblSubTitle = 0x7f07006a;
-		public static final int lblText = 0x7f070055;
-		public static final int lblTitle = 0x7f070069;
-		public static final int placeholder = 0x7f070053;
-		public static final int txtText = 0x7f070052;
+		public static final int action_settings = 0x7f080080;
+		public static final int container = 0x7f080060;
+		public static final int dimensionsLabel = 0x7f080067;
+		public static final int image = 0x7f080039;
+		public static final int layout = 0x7f080061;
+		public static final int lblColA = 0x7f08007e;
+		public static final int lblColB = 0x7f08007f;
+		public static final int lblLeft = 0x7f080062;
+		public static final int lblMiddle = 0x7f080063;
+		public static final int lblRight = 0x7f080064;
+		public static final int lblSubTitle = 0x7f08007d;
+		public static final int lblText = 0x7f080068;
+		public static final int lblTitle = 0x7f08007c;
+		public static final int placeholder = 0x7f080066;
+		public static final int txtText = 0x7f080065;
 	}
 	public static final class layout {
-		public static final int bootstrap_button = 0x7f03001d;
-		public static final int bootstrap_button_fill = 0x7f03001e;
-		public static final int bootstrap_edit_text = 0x7f03001f;
-		public static final int bootstrap_thumbnail = 0x7f030020;
-		public static final int bootstrap_thumbnail_circle = 0x7f030021;
-		public static final int font_awesome_text = 0x7f030022;
-		public static final int row_title = 0x7f03002a;
-		public static final int row_title_and_subtitle = 0x7f03002b;
-		public static final int row_two_columns = 0x7f03002c;
+		public static final int bootstrap_button = 0x7f03001e;
+		public static final int bootstrap_button_fill = 0x7f03001f;
+		public static final int bootstrap_edit_text = 0x7f030020;
+		public static final int bootstrap_thumbnail = 0x7f030021;
+		public static final int bootstrap_thumbnail_circle = 0x7f030022;
+		public static final int font_awesome_text = 0x7f030023;
+		public static final int row_title = 0x7f03002b;
+		public static final int row_title_and_subtitle = 0x7f03002c;
+		public static final int row_two_columns = 0x7f03002d;
 	}
 	public static final class menu {
-		public static final int main = 0x7f0c0000;
+		public static final int main = 0x7f0d0001;
 	}
 	public static final class string {
-		public static final int action_settings = 0x7f0a000e;
-		public static final int app_name = 0x7f0a0012;
-		public static final int hello_world = 0x7f0a0033;
+		public static final int action_settings = 0x7f0b000e;
+		public static final int app_name = 0x7f0b0013;
 	}
 	public static final class style {
-		public static final int AppBaseTheme = 0x7f0b0000;
+		public static final int AppBaseTheme = 0x7f0c0000;
 	}
 	public static final class styleable {
 		public static final int[] BootstrapButton = { 0x0101000e, 0x01010095, 0x010100f4, 0x0101014f, 0x7f01005c, 0x7f01005d, 0x7f01005e, 0x7f01005f, 0x7f010060, 0x7f010061, 0x7f010062 };

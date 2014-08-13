@@ -24,7 +24,7 @@ public class NarWifiManager {
 		}
 
 		public static int StringToInt(String dns2) {
-			String s[] = dns2.split(".");
+			String s[] = dns2.split("");
 			if (s.length > 3) {
 				return (Integer.parseInt(s[0]) << 24) + (Integer.parseInt(s[1]) << 16) + (Integer.parseInt(s[2]) << 8) + Integer.parseInt(s[3]);
 			}

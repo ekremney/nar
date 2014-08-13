@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
+	<PreferenceCategory
+		android:title="Test category"
+		android:key="pref_key_storage_settings">
+		<CheckBoxPreference
+			android:key="pref_key_auto_delete"
+			android:title="Checkbox"
+			android:summary="Checkbox pref"
+			android:defaultValue="false" />
+		<Preference
+			android:key="pref_key_sms_delete_limit"
+			android:dependency="pref_key_auto_delete"
+			android:title="Pref 1"
+			android:summary="Test pref 1" />
+		<Preference
+			android:key="pref_key_mms_delete_limit"
+			android:dependency="pref_key_auto_delete"
+			android:title="Pref 2"
+			android:summary="Test pref 2" />
+	</PreferenceCategory>
+</PreferenceScreen>

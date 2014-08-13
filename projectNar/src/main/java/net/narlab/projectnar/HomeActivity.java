@@ -23,7 +23,9 @@ import com.beardedhen.androidbootstrap.BootstrapButton;
 import com.beardedhen.androidbootstrap.FontAwesomeText;
 
 import net.narlab.projectnar.adapters.NarListAdapter;
+import net.narlab.projectnar.general.Nar;
 import net.narlab.projectnar.utils.DataHolder;
+import net.narlab.projectnar.utils.Helper;
 import net.narlab.projectnar.utils.NarWifiManager;
 import net.narlab.projectnar.utils.NarWifiManager.IPParser;
 import net.narlab.projectnar.utils.SmartConfigManager;
@@ -64,7 +66,7 @@ public class HomeActivity extends ActionBarActivity {
 		// get data from global nar list
 		ArrayList<Nar> narList = DataHolder.getNarList();
 		narListAdapter = new NarListAdapter(this, narList);
-		Log.e("TEST", ""+narList.size());
+//		Log.e("NarListSize", ""+narList.size());
 
 		// = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, list);
 		listview.setAdapter(narListAdapter);
@@ -176,7 +178,7 @@ public class HomeActivity extends ActionBarActivity {
 	public void onSetupDeviceBtnClick(View view) {
 
 		if (!getNarWifiManager().isWifiConnected()) {
-			Toast.makeText(getApplicationContext(), R.string.wifi_offline, Toast.LENGTH_LONG).show();
+			Helper.toastIt(R.string.wifi_offline, Toast.LENGTH_LONG);
 			return;
 		}
 
@@ -198,7 +200,7 @@ public class HomeActivity extends ActionBarActivity {
 		EditText et = ((EditText) findViewById(R.id.wifi_pass));
 		et.setText(pass);
 		sCM.startSmartConfig(nWM.getSSID(), pass, nWM.getGatewayString(), null);
-		Toast.makeText(getApplicationContext(), "Trying to connect", Toast.LENGTH_LONG).show();
+		Helper.toastIt("Trying to connect");
 //		String ssid = editText.getText().toString();
 //		intent.putExtra(EXTRA_W_SSID, ssid);
 //		startActivity(intent);
@@ -206,7 +208,8 @@ public class HomeActivity extends ActionBarActivity {
 	}
 
 	private void ToastIt(String s, int len) {
-		Toast.makeText(getApplicationContext(), s, len).show();
+		Helper.toastIt(s, len);
+//		Toast.makeText(getApplicationContext(), s, len).show();
 	}
 	private void ToastIt(String s) {
 		ToastIt(s, Toast.LENGTH_SHORT);
