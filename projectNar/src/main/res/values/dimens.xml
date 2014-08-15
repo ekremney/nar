@@ -5,5 +5,6 @@
     <dimen name="activity_horizontal_margin">16dp</dimen>
     <dimen name="activity_vertical_margin">16dp</dimen>
 	<dimen name="nar_ctrl_button_margin">5dp</dimen>
+	<dimen name="act_smart_cfg_mar">10dp</dimen>
 
 </resources>

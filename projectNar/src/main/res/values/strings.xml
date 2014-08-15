@@ -43,5 +43,6 @@
     <string name="nar_ctrl_btn_off_icon">fa-power-off</string>
     <string name="action_user_register">Register</string>
     <string name="title_activity_authenticator">Authenticator Activity</string>
+	<string name="nar_ctrl_start_smartcfg">Setup Device</string>
 
 </resources>

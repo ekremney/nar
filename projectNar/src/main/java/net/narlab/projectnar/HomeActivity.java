@@ -43,7 +43,6 @@ public class HomeActivity extends ActionBarActivity {
 	 * {@link android.support.v4.app.FragmentStatePagerAdapter}.
 	 */
 //	SectionsPagerAdapter mSectionsPagerAdapter;
-	public final static String EXTRA_W_SSID = "com.example.myfirstapp.MESSAGE";
 
 	//DEFINING A STRING ADAPTER WHICH WILL HANDLE THE DATA OF THE LISTVIEW
 	NarListAdapter narListAdapter;
@@ -184,24 +183,19 @@ public class HomeActivity extends ActionBarActivity {
 
 
 		// get setup button and animate icon
-		BootstrapButton b = (BootstrapButton) findViewById(R.id.setup_device);
-		b.toggleRotation(BootstrapButton.BB_ICON_RIGHT,
-				true, FontAwesomeText.AnimationSpeed.SLOW);
+		BootstrapButton b = (BootstrapButton) findViewById(R.id.btn_setup_device);
+		b.startRotateRight(true, FontAwesomeText.AnimationSpeed.SLOW);
 
 		// get wifi and smart config managers
 		NarWifiManager nWM = getNarWifiManager();
-		SmartConfigManager sCM = new SmartConfigManager(getApplicationContext());
+		SmartConfigManager sCM = new SmartConfigManager();
 
 //		Intent intent = new Intent(this, SmartConfigActivity.class);
-		/* TODO: replace below 2 lines with
-		 * String pass = ((EditText) findViewById(R.id.wifi_pass)).getText().toString();
-		 */
-		String pass = "narlab.net1";
-		EditText et = ((EditText) findViewById(R.id.wifi_pass));
-		et.setText(pass);
+		// get pass from edit text
+		String pass = ((EditText) findViewById(R.id.wifi_pass)).getText().toString();
 		sCM.startSmartConfig(nWM.getSSID(), pass, nWM.getGatewayString(), null);
 		Helper.toastIt("Trying to connect");
-//		String ssid = editText.getText().toString();
+ //		String ssid = editText.getText().toString();
 //		intent.putExtra(EXTRA_W_SSID, ssid);
 //		startActivity(intent);
 
@@ -370,7 +364,7 @@ public class HomeActivity extends ActionBarActivity {
 			passET = (EditText) rootView.findViewById(R.id.wifi_pass);
 			passET.requestFocus();
 /*			passET.setText(getArguments().getString(ARG_W_PASS));*/
-
+/*
 			textView = (TextView) rootView.findViewById(R.id.wifi_netmask);
 			textView.setText(getArguments().getString(ARG_W_NETMASK));
 
@@ -387,7 +381,7 @@ public class HomeActivity extends ActionBarActivity {
 			} else {
 				textView.setVisibility(TextView.INVISIBLE); // or GONE
 			}
-
+*/
 			return rootView;
 		}
 		/*

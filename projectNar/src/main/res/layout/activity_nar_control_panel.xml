@@ -33,7 +33,7 @@
 		android:orientation="horizontal"
 		android:layout_gravity="center">
 		<com.beardedhen.androidbootstrap.BootstrapButton
-			android:id="@+id/nar_ctrl_on_off"
+			android:id="@+id/nar_ctrl_btn_on_off"
 			android:layout_width="wrap_content"
 			android:layout_height="wrap_content"
 			bootstrapbutton:bb_type="success"
@@ -50,7 +50,7 @@
 			bb_type="danger"
 			text="nar_ctrl_btn_off"-->
 		<com.beardedhen.androidbootstrap.BootstrapButton
-			android:id="@+id/nar_ctrl_unregister"
+			android:id="@+id/nar_ctrl_btn_unregister"
 			android:layout_width="wrap_content"
 			android:layout_height="wrap_content"
 			bootstrapbutton:bb_type="danger"
@@ -77,6 +77,20 @@
 		android:layout_gravity="center"
 		android:editable="false"
 		android:focusable="false"
+		/>
+	<com.beardedhen.androidbootstrap.BootstrapButton
+		android:id="@+id/nar_ctrl_btn_smartcfg"
+		android:layout_width="wrap_content"
+		android:layout_height="wrap_content"
+		bootstrapbutton:bb_type="primary"
+		android:textSize="20sp"
+		android:text="@string/nar_ctrl_start_smartcfg"
+		android:layout_gravity="center"
+		android:onClick="onButtonClicked"
+		bootstrapbutton:bb_roundedCorners="true"
+		bootstrapbutton:bb_icon_right="fa-cog"
+		android:layout_margin="@dimen/nar_ctrl_button_margin"
+		android:layout_marginTop="40dp"
 		/>
 
 </LinearLayout>

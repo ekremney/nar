@@ -112,7 +112,7 @@ public class NewNarWifiFragment extends Fragment {
 		editText = (EditText) rootView.findViewById(R.id.wifi_pass);
 		editText.requestFocus();
 /*			passET.setText(getArguments().getString(ARG_W_PASS));*/
-
+/*
 		textView = (TextView) rootView.findViewById(R.id.wifi_netmask);
 		textView.setText(netmask);
 
@@ -129,7 +129,7 @@ public class NewNarWifiFragment extends Fragment {
 		} else {
 			textView.setVisibility(TextView.INVISIBLE); // or GONE
 		}
-
+*/
 		return rootView;
 	}
     // TODO: Rename method, update argument and hook method into UI event

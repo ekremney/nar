@@ -144,8 +144,14 @@ public class LoginActivity extends Activity implements LoaderCallbacks<Cursor>{
 	 * If there are form errors (invalid email, missing fields, etc.), the
 	 * errors are presented and no actual register attempt is made.
 	 */
+	static boolean firstAttempt = true;
 	public void attemptLogin() {
-		NarWifiManager wifiManager = DataHolder.getNewWifiManager(getApplicationContext());
+		NarWifiManager wifiManager;
+		if (firstAttempt) {
+			wifiManager = DataHolder.getNewWifiManager(getApplicationContext());
+		} else {
+			wifiManager = DataHolder.getWifiManager();
+		}
 
 		if (!wifiManager.isInternetConnected()) {
 			Helper.toastIt(R.string.internet_disconnected, Toast.LENGTH_LONG);

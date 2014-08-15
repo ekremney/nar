@@ -16,6 +16,7 @@ import com.beardedhen.androidbootstrap.BootstrapButton;
 import net.narlab.projectnar.general.Nar;
 import net.narlab.projectnar.utils.DataHolder;
 import net.narlab.projectnar.utils.Helper;
+import net.narlab.projectnar.utils.NarWifiManager;
 
 import org.apache.http.HttpResponse;
 import org.apache.http.NameValuePair;
@@ -43,6 +44,8 @@ public class NarControlPanelActivity extends Activity {
 	private AsyncUnregisterNar unregisterTask;
 	private AsyncSendMessageToNar sendMessageTask;
 
+	private BootstrapButton btnUnregister, btnOnOff;
+
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -54,9 +57,13 @@ public class NarControlPanelActivity extends Activity {
 		int position = intent.getIntExtra(EXT_NAR_POSITION, 0);
 
 		nar = DataHolder.getNarList().get(position);
+
 		((TextView)findViewById(R.id.nar_ctrl_lastalive)).setText(nar.getLastaliveS());
 
 		((TextView)findViewById(R.id.nar_ctrl_nar_title)).setText(narId);
+
+		btnUnregister = (BootstrapButton) findViewById(R.id.nar_ctrl_btn_unregister);
+		btnOnOff = (BootstrapButton) findViewById(R.id.nar_ctrl_btn_on_off);
 	}
 
 
@@ -89,9 +96,9 @@ public class NarControlPanelActivity extends Activity {
 
 	public void onButtonClicked(View v) {
 		int vId = v.getId();
-		if (vId == R.id.nar_ctrl_on_off) {
+		if (vId == R.id.nar_ctrl_btn_on_off) {
 			v.setEnabled(false);
-			String state = ((BootstrapButton)v).getText();
+			String state = (String)((BootstrapButton)v).getText();
 
 			String topic;
 			if ( state.equals(getString(R.string.nar_ctrl_btn_on)) ) {
@@ -104,7 +111,7 @@ public class NarControlPanelActivity extends Activity {
 			sendMessageTask = new AsyncSendMessageToNar(narId, topic, state);
 			sendMessageTask.execute();
 
-		} else if (vId == R.id.nar_ctrl_unregister) {
+		} else if (vId == R.id.nar_ctrl_btn_unregister) {
 			// disable until a response comes
 			v.setEnabled(false);
 			unregisterTask = new AsyncUnregisterNar(narId);
@@ -116,6 +123,19 @@ public class NarControlPanelActivity extends Activity {
 			resultIntent.putExtra(EXT_NAR_DELETED, true);
 			setResult(Activity.RESULT_OK, resultIntent);
 			finish();*/
+		} else if (vId == R.id.nar_ctrl_btn_smartcfg) {
+			NarWifiManager nWM = DataHolder.getNewWifiManager(getApplicationContext());
+			if (!nWM.isWifiConnected()) {
+				Helper.toastIt("Please connect to the same wifi you are setting up", Toast.LENGTH_LONG);
+				return;
+			}
+
+			Intent intent = new Intent(this, SmartConfigActivity.class);
+			intent.putExtra(SmartConfigActivity.EXT_NAR_ID, narId);
+			intent.putExtra(SmartConfigActivity.EXT_WIFI_SSID, nWM.getSSID());
+			intent.putExtra(SmartConfigActivity.EXT_GATEWAY, nWM.getGatewayString());
+			startActivity(intent);
+			overridePendingTransition (R.anim.open_next, R.anim.close_main);
 		}
 	}
 
@@ -167,7 +187,7 @@ public class NarControlPanelActivity extends Activity {
 				System.exit(0);
 			}
 
-			findViewById(R.id.nar_ctrl_unregister).setEnabled(true);
+			btnUnregister.setEnabled(true);
 
 			JSONObject json;
 			Log.i(TAG + "_res", result);
@@ -216,8 +236,6 @@ public class NarControlPanelActivity extends Activity {
 		 * constructor
 		 */
 		public AsyncSendMessageToNar(String narId, String topic, String message) {
-			// Parse Data from qr string and add to post data
-
 			this.narId = narId;
 			mData.add(new BasicNameValuePair("topic", topic));
 			mData.add(new BasicNameValuePair("message", message));
@@ -260,7 +278,7 @@ public class NarControlPanelActivity extends Activity {
 				System.exit(0);
 			}
 
-			findViewById(R.id.nar_ctrl_on_off).setEnabled(true);
+			btnOnOff.setEnabled(true);
 
 			JSONObject json;
 //			Log.i(TAG+"_res", result);
@@ -277,15 +295,14 @@ public class NarControlPanelActivity extends Activity {
 					// TODO: update view and values according to reply
 					Helper.toastIt(reply);
 
-					BootstrapButton onOffBtn = (BootstrapButton) findViewById(R.id.nar_ctrl_on_off);
 					if (newState) {
-						onOffBtn.setBootstrapType("success");
-						onOffBtn.setRightIcon(getString(R.string.nar_ctrl_btn_on_icon));
-						onOffBtn.setText(getString(R.string.nar_ctrl_btn_on));
+						btnOnOff.setBootstrapType("success");
+						btnOnOff.setRightIcon(getString(R.string.nar_ctrl_btn_on_icon));
+						btnOnOff.setText(getString(R.string.nar_ctrl_btn_on));
 					} else {
-						onOffBtn.setBootstrapType("danger");
-						onOffBtn.setRightIcon(getString(R.string.nar_ctrl_btn_off_icon));
-						onOffBtn.setText(getString(R.string.nar_ctrl_btn_off));
+						btnOnOff.setBootstrapType("danger");
+						btnOnOff.setRightIcon(getString(R.string.nar_ctrl_btn_off_icon));
+						btnOnOff.setText(getString(R.string.nar_ctrl_btn_off));
 					}
 
 				} else {

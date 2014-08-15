@@ -12,85 +12,81 @@ import com.integrity_project.smartconfiglib.FirstTimeConfigListener;
 
 public class SmartConfigManager implements FirstTimeConfigListener {
 
-    private FirstTimeConfig firstTimeConfig = null;
-    private Context context = null;
-    private boolean started = false;
+	private FirstTimeConfig firstTimeConfig = null;
+	private boolean started = false;
 
-    public SmartConfigManager(Context c) {
-        context = c;
-    }
+	public boolean startSmartConfig(String ssid, String pass, String gateway, String deviceName) {
+		try {
+			if (firstTimeConfig == null) {
+				firstTimeConfig = buildFirstTimeConfig(SmartConfigManager.this, ssid, pass, gateway, deviceName);
+			}
+			if (!started && firstTimeConfig != null) {
+				firstTimeConfig.transmitSettings();
+				started = true;
+			}
+		} catch (Exception e) {
+			Log.e("smartConfigM", "first time config failed :(");
+			Helper.toastIt( "first time config failed :(");
+			e.printStackTrace();
+			return false;
+		}
+		return true;
+	}
 
-    public boolean startSmartConfig(String ssid, String pass, String gateway, String deviceInput) {
-        try {
-            if (firstTimeConfig == null) {
-                firstTimeConfig = buildFirstTimeConfig(SmartConfigManager.this, ssid, pass, gateway, deviceInput);
-            }
-            if (!started && firstTimeConfig != null) {
-                firstTimeConfig.transmitSettings();
-                started = true;
-            }
-        } catch (Exception e) {
-            Log.e("smartConfigM", "first time config failed :/");
-            e.printStackTrace();
-            return false;
-        }
-        return true;
-    }
-
-    private FirstTimeConfig buildFirstTimeConfig(FirstTimeConfigListener listener, String ssid, String pass, String gateway, String deviceInput)
-            throws Exception {
+	private FirstTimeConfig buildFirstTimeConfig(FirstTimeConfigListener listener, String ssid, String pass, String gateway, String deviceName)
+			throws Exception {
 /*		String aesKey = extras.getString(EXTRA_AES_KEY);
-        byte[] transmissionKey = aesKey.getBytes();*/
+		byte[] transmissionKey = aesKey.getBytes();*/
 
-        if (deviceInput == null || deviceInput.length() == 0) {
-            deviceInput = "CC3000";
-        }
-        // AES key isn't being redacted below because it's public knowledge.
-        Log.d("FirstTimeConfig", "SSID=" + ssid + ", pass=" + pass + ", gatewayIP=" + gateway);
-        Toast.makeText(context, "First Time build", Toast.LENGTH_SHORT).show();
-        return new FirstTimeConfig(listener, pass, null, gateway,
-                ssid, deviceInput);
-        //		return new FirstTimeConfig(listener, pass, transmissionKey, gatewayIP, ssid);
-    }
+		if (deviceName == null || deviceName.length() == 0) {
+			deviceName = "CC3000";
+		}
+		// AES key isn't being redacted below because it's public knowledge.
+		Log.d("FirstTimeConfig", "SSID=" + ssid + ", pass=" + pass + ", gatewayIP=" + gateway);
+		Helper.toastIt("First Time build", Toast.LENGTH_SHORT);
+		return new FirstTimeConfig(listener, pass, null, gateway,
+				ssid, deviceName);
+		//		return new FirstTimeConfig(listener, pass, transmissionKey, gatewayIP, ssid);
+	}
 
-    @Override
-    public void onFirstTimeConfigEvent(FtcEvent arg0, Exception arg1) {
-        try {
-            SmartConfigManager.this.firstTimeConfig.stopTransmitting();
-            /**
-             * Adding the Try catch just to ensure the event doesnt retrun null.Some times observed null from Lib file.Just a safety measure
-             */
-            arg1.printStackTrace();
+	@Override
+	public void onFirstTimeConfigEvent(FtcEvent arg0, Exception arg1) {
+		try {
+			SmartConfigManager.this.firstTimeConfig.stopTransmitting();
+			/**
+			 * Adding the Try catch just to ensure the event doesn't return null.Some times observed null from Lib file.Just a safety measure
+			 */
+			arg1.printStackTrace();
 
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
 
-        Log.e("FTC_ARG", "" + arg0);
-        switch (arg0) {
-            case FTC_ERROR:
-                /**
-                 * Stop transmission
-                 */
-                Toast.makeText(context, "FTC_ERROR", Toast.LENGTH_SHORT).show();
-                break;
-            case FTC_SUCCESS:
+		Log.e("FTC_ARG", "" + arg0);
+		switch (arg0) {
+			case FTC_ERROR:
+				/**
+				 * Stop transmission
+				 */
+				Helper.toastIt("FTC_ERROR", Toast.LENGTH_SHORT);
+				break;
+			case FTC_SUCCESS:
 
-                /**
-                 * Show user alert on success
-                 */
-                Toast.makeText(context, "FTC_SUCCESS", Toast.LENGTH_SHORT).show();
-                break;
-            case FTC_TIMEOUT:
-                /**
-                 * Show user alert when timed out
-                 */
-                Toast.makeText(context, "FTC_TIMEOUT", Toast.LENGTH_SHORT).show();
-                break;
-            default:
-                break;
-        }
+				/**
+				 * Show user alert on success
+				 */
+				Helper.toastIt("FTC_SUCCESS", Toast.LENGTH_SHORT);
+				break;
+			case FTC_TIMEOUT:
+				/**
+				 * Show user alert when timed out
+				 */
+				Helper.toastIt("FTC_TIMEOUT", Toast.LENGTH_SHORT);
+				break;
+			default:
+				break;
+		}
 
-    }
+	}
 
 }

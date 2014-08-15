@@ -10,7 +10,7 @@
     android:orientation="vertical"
     tools:context="net.narlab.projectnar.HomeActivity$WifiInfoFragment">
 	
-	<TextView
+	<!--TextView
 		android:id="@+id/title_wifi_info"
 		android:layout_width="fill_parent"
 		android:layout_height="wrap_content"
@@ -37,23 +37,23 @@
 		android:inputType="textPassword"
 		android:layout_margin="5dp"
 		android:gravity="center"
-	/>
+	/-->
 	<!--
 		bootstrapbutton:be_state="success"
 		bootstrapbutton:bb_roundedCorners="true"
 	-->
-	<TextView
+	<!--TextView
 		android:id="@+id/wifi_netmask"
 		android:layout_width="fill_parent"
 		android:layout_height="wrap_content" />
 	<TextView
-		android:id="@+id/wifi_gateway"
+		android:id="@+id/wifi_gateway2"
 		android:layout_width="fill_parent"
 		android:layout_height="wrap_content" />
-	<!--TextView
+	<TextView
 		android:id="@+id/wifi_ip"
 		android:layout_width="fill_parent"
-		android:layout_height="wrap_content" /-->
+		android:layout_height="wrap_content" />
 	<TextView
 		android:id="@+id/wifi_dns1"
 		android:layout_width="fill_parent"
@@ -61,7 +61,7 @@
 	<TextView
 	android:id="@+id/wifi_dns2"
 	android:layout_width="fill_parent"
-	android:layout_height="wrap_content" />
+	android:layout_height="wrap_content" /-->
 	<!-- basic button -->
 	<com.beardedhen.androidbootstrap.BootstrapButton
 		android:id="@+id/setup_device"
