@@ -26,7 +26,7 @@ public class DataHolder {
 	private static NarConnManager connMng;
 	private static NarWifiManager wifiManager;
 	private static HttpClient httpClient;
-	private static final String serverUrl = "http://192.168.1.206";
+	private static final String serverUrl = "http://88.231.232.176";
 	private static final ArrayList<Nar> narList = new ArrayList<Nar>();
 
 	private static Context C;
