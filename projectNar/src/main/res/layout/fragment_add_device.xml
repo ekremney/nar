@@ -11,7 +11,7 @@
 	tools:context="net.narlab.projectnar.AddDeviceFragment">
 
 	<TextView
-		android:id="@+id/title_add_nar"
+		android:id="@+id/login_title"
 		android:layout_width="fill_parent"
 		android:layout_height="wrap_content"
 		android:text="@string/title_add_nar"

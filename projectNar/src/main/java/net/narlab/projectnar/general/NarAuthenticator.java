@@ -18,10 +18,9 @@ import static net.narlab.projectnar.general.AccountGeneral.AUTHTOKEN_TYPE_FULL_A
 import static net.narlab.projectnar.general.AccountGeneral.AUTHTOKEN_TYPE_READ_ONLY;
 import static net.narlab.projectnar.general.AccountGeneral.AUTHTOKEN_TYPE_READ_ONLY_LABEL;
 
-// learnt this new trick awesome!
 /**
  * @author fma
- * @date 13.08.2014.
+ * @since  13.08.2014.
  */
 public class NarAuthenticator extends AbstractAccountAuthenticator {
 

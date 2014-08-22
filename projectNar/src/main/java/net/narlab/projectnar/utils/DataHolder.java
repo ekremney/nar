@@ -17,19 +17,16 @@ import java.util.ArrayList;
  * @since 21.07.2014.
  */
 public class DataHolder {
-	public static final boolean LOGIN_TEST = false;
 
 	public static final int REG_NAR_QR_REQ_CODE = 0x0f3a; // QRScannerAct request code
 	public static final int REG_NAR_REQ_CODE = 0x0f3b; // RegisterNarAct request code
-	public static final int NAR_CTRL_PANEL_REQ = 0x0f3c; // QRScannerAct request code
+	public static final int NAR_CTRL_PANEL_REQ = 0x0f3c; // NarControlPanelAct request code
 
 	private static NarConnManager connMng;
 	private static NarWifiManager wifiManager;
 	private static HttpClient httpClient;
-	private static final String serverUrl = "http://88.231.232.176";
+	private static final String serverUrl = "http://192.168.2.9";
 	private static final ArrayList<Nar> narList = new ArrayList<Nar>();
-
-	private static Context C;
 
 	public static NarConnManager getConnMng() {
 		if (connMng == null) {

@@ -13,10 +13,12 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.ViewTreeObserver;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import net.narlab.projectnar.utils.DataHolder;
+import net.narlab.projectnar.utils.Helper;
 import net.narlab.projectnar.utils.NarWifiManager;
 import net.narlab.projectnar.utils.OnFragmentInteractionListener;
 
@@ -39,6 +41,7 @@ public class RegisterNarActivity extends FragmentActivity implements OnFragmentI
 
 	public static final String EXT_NAR_ID = "RegNar_ext_nar_id";
 	public static final String EXT_LASTALIVE = "RegNar_ext_lastalive";
+	private int rootViewHeight;
 
 	@Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -51,6 +54,29 @@ public class RegisterNarActivity extends FragmentActivity implements OnFragmentI
 		FragmentTransaction transaction = fm.beginTransaction();
 		transaction.replace(R.id.new_nar_progress, fragment);
 		transaction.commit();
+
+		final View rootView = findViewById(R.id.new_nar_progress);
+		rootView.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
+			@Override
+			public void onGlobalLayout() {
+				int heightDiff;
+				heightDiff = rootViewHeight - rootView.getHeight();
+				// if this is first run don't change anything since onCreate fires this as well
+				if (rootViewHeight == 0) {
+					rootViewHeight = rootView.getHeight();
+					return;
+				}
+				rootViewHeight = rootView.getHeight();
+
+//				Helper.toastIt("diff="+heightDiff+"=>" + "w:" + rootView.getWidth() + " h:" + rootView.getHeight()+);
+				if (heightDiff >  100) { // if more than 100 pixels, its probably a keyboard...
+					findViewById(R.id.new_nar_title).setVisibility(View.GONE);
+				}
+				if (heightDiff < -100) {
+					findViewById(R.id.new_nar_title).setVisibility(View.VISIBLE);
+				}
+			}
+		});
 	}
 
 
@@ -92,14 +118,6 @@ public class RegisterNarActivity extends FragmentActivity implements OnFragmentI
 	public void onScanQRCodeBtnClick(View view) {
 		Intent intent = new Intent(this, QRScannerActivity.class);
 		startActivityForResult(intent, DataHolder.REG_NAR_QR_REQ_CODE);
-	}
-
-	private NarWifiManager narWifiManager = null;
-	private NarWifiManager getNarWifiManager() {
-		if (narWifiManager == null) {
-			narWifiManager = new NarWifiManager(this);
-		}
-		return narWifiManager;
 	}
 
 	public void onAddNewNar(View view) {

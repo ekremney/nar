@@ -51,6 +51,8 @@ public class HomeActivity extends ActionBarActivity {
 	 */
 //	ViewPager mViewPager;
 
+	View lastView;
+
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -63,8 +65,7 @@ public class HomeActivity extends ActionBarActivity {
 
 		// 1. pass context and data to the custom adapter
 		// get data from global nar list
-		ArrayList<Nar> narList = DataHolder.getNarList();
-		narListAdapter = new NarListAdapter(this, narList);
+		narListAdapter = new NarListAdapter(this, DataHolder.getNarList());
 //		Log.e("NarListSize", ""+narList.size());
 
 		// = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, list);
@@ -79,21 +80,14 @@ public class HomeActivity extends ActionBarActivity {
 				final String item = ((TextView)view.findViewById(R.id.nar_item_id)).getText().toString();
 				ToastIt(item+"__"+position);
 
+				lastView = view;
+
 				Intent intent = new Intent(HomeActivity.this, NarControlPanelActivity.class);
 				intent.putExtra(NarControlPanelActivity.EXT_NAR_ID, item);
 				intent.putExtra(NarControlPanelActivity.EXT_NAR_POSITION, position);
 				startActivityForResult(intent, DataHolder.NAR_CTRL_PANEL_REQ);
 				overridePendingTransition (R.anim.open_next, R.anim.close_main);
 
-//				narListAdapter.remove(item);
-/*					view.animate().setDuration(2000).alpha(0)
-						.withEndAction(new Runnable() {
-							@Override
-							public void run() {
-								narListAdapter.remove(item);
-								view.setAlpha(1);
-							}
-						});*/
 			}
 
 		});
@@ -129,6 +123,9 @@ public class HomeActivity extends ActionBarActivity {
 			return true;
 		} else if (id == R.id.action_empty) {
 			Log.d("SettingsMenu", "Empty Action yey");
+			return true;
+		} else if (id == R.id.action_logout) {
+			finish();
 			return true;
 		}
 		return super.onOptionsItemSelected(item);
@@ -193,7 +190,7 @@ public class HomeActivity extends ActionBarActivity {
 //		Intent intent = new Intent(this, SmartConfigActivity.class);
 		// get pass from edit text
 		String pass = ((EditText) findViewById(R.id.wifi_pass)).getText().toString();
-		sCM.startSmartConfig(nWM.getSSID(), pass, nWM.getGatewayString(), null);
+//		sCM.startSmartConfig(nWM.getSSID(), pass, nWM.getGatewayString(), null);
 		Helper.toastIt("Trying to connect");
  //		String ssid = editText.getText().toString();
 //		intent.putExtra(EXTRA_W_SSID, ssid);
@@ -224,10 +221,18 @@ public class HomeActivity extends ActionBarActivity {
 			if (resultCode == Activity.RESULT_OK) {
 				boolean isDeleted;
 				isDeleted = intent.getBooleanExtra(NarControlPanelActivity.EXT_NAR_DELETED, false);
-				String narId = intent.getStringExtra(NarControlPanelActivity.EXT_NAR_ID);
+				final String narId = intent.getStringExtra(NarControlPanelActivity.EXT_NAR_ID);
 				if (isDeleted) {
-					narListAdapter.remove(narId);
 					ToastIt("Nar with id deleted: "+narId, Toast.LENGTH_LONG);
+					final View view = lastView;
+					view.animate().setDuration(2000).alpha(0)
+							.withEndAction(new Runnable() {
+								@Override
+								public void run() {
+									narListAdapter.remove(narId);
+									view.setAlpha(1);
+								}
+							});
 				}
 			}
 		}

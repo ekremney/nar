@@ -2,6 +2,7 @@ package net.narlab.projectnar;
 
 import android.accounts.Account;
 import android.accounts.AccountManager;
+import android.accounts.AccountManagerCallback;
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.annotation.TargetApi;
@@ -23,6 +24,7 @@ import android.util.Log;
 import android.view.KeyEvent;
 import android.view.View;
 import android.view.View.OnClickListener;
+import android.view.ViewTreeObserver;
 import android.view.inputmethod.EditorInfo;
 import android.widget.EditText;
 import android.widget.TextView;
@@ -30,6 +32,7 @@ import android.widget.Toast;
 
 import com.beardedhen.androidbootstrap.BootstrapButton;
 
+import net.narlab.projectnar.general.AccountGeneral;
 import net.narlab.projectnar.utils.DataHolder;
 import net.narlab.projectnar.utils.Helper;
 import net.narlab.projectnar.utils.NarWifiManager;
@@ -70,18 +73,27 @@ public class LoginActivity extends Activity implements LoaderCallbacks<Cursor>{
 	private View mProgressView;
 	private View mLoginFormView;
 
+	private int rootViewHeight;
+
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_login);
 		setupActionBar();
 
-		Log.v(TAG, "Account List");
+		Log.v(TAG, "Account List\n=====");
 		AccountManager accMng = AccountManager.get(getApplicationContext());
-		for(Account acc : accMng.getAccountsByType("*")) {
+		for(Account acc : accMng.getAccountsByType(AccountGeneral.ACCOUNT_TYPE)) {
 			Log.v(TAG, acc.toString());
 		}
-		Log.v(TAG, "=====");
+		Log.v(TAG, ".\n=====");
+
+		Account accList[] = accMng.getAccountsByType(AccountGeneral.ACCOUNT_TYPE);
+		Account acc;
+		if (accList.length > 0) {
+			acc = accList[0];
+		}
+
 
 		// Set up the register form.
 		mEmailView = (EditText) findViewById(R.id.email);
@@ -112,6 +124,29 @@ public class LoginActivity extends Activity implements LoaderCallbacks<Cursor>{
 
 		// set this for toasts
 		Helper.setContext(getApplicationContext());
+
+		// remove title if soft keyboard open
+		final View rootView = findViewById(R.id.login_root_view);
+		rootView.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
+			@Override
+			public void onGlobalLayout() {
+				int heightDiff;
+				heightDiff = rootViewHeight - rootView.getHeight();
+				// if this is first run don't change anything since onCreate fires this as well
+				if (rootViewHeight == 0) {
+					rootViewHeight = rootView.getHeight();
+					return;
+				}
+				rootViewHeight = rootView.getHeight();
+
+				if (heightDiff >  100) { // if more than 100 pixels, its probably a keyboard...
+					findViewById(R.id.login_title).setVisibility(View.GONE);
+				}
+				if (heightDiff < -100) {
+					findViewById(R.id.login_title).setVisibility(View.VISIBLE);
+				}
+			}
+		});
 	}
 
 	private void populateAutoComplete() {

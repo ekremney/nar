@@ -16,7 +16,7 @@
 			android:layout_marginRight="8dp"
 			android:layout_marginTop="8dp"
 			android:contentDescription="icon"
-			android:src="@drawable/ic_launcher"
+			android:src="@drawable/nar_icon"
 			/>
 
 		<!-- title -->

@@ -3,6 +3,7 @@ package net.narlab.projectnar;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.ActionBarActivity;
+import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Toast;
@@ -10,13 +11,14 @@ import android.widget.Toast;
 import com.beardedhen.androidbootstrap.BootstrapButton;
 import com.beardedhen.androidbootstrap.BootstrapEditText;
 import com.beardedhen.androidbootstrap.FontAwesomeText;
+import com.integrity_project.smartconfiglib.FirstTimeConfigListener;
 
 import net.narlab.projectnar.utils.DataHolder;
 import net.narlab.projectnar.utils.Helper;
 import net.narlab.projectnar.utils.NarWifiManager;
 import net.narlab.projectnar.utils.SmartConfigManager;
 
-public class SmartConfigActivity extends ActionBarActivity {
+public class SmartConfigActivity extends ActionBarActivity implements SmartConfigManager.SmartConfigFinishedListener {
 	public static final String EXT_WIFI_SSID = "SmartConfigAct_wifi_ssid";
 	public static final String EXT_NAR_ID = "SmartConfigAct_nar_id";
 	public static final String EXT_GATEWAY = "SmartConfigAct_gateway";
@@ -62,10 +64,11 @@ public class SmartConfigActivity extends ActionBarActivity {
 		return id == R.id.action_settings || super.onOptionsItemSelected(item);
 	}
 
-	// TODO: add stopping transmission to here and on destroy
 	@Override
 	public void onBackPressed() {
-
+		super.onBackPressed();
+		nSCM.stopSmartConfig();
+		overridePendingTransition(R.anim.open_main, R.anim.close_next);
 	}
 
 	public void onSetupDeviceBtnClick(View v) {
@@ -82,6 +85,31 @@ public class SmartConfigActivity extends ActionBarActivity {
 		String pass = passEditText.getText().toString();
 		gateway = gatewayEditText.getText().toString();
 
-		nSCM.startSmartConfig(ssid, pass, gateway, narId);
+		nSCM.startSmartConfig(SmartConfigActivity.this, ssid, pass, gateway, narId);
+	}
+
+	@Override
+	public void onSmartConfigFinished(FirstTimeConfigListener.FtcEvent ftcEvent) {
+		setupBtn.setEnabled(true);
+		setupBtn.stopAnimationRight();
+
+		// show some message
+		String message;
+		switch (ftcEvent) {
+			case FTC_ERROR:
+				message = getString(R.string.ftc_error);
+				break;
+			case FTC_SUCCESS:
+				message = getString(R.string.ftc_success);
+				break;
+			case FTC_TIMEOUT:
+				message = getString(R.string.ftc_timeout);
+				break;
+			default:
+				message = "Unknown ftcEvent";
+				break;
+		}
+		Log.d(this.getClass().getSimpleName(), message);
+		Helper.toastIt(message);
 	}
 }

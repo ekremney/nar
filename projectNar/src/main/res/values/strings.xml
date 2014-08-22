@@ -28,10 +28,10 @@
 
     <string name="title_activity_new_nar">Register New Nar</string>
     <string name="login_title">Login to Your Account</string>
-    <string name="add_new_nar">Add new Nar</string>
+    <string name="add_new_nar">Add New Nar</string>
     <string name="new_nar_id">ID:</string>
     <string name="new_nar_pass">Pass:</string>
-    <string name="new_nar_activate">Add and active Nar</string>
+    <string name="new_nar_activate">Add Nar</string>
     <!-- string name="title_activity_nar_panel">NarPanelActivity</string -->
     <string name="title_activity_nar_control_panel">Nar Control Panel</string>
     <string name="new_nar_id_hint">Nar ID</string>
@@ -44,5 +44,11 @@
     <string name="action_user_register">Register</string>
     <string name="title_activity_authenticator">Authenticator Activity</string>
 	<string name="nar_ctrl_start_smartcfg">Setup Device</string>
+	<string name="action_logout">Logout</string>
+	<string name="narlab_label">Narlab</string>
+	<string name="ftc_error">Couldn\'t setup device check your wifi password</string>
+	<string name="ftc_success">Your device is connected to wifi</string><string name="ftc_timeout">Setup timed out
+1- Put device in SmartConfig mode
+2- Keep your phone close</string>
 
 </resources>

@@ -8,6 +8,7 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.ViewTreeObserver;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -44,7 +45,7 @@ public class NarControlPanelActivity extends Activity {
 	private AsyncUnregisterNar unregisterTask;
 	private AsyncSendMessageToNar sendMessageTask;
 
-	private BootstrapButton btnUnregister, btnOnOff;
+	private BootstrapButton unregisterBtn, onOffBtn;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -62,8 +63,9 @@ public class NarControlPanelActivity extends Activity {
 
 		((TextView)findViewById(R.id.nar_ctrl_nar_title)).setText(narId);
 
-		btnUnregister = (BootstrapButton) findViewById(R.id.nar_ctrl_btn_unregister);
-		btnOnOff = (BootstrapButton) findViewById(R.id.nar_ctrl_btn_on_off);
+		unregisterBtn = (BootstrapButton) findViewById(R.id.nar_ctrl_btn_unregister);
+		onOffBtn = (BootstrapButton) findViewById(R.id.nar_ctrl_btn_on_off);
+
 	}
 
 
@@ -97,18 +99,18 @@ public class NarControlPanelActivity extends Activity {
 	public void onButtonClicked(View v) {
 		int vId = v.getId();
 		if (vId == R.id.nar_ctrl_btn_on_off) {
-			v.setEnabled(false);
-			String state = (String)((BootstrapButton)v).getText();
+//			onOffBtn.setBootstrapType();
+			onOffBtn.setEnabled(false);
+			String state = onOffBtn.getText().toString();
+			String message;
 
-			String topic;
+			// send reverse of current
 			if ( state.equals(getString(R.string.nar_ctrl_btn_on)) ) {
-				topic = "Yey On";
-				nar.setState(true);
+				message = "off";
 			} else {
-				topic = "Pff Off";
-				nar.setState(false);
+				message = "on";
 			}
-			sendMessageTask = new AsyncSendMessageToNar(narId, topic, state);
+			sendMessageTask = new AsyncSendMessageToNar(narId, message);
 			sendMessageTask.execute();
 
 		} else if (vId == R.id.nar_ctrl_btn_unregister) {
@@ -117,12 +119,6 @@ public class NarControlPanelActivity extends Activity {
 			unregisterTask = new AsyncUnregisterNar(narId);
 			unregisterTask.execute();
 
-/*			narConnMng.unregister(nar.getId());
-			Intent resultIntent = new Intent();
-			resultIntent.putExtra(EXT_NAR_ID, narId);
-			resultIntent.putExtra(EXT_NAR_DELETED, true);
-			setResult(Activity.RESULT_OK, resultIntent);
-			finish();*/
 		} else if (vId == R.id.nar_ctrl_btn_smartcfg) {
 			NarWifiManager nWM = DataHolder.getNewWifiManager(getApplicationContext());
 			if (!nWM.isWifiConnected()) {
@@ -187,7 +183,7 @@ public class NarControlPanelActivity extends Activity {
 				System.exit(0);
 			}
 
-			btnUnregister.setEnabled(true);
+			unregisterBtn.setEnabled(true);
 
 			JSONObject json;
 			Log.i(TAG + "_res", result);
@@ -235,9 +231,8 @@ public class NarControlPanelActivity extends Activity {
 		/**
 		 * constructor
 		 */
-		public AsyncSendMessageToNar(String narId, String topic, String message) {
+		public AsyncSendMessageToNar(String narId, String message) {
 			this.narId = narId;
-			mData.add(new BasicNameValuePair("topic", topic));
 			mData.add(new BasicNameValuePair("message", message));
 		}
 
@@ -278,7 +273,7 @@ public class NarControlPanelActivity extends Activity {
 				System.exit(0);
 			}
 
-			btnOnOff.setEnabled(true);
+			onOffBtn.setEnabled(true);
 
 			JSONObject json;
 //			Log.i(TAG+"_res", result);
@@ -296,13 +291,13 @@ public class NarControlPanelActivity extends Activity {
 					Helper.toastIt(reply);
 
 					if (newState) {
-						btnOnOff.setBootstrapType("success");
-						btnOnOff.setRightIcon(getString(R.string.nar_ctrl_btn_on_icon));
-						btnOnOff.setText(getString(R.string.nar_ctrl_btn_on));
+						onOffBtn.setBootstrapType("success");
+						onOffBtn.setRightIcon(getString(R.string.nar_ctrl_btn_on_icon));
+						onOffBtn.setText(getString(R.string.nar_ctrl_btn_on));
 					} else {
-						btnOnOff.setBootstrapType("danger");
-						btnOnOff.setRightIcon(getString(R.string.nar_ctrl_btn_off_icon));
-						btnOnOff.setText(getString(R.string.nar_ctrl_btn_off));
+						onOffBtn.setBootstrapType("danger");
+						onOffBtn.setRightIcon(getString(R.string.nar_ctrl_btn_off_icon));
+						onOffBtn.setText(getString(R.string.nar_ctrl_btn_off));
 					}
 
 				} else {

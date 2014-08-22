@@ -66,7 +66,8 @@
 	<com.beardedhen.androidbootstrap.FontAwesomeText
 		android:layout_width="wrap_content"
 		android:layout_height="wrap_content"
-		bootstrapbutton:fa_icon="fa-refresh" />
+		bootstrapbutton:fa_icon="fa-refresh"
+		android:layout_gravity="center"/>
 	<com.beardedhen.androidbootstrap.BootstrapEditText
 		android:id="@+id/nar_ctrl_lastalive"
 		android:layout_width="wrap_content"
