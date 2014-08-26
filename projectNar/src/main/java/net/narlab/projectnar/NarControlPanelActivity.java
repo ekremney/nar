@@ -59,6 +59,7 @@ public class NarControlPanelActivity extends Activity {
 
 		nar = DataHolder.getNarList().get(position);
 
+		Helper.toastIt(nar.getLastalive()+"");
 		((TextView)findViewById(R.id.nar_ctrl_lastalive)).setText(nar.getLastaliveS());
 
 		((TextView)findViewById(R.id.nar_ctrl_nar_title)).setText(narId);
@@ -287,9 +288,9 @@ public class NarControlPanelActivity extends Activity {
 					if (reply == null) {
 						reply = "No reply";
 					}
-					// TODO: update view and values according to reply
 					Helper.toastIt(reply);
 
+					nar.setState(newState);
 					if (newState) {
 						onOffBtn.setBootstrapType("success");
 						onOffBtn.setRightIcon(getString(R.string.nar_ctrl_btn_on_icon));
@@ -301,11 +302,10 @@ public class NarControlPanelActivity extends Activity {
 					}
 
 				} else {
-					Toast.makeText(getApplicationContext(), R.string.new_nar_id, Toast.LENGTH_SHORT);
 					Helper.toastIt(err, Toast.LENGTH_LONG);
 				}
-			} catch (JSONException e) {
-				e.printStackTrace();
+			} catch (Exception e) {
+				Helper.getExceptionString(e);
 			}
 
 		}

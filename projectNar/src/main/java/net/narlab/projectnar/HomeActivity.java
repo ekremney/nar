@@ -2,6 +2,7 @@ package net.narlab.projectnar;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentPagerAdapter;
@@ -19,18 +20,12 @@ import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.beardedhen.androidbootstrap.BootstrapButton;
-import com.beardedhen.androidbootstrap.FontAwesomeText;
+import junit.runner.Version;
 
 import net.narlab.projectnar.adapters.NarListAdapter;
-import net.narlab.projectnar.general.Nar;
 import net.narlab.projectnar.utils.DataHolder;
 import net.narlab.projectnar.utils.Helper;
 import net.narlab.projectnar.utils.NarWifiManager;
-import net.narlab.projectnar.utils.NarWifiManager.IPParser;
-import net.narlab.projectnar.utils.SmartConfigManager;
-
-import java.util.ArrayList;
 
 public class HomeActivity extends ActionBarActivity {
 
@@ -72,13 +67,10 @@ public class HomeActivity extends ActionBarActivity {
 		listview.setAdapter(narListAdapter);
 
 		listview.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-			/// TODO: show information of clicked Nar
 			@Override
 			public void onItemClick(AdapterView<?> parent, final View view,
 									int position, long id) {
-//				final String item = (String) parent.getItemAtPosition(position);
 				final String item = ((TextView)view.findViewById(R.id.nar_item_id)).getText().toString();
-				ToastIt(item+"__"+position);
 
 				lastView = view;
 
@@ -171,68 +163,41 @@ public class HomeActivity extends ActionBarActivity {
 		}
 	}
 
-	public void onSetupDeviceBtnClick(View view) {
-
-		if (!getNarWifiManager().isWifiConnected()) {
-			Helper.toastIt(R.string.wifi_offline, Toast.LENGTH_LONG);
-			return;
-		}
-
-
-		// get setup button and animate icon
-		BootstrapButton b = (BootstrapButton) findViewById(R.id.btn_setup_device);
-		b.startRotateRight(true, FontAwesomeText.AnimationSpeed.SLOW);
-
-		// get wifi and smart config managers
-		NarWifiManager nWM = getNarWifiManager();
-		SmartConfigManager sCM = new SmartConfigManager();
-
-//		Intent intent = new Intent(this, SmartConfigActivity.class);
-		// get pass from edit text
-		String pass = ((EditText) findViewById(R.id.wifi_pass)).getText().toString();
-//		sCM.startSmartConfig(nWM.getSSID(), pass, nWM.getGatewayString(), null);
-		Helper.toastIt("Trying to connect");
- //		String ssid = editText.getText().toString();
-//		intent.putExtra(EXTRA_W_SSID, ssid);
-//		startActivity(intent);
-
-	}
-
-	private void ToastIt(String s, int len) {
-		Helper.toastIt(s, len);
-//		Toast.makeText(getApplicationContext(), s, len).show();
-	}
-	private void ToastIt(String s) {
-		ToastIt(s, Toast.LENGTH_SHORT);
-	}
-
 	public void onActivityResult(int requestCode, int resultCode, Intent intent) {
+		// get result of nar registration
 		if (requestCode == DataHolder.REG_NAR_REQ_CODE) {
 			if (resultCode == Activity.RESULT_OK) {
 				String narId = intent.getStringExtra(RegisterNarActivity.EXT_NAR_ID);
-				long lastalive = intent.getLongExtra(RegisterNarActivity.EXT_LASTALIVE, 0);
+				String lastalive = intent.getStringExtra(RegisterNarActivity.EXT_LASTALIVE);
 				narListAdapter.add(narId, lastalive);
 			} else if (resultCode == Activity.RESULT_CANCELED) {
-				ToastIt("Canceled");
+				Helper.toastIt("Canceled");
 			} else {
-				ToastIt("Add nar failed with result code: " + resultCode);
+				Helper.toastIt("Add nar failed with result code: " + resultCode);
 			}
+
+		// get result of nar panel (for delete etc)
 		} else if (requestCode == DataHolder.NAR_CTRL_PANEL_REQ) {
 			if (resultCode == Activity.RESULT_OK) {
 				boolean isDeleted;
 				isDeleted = intent.getBooleanExtra(NarControlPanelActivity.EXT_NAR_DELETED, false);
 				final String narId = intent.getStringExtra(NarControlPanelActivity.EXT_NAR_ID);
 				if (isDeleted) {
-					ToastIt("Nar with id deleted: "+narId, Toast.LENGTH_LONG);
+					Helper.toastIt("Nar with id deleted: "+narId, Toast.LENGTH_LONG);
 					final View view = lastView;
-					view.animate().setDuration(2000).alpha(0)
-							.withEndAction(new Runnable() {
-								@Override
-								public void run() {
-									narListAdapter.remove(narId);
-									view.setAlpha(1);
-								}
-							});
+
+					if (Build.VERSION.SDK_INT > Build.VERSION_CODES.JELLY_BEAN) {
+						view.animate().setDuration(2000).alpha(0)
+								.withEndAction(new Runnable() {
+									@Override
+									public void run() {
+										narListAdapter.remove(narId);
+										view.setAlpha(1);
+									}
+								});
+					} else {
+						narListAdapter.remove(narId);
+					}
 				}
 			}
 		}

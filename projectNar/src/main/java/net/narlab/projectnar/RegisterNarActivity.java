@@ -19,7 +19,6 @@ import android.widget.Toast;
 
 import net.narlab.projectnar.utils.DataHolder;
 import net.narlab.projectnar.utils.Helper;
-import net.narlab.projectnar.utils.NarWifiManager;
 import net.narlab.projectnar.utils.OnFragmentInteractionListener;
 
 import org.apache.http.HttpResponse;
@@ -30,11 +29,9 @@ import org.apache.http.client.entity.UrlEncodedFormEntity;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.message.BasicNameValuePair;
 import org.apache.http.util.EntityUtils;
-import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.net.HttpURLConnection;
-import java.sql.Timestamp;
 import java.util.ArrayList;
 
 public class RegisterNarActivity extends FragmentActivity implements OnFragmentInteractionListener {
@@ -130,44 +127,6 @@ public class RegisterNarActivity extends FragmentActivity implements OnFragmentI
 		} else {
 			ToastIt("You should enter nar info or scan device qr code");
 		}
-
-/*		// TODO: put this part to after return of RegisterNarAct
-		Fragment fragment = NewNarWifiFragment.newInstance(getNarWifiManager());
-
-
-		FragmentManager fm = getSupportFragmentManager();
-		FragmentTransaction transaction = fm.beginTransaction();
-		transaction.replace(R.id.new_nar_progress, fragment);
-		transaction.commit();
-
-		if (!getNarWifiManager().isWifiConnected()) {
-			Toast.makeText(getApplicationContext(), R.string.wifi_offline, Toast.LENGTH_LONG).show();
-			return;
-		}
-
-
-		// get setup button and animate icon
-		BootstrapButton b = (BootstrapButton) findViewById(R.id.setup_device);
-		b.toggleRotation(BootstrapButton.BB_ICON_RIGHT,
-				true, FontAwesomeText.AnimationSpeed.SLOW);
-
-		// get wifi and smart config managers
-		NarWifiManager nWM = getNarWifiManager();
-		SmartConfigManager sCM = new SmartConfigManager(getApplicationContext());
-
-//		Intent intent = new Intent(this, SmartConfigActivity.class);
-		// TODO: replace below 2 lines with
-		// String pass = ((EditText) findViewById(R.id.wifi_pass)).getText().toString();
-
-		String pass = "narlab.net1";
-		EditText et = ((EditText) findViewById(R.id.wifi_pass));
-		et.setText(pass);
-		sCM.startSmartConfig(nWM.getSSID(), pass, nWM.getGatewayString(), null);
-		Toast.makeText(getApplicationContext(), "Trying to connect", Toast.LENGTH_LONG).show();
-//		String ssid = editText.getText().toString();
-//		intent.putExtra(EXTRA_W_SSID, ssid);
-//		startActivity(intent);
-		*/
 	}
 
 
@@ -183,30 +142,6 @@ public class RegisterNarActivity extends FragmentActivity implements OnFragmentI
 				((TextView) findViewById(R.id.nar_id)).setText(narId);
 				((TextView) findViewById(R.id.nar_pass)).setText(narPass);
 
-/*				final NarConnManager narConnMng = DataHolder.getConnMng();
-				Nar newNar = new Nar(narId, new Date().getTime());
-//				narConnMng.register(newNar);
-				narConnMng.test();
-				final Nar f_nar = newNar;
-				new Thread(new Runnable() {
-
-					@Override
-					public void run() {
-						try {
-							Thread.sleep(10000);
-							narConnMng.sendMessage(f_nar.getId(), "TestMessage", "TestContent");
-							Thread.sleep(10000);
-							narConnMng.logout();
-							Thread.sleep(10000);
-							narConnMng.checkState(f_nar.getId());
-						} catch (InterruptedException e) {
-							e.printStackTrace();
-						}
-					}
-				}).start();
-//				connManager.logout();
-//				connManager.sendMessage("id", nar.getId());
-*/
 			} else {
 				ToastIt("QR result was not ok: " + resultCode, Toast.LENGTH_LONG);
 			}
@@ -215,7 +150,6 @@ public class RegisterNarActivity extends FragmentActivity implements OnFragmentI
 
 	public class AsyncAddActivateNar extends AsyncTask<Void, Void, String> {
 		private ArrayList<NameValuePair> mData = new ArrayList<NameValuePair>();
-		private static final String TAG = "AsyncAddActiveNar";
 
 		/**
 		 * constructor
@@ -274,14 +208,13 @@ public class RegisterNarActivity extends FragmentActivity implements OnFragmentI
 //				Log.e(TAG+"_err", ""+err);
 				if (err == null) {
 					String narId = json.optString("nar_id", null);
-					String lastalive_s = json.optString("lastalive", null);
-					if (narId == null || lastalive_s == null) {
+					String lastalive = json.optString("lastalive", null);
+					if (narId == null || lastalive == null) {
 						return;
 					}
-					Long lastalive = Timestamp.valueOf(lastalive_s).getTime()/1000;
-					Log.i(TAG, narId+"\n"+lastalive_s+"=>"+lastalive);
+//					Log.i(Helper.getTag(this), "Registered nar: " + narId + "|" + lastalive);
 
-					ToastIt("Nar with id added: "+narId);
+					ToastIt("Nar with id registered: "+narId);
 
 					Intent resultIntent = new Intent();
 					resultIntent.putExtra(EXT_NAR_ID, narId);
@@ -293,8 +226,8 @@ public class RegisterNarActivity extends FragmentActivity implements OnFragmentI
 				} else {
 					ToastIt(err);
 				}
-			} catch (JSONException e) {
-				e.printStackTrace();
+			} catch (Exception e) {
+				Helper.getExceptionString(e);
 			}
 
 		}

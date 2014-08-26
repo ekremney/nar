@@ -41,8 +41,8 @@
     <string name="nar_ctrl_unregister">Delete</string>
     <string name="nar_ctrl_btn_on_icon">fa-circle-o-notch</string>
     <string name="nar_ctrl_btn_off_icon">fa-power-off</string>
-    <string name="action_user_register">Register</string>
-    <string name="title_activity_authenticator">Authenticator Activity</string>
+    <string name="user_auth_btn_register">Register/Add New</string>
+    <string name="title_activity_authenticator">Register/Add User</string>
 	<string name="nar_ctrl_start_smartcfg">Setup Device</string>
 	<string name="action_logout">Logout</string>
 	<string name="narlab_label">Narlab</string>

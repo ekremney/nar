@@ -3,6 +3,7 @@ package net.narlab.projectnar;
 import android.accounts.Account;
 import android.accounts.AccountAuthenticatorActivity;
 import android.accounts.AccountManager;
+import android.app.Notification;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.Log;
@@ -13,6 +14,8 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import com.beardedhen.androidbootstrap.BootstrapButton;
 
 import net.narlab.projectnar.general.AccountGeneral;
 import net.narlab.projectnar.utils.DataHolder;
@@ -42,7 +45,7 @@ public class AuthenticatorActivity  extends AccountAuthenticatorActivity {
 
 	private AccountManager mAccountManager;
 	private  String mAuthTokenType;
-	private Button registerBtn;
+	private BootstrapButton registerBtn;
 
 	@Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -52,6 +55,16 @@ public class AuthenticatorActivity  extends AccountAuthenticatorActivity {
 		mAccountManager = AccountManager.get(getBaseContext());
 		String accountName = getIntent().getStringExtra(ARG_ACCOUNT_NAME);
 
+		Helper.setContext(getApplicationContext());
+
+		// register only one account
+		Account[] accList = mAccountManager.getAccountsByType(AccountGeneral.ACCOUNT_TYPE);
+		if (accList.length == 1) {
+			Helper.toastIt("A User is already registered: "+accList[0].name);
+			finish();
+		}
+
+		// if there is no account register it
 		mAuthTokenType = getIntent().getStringExtra(ARG_AUTH_TYPE);
 		if (mAuthTokenType == null) {
 			mAuthTokenType = AccountGeneral.AUTHTOKEN_TYPE_FULL_ACCESS;
@@ -61,7 +74,7 @@ public class AuthenticatorActivity  extends AccountAuthenticatorActivity {
 			((TextView)findViewById(R.id.auth_username)).setText(accountName);
 		}
 
-		registerBtn = (Button) findViewById(R.id.auth_btn_reg);
+		registerBtn = (BootstrapButton) findViewById(R.id.auth_btn_reg);
 		registerBtn.setOnClickListener(new View.OnClickListener() {
 			@Override
 			public void onClick(View v) {
@@ -72,18 +85,6 @@ public class AuthenticatorActivity  extends AccountAuthenticatorActivity {
 			}
 		});
 
-		Helper.setContext(getApplicationContext());
-/*		findViewById(R.id.auth_btn_reg).setOnClickListener(new View.OnClickListener() {
-			@Override
-			public void onClick(View v) {
-				// Since there can only be one AuthenticatorActivity, we call the sign up activity, get his results,
-				// and return them in setAccountAuthenticatorResult(). See finishLogin().
-				Intent signup = new Intent(getBaseContext(), SignUpActivity.class);
-				signup.putExtras(getIntent().getExtras());
-				startActivityForResult(signup, REQ_SIGNUP);
-			}
-		});
-*/
 	}
 
 
@@ -156,7 +157,7 @@ public class AuthenticatorActivity  extends AccountAuthenticatorActivity {
 			registerBtn.setEnabled(true);
 
 			JSONObject json;
-			Log.i(TAG + "_res", result);
+//			Log.i(TAG + "_res", result);
 //			Helper.toastIt(result);
 			try {
 				json = new JSONObject(result);
@@ -174,6 +175,7 @@ public class AuthenticatorActivity  extends AccountAuthenticatorActivity {
 					mAccountManager.setAuthToken(account,
 							mAuthTokenType,
 							json.getString("auth_token"));
+//					mAccountManager.setPassword(account, pass);
 
 					finish();
 

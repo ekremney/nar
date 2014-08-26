@@ -47,7 +47,7 @@ public class NarListAdapter extends ArrayAdapter<Nar> {
 		return rowView;
 	}
 
-	public void add(String narId, long lastalive) {
+	public void add(String narId, String lastalive) {
 		this.add(new Nar(narId, lastalive));
 	}
 	@Override

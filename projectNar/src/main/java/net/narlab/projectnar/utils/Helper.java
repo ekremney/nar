@@ -1,5 +1,6 @@
 package net.narlab.projectnar.utils;
 
+import android.app.Activity;
 import android.content.Context;
 import android.widget.Toast;
 
@@ -25,6 +26,7 @@ public class Helper {
 	public static void toastIt(int strId, int len) {
 		toastIt(C.getString(strId), len);
 	}
+	public static String getTag(Object a) {return a.getClass().getSimpleName();}
 
 	public static String getExceptionString(Exception e) {
 		return  ".\nType: "+e.getClass().getSimpleName()

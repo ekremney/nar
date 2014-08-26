@@ -2,23 +2,14 @@ package net.narlab.projectnar;
 
 import android.accounts.Account;
 import android.accounts.AccountManager;
-import android.accounts.AccountManagerCallback;
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.annotation.TargetApi;
 import android.app.Activity;
-import android.app.LoaderManager.LoaderCallbacks;
-import android.content.ContentResolver;
-import android.content.CursorLoader;
 import android.content.Intent;
-import android.content.Loader;
-import android.database.Cursor;
-import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Build;
-import android.os.Build.VERSION;
 import android.os.Bundle;
-import android.provider.ContactsContract;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.KeyEvent;
@@ -52,14 +43,13 @@ import org.json.JSONTokener;
 import java.io.IOException;
 import java.net.HttpURLConnection;
 import java.util.ArrayList;
-import java.util.List;
 
 /**
  * A register screen that offers register via email/password.
 
  */
 @TargetApi(Build.VERSION_CODES.HONEYCOMB)
-public class LoginActivity extends Activity implements LoaderCallbacks<Cursor>{
+public class LoginActivity extends Activity {
 
 	/**
 	 * Keep track of the register task to ensure we can cancel it if requested.
@@ -72,6 +62,7 @@ public class LoginActivity extends Activity implements LoaderCallbacks<Cursor>{
 	private EditText mPasswordView;
 	private View mProgressView;
 	private View mLoginFormView;
+	BootstrapButton loginBtn;
 
 	private int rootViewHeight;
 
@@ -88,18 +79,23 @@ public class LoginActivity extends Activity implements LoaderCallbacks<Cursor>{
 		}
 		Log.v(TAG, ".\n=====");
 
-		Account accList[] = accMng.getAccountsByType(AccountGeneral.ACCOUNT_TYPE);
-		Account acc;
-		if (accList.length > 0) {
-			acc = accList[0];
-		}
 
 
 		// Set up the register form.
 		mEmailView = (EditText) findViewById(R.id.email);
-		populateAutoComplete();
-
 		mPasswordView = (EditText) findViewById(R.id.password);
+		loginBtn = (BootstrapButton) findViewById(R.id.nar_user_login_btn);
+
+		Account accList[] = accMng.getAccountsByType(AccountGeneral.ACCOUNT_TYPE);
+		Account acc;
+		if (accList.length == 1) {
+			acc = accList[0];
+			mEmailView.setText(acc.name);
+			mPasswordView.setText(accMng.getPassword(acc));
+			// TODO: add auto login as well
+//			accMng.getAuthToken(acc, AccountGeneral.AUTHTOKEN_TYPE_FULL_ACCESS, null, this, null, null);
+		}
+
 		mPasswordView.setOnEditorActionListener(new TextView.OnEditorActionListener() {
 			@Override
 			public boolean onEditorAction(TextView textView, int id, KeyEvent keyEvent) {
@@ -111,8 +107,7 @@ public class LoginActivity extends Activity implements LoaderCallbacks<Cursor>{
 			}
 		});
 
-		BootstrapButton mEmailSignInButton = (BootstrapButton) findViewById(R.id.nar_user_login_btn);
-		mEmailSignInButton.setOnClickListener(new OnClickListener() {
+		loginBtn.setOnClickListener(new OnClickListener() {
 			@Override
 			public void onClick(View view) {
 				attemptLogin();
@@ -147,16 +142,6 @@ public class LoginActivity extends Activity implements LoaderCallbacks<Cursor>{
 				}
 			}
 		});
-	}
-
-	private void populateAutoComplete() {
-		if (VERSION.SDK_INT >= 14) {
-			// Use ContactsContract.Profile (API 14+)
-			getLoaderManager().initLoader(0, null, this);
-		} else if (VERSION.SDK_INT >= 8) {
-			// Use AccountManager (API 8+)
-			new SetupEmailAutoCompleteTask().execute(null, null);
-		}
 	}
 
 	/**
@@ -293,94 +278,6 @@ public class LoginActivity extends Activity implements LoaderCallbacks<Cursor>{
 		}
 	}
 
-	@Override
-	public Loader<Cursor> onCreateLoader(int i, Bundle bundle) {
-		return new CursorLoader(this,
-				// Retrieve data rows for the device user's 'profile' contact.
-				Uri.withAppendedPath(ContactsContract.Profile.CONTENT_URI,
-						ContactsContract.Contacts.Data.CONTENT_DIRECTORY), ProfileQuery.PROJECTION,
-
-				// Select only email addresses.
-				ContactsContract.Contacts.Data.MIMETYPE +
-						" = ?", new String[]{ContactsContract.CommonDataKinds.Email
-																	 .CONTENT_ITEM_TYPE},
-
-				// Show primary email addresses first. Note that there won't be
-				// a primary email address if the user hasn't specified one.
-				ContactsContract.Contacts.Data.IS_PRIMARY + " DESC");
-	}
-
-	@Override
-	public void onLoadFinished(Loader<Cursor> cursorLoader, Cursor cursor) {
-		List<String> emails = new ArrayList<String>();
-		cursor.moveToFirst();
-		while (!cursor.isAfterLast()) {
-			emails.add(cursor.getString(ProfileQuery.ADDRESS));
-			cursor.moveToNext();
-		}
-
-		addEmailsToAutoComplete(emails);
-	}
-
-	@Override
-	public void onLoaderReset(Loader<Cursor> cursorLoader) {
-
-	}
-
-	private interface ProfileQuery {
-		String[] PROJECTION = {
-				ContactsContract.CommonDataKinds.Email.ADDRESS,
-				ContactsContract.CommonDataKinds.Email.IS_PRIMARY,
-		};
-
-		int ADDRESS = 0;
-//		int IS_PRIMARY = 1;
-	}
-
-	/**
-	 * Use an AsyncTask to fetch the user's email addresses on a background thread, and update
-	 * the email text field with results on the main UI thread.
-	 */
-	class SetupEmailAutoCompleteTask extends AsyncTask<Void, Void, List<String>> {
-
-		@Override
-		protected List<String> doInBackground(Void... voids) {
-			ArrayList<String> emailAddressCollection = new ArrayList<String>();
-
-			// Get all emails from the user's contacts and copy them to a list.
-			ContentResolver cr = getContentResolver();
-			Cursor emailCur = cr.query(ContactsContract.CommonDataKinds.Email.CONTENT_URI, null,
-					null, null, null);
-			while (emailCur.moveToNext()) {
-				String email = emailCur.getString(emailCur.getColumnIndex(ContactsContract
-						.CommonDataKinds.Email.DATA));
-				emailAddressCollection.add(email);
-			}
-			emailCur.close();
-
-			return emailAddressCollection;
-		}
-
-		@Override
-		protected void onPostExecute(List<String> emailAddressCollection) {
-		   addEmailsToAutoComplete(emailAddressCollection);
-		}
-	}
-
-	/** TODO: add bootstrap AutoComplete */
-	private void addEmailsToAutoComplete(List<String> emailAddressCollection) {
-		//Create adapter to tell the AutoCompleteTextView what to show in its dropdown list.
-/*		ArrayAdapter<String> adapter =
-				new ArrayAdapter<String>(LoginActivity.this,
-						android.R.layout.simple_dropdown_item_1line, emailAddressCollection);
-*/
-//		mEmailView.setAdapter(adapter);
-	}
-
-	/**
-	 * Represents an asynchronous register/registration task used to authenticate
-	 * the user.
-	 */
 	public class UserLoginTask extends AsyncTask<Void, Void, String> {
 
 		private final String email;
@@ -424,13 +321,9 @@ public class LoginActivity extends Activity implements LoaderCallbacks<Cursor>{
 			} // separate so we can do custom stuff
 			catch (IOException e) {
 				this.e = e;
-				Log.e(TAG, ".\nIOException\nCause: "+e.getCause()+"\nMessage: "+e.getMessage());
+				Helper.getExceptionString(e);
 				return null;
-			}/* catch (UnsupportedEncodingException e) {
-				Log.e(TAG, ".\nUnsupportedEncodingException\nCause: "+e.getCause()+"\nMessage: "+e.getMessage());
-			} catch (ClientProtocolException e) {
-				Log.e(TAG, ".\nClientProtocolException\nCause: "+e.getCause()+"\nMessage: "+e.getMessage());
-			}*/
+			}
 
 /*			for (String credential : DUMMY_CREDENTIALS) {
 				String[] pieces = credential.split(":");

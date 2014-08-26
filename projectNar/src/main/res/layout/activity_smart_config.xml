@@ -48,7 +48,7 @@
 		android:tag="@string/wifi_pass"
 		android:selectAllOnFocus="true"
 		android:inputType="textPassword"
-		android:text="narlab.net1"
+		android:text="Halim06Sifre13"
 		android:layout_marginLeft="@dimen/act_smart_cfg_mar"
 		android:layout_marginRight="@dimen/act_smart_cfg_mar"
 		android:gravity="center"

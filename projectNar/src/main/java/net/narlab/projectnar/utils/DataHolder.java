@@ -25,7 +25,7 @@ public class DataHolder {
 	private static NarConnManager connMng;
 	private static NarWifiManager wifiManager;
 	private static HttpClient httpClient;
-	private static final String serverUrl = "http://192.168.2.9";
+	private static final String serverUrl = "http://192.168.2.4";
 	private static final ArrayList<Nar> narList = new ArrayList<Nar>();
 
 	public static NarConnManager getConnMng() {
@@ -51,7 +51,7 @@ public class DataHolder {
 		try {
 			for (int i=0; i<json.length(); ++i) {
 				JSONObject jsonOb = json.getJSONObject(i);
-				narList.add(new Nar(jsonOb.getString("nar_id"), 0));
+				narList.add(new Nar(jsonOb.getString("nar_id"), jsonOb.getString("lastalive")));
 			}
 		} catch (JSONException e) {
 			e.printStackTrace();
