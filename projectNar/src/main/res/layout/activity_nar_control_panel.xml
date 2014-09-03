@@ -11,21 +11,39 @@
 	android:orientation="vertical"
 	android:background="@color/white">
 
-	<com.beardedhen.androidbootstrap.BootstrapEditText
-		android:id="@+id/nar_ctrl_nar_title"
+	<LinearLayout
 		android:layout_width="wrap_content"
 		android:layout_height="wrap_content"
-		android:text="@string/new_nar_id_hint"
+		android:orientation="horizontal"
 		android:layout_gravity="center"
-		android:textSize="36sp"
-		android:background="#fff"
-		bootstrapbutton:be_state="success"
-		android:layout_margin="10dp"
-		android:padding="10dp"
-		bootstrapbutton:be_roundedCorners="true"
-		android:editable="false"
-		android:focusable="false"
-		/>
+		android:layout_marginBottom="30dp">
+
+		<com.beardedhen.androidbootstrap.BootstrapEditText
+			android:id="@+id/nar_ctrl_nar_name"
+			android:layout_width="0dp"
+			android:layout_height="wrap_content"
+			android:text="@string/new_nar_name_hint"
+			android:layout_gravity="center"
+			android:textSize="36sp"
+			android:background="#fff"
+			bootstrapbutton:be_state="success"
+			android:padding="6dp"
+			bootstrapbutton:be_roundedCorners="false"
+			android:layout_weight="1"
+			android:maxLines="1"
+			android:singleLine="true"
+			/>
+		<com.beardedhen.androidbootstrap.BootstrapButton
+			android:id="@+id/nar_ctrl_btn_chg_name"
+			android:layout_width="wrap_content"
+			android:layout_height="wrap_content"
+			android:textSize="20sp"
+			android:layout_gravity="center"
+			android:onClick="onButtonClicked"
+			bootstrapbutton:bb_roundedCorners="false"
+			bootstrapbutton:bb_icon_right="fa-edit"
+			/>
+	</LinearLayout>
 
 	<LinearLayout
 		android:layout_width="wrap_content"
@@ -63,22 +81,35 @@
 			android:layout_margin="@dimen/nar_ctrl_button_margin"
 			/>
 	</LinearLayout>
-	<com.beardedhen.androidbootstrap.FontAwesomeText
+
+	<LinearLayout
 		android:layout_width="wrap_content"
 		android:layout_height="wrap_content"
-		bootstrapbutton:fa_icon="fa-refresh"
-		android:layout_gravity="center"/>
-	<com.beardedhen.androidbootstrap.BootstrapEditText
-		android:id="@+id/nar_ctrl_lastalive"
-		android:layout_width="wrap_content"
-		android:layout_height="wrap_content"
-		bootstrapbutton:be_state="warning"
-		bootstrapbutton:be_roundedCorners="true"
-		android:text="Lastalive time"
-		android:layout_gravity="center"
-		android:editable="false"
-		android:focusable="false"
-		/>
+		android:orientation="horizontal"
+		android:layout_gravity="center">
+		<com.beardedhen.androidbootstrap.BootstrapEditText
+			android:id="@+id/nar_ctrl_lastalive"
+			android:layout_width="wrap_content"
+			android:layout_height="wrap_content"
+			bootstrapbutton:be_state="warning"
+			bootstrapbutton:be_roundedCorners="true"
+			android:text="06/Agu/2014"
+			android:focusable="false" />
+		<com.beardedhen.androidbootstrap.BootstrapButton
+			android:layout_width="wrap_content"
+			android:layout_height="wrap_content"
+			bootstrapbutton:bb_size="btn_sm"
+			android:textSize="16sp"
+			android:onClick="onButtonClicked"
+			bootstrapbutton:bb_icon_right="fa-refresh"
+			android:layout_gravity="center"
+			/>
+		<!--com.beardedhen.androidbootstrap.FontAwesomeText
+			android:layout_width="wrap_content"
+			android:layout_height="wrap_content"
+			bootstrapbutton:fa_icon="fa-refresh" /-->
+	</LinearLayout>
+
 	<com.beardedhen.androidbootstrap.BootstrapButton
 		android:id="@+id/nar_ctrl_btn_smartcfg"
 		android:layout_width="wrap_content"
@@ -90,8 +121,8 @@
 		android:onClick="onButtonClicked"
 		bootstrapbutton:bb_roundedCorners="true"
 		bootstrapbutton:bb_icon_right="fa-cog"
-		android:layout_margin="@dimen/nar_ctrl_button_margin"
 		android:layout_marginTop="40dp"
+		android:layout_margin="@dimen/nar_ctrl_button_margin"
 		/>
 
 </LinearLayout>

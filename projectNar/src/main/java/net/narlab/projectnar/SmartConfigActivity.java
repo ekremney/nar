@@ -6,7 +6,6 @@ import android.support.v7.app.ActionBarActivity;
 import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.Toast;
 
 import com.beardedhen.androidbootstrap.BootstrapButton;
 import com.beardedhen.androidbootstrap.BootstrapEditText;
@@ -28,7 +27,7 @@ public class SmartConfigActivity extends ActionBarActivity implements SmartConfi
 	private NarWifiManager nWM;
 
 	private BootstrapButton setupBtn;
-	private BootstrapEditText passEditText, gatewayEditText;
+	private BootstrapEditText passEditText, aesKeyEditText;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -36,17 +35,17 @@ public class SmartConfigActivity extends ActionBarActivity implements SmartConfi
 
 		// Get the message from the intent
 		Intent intent = getIntent();
-		ssid = intent.getStringExtra(this.EXT_WIFI_SSID);
-		narId = intent.getStringExtra(this.EXT_NAR_ID);
-		gateway = intent.getStringExtra(this.EXT_GATEWAY);
+		ssid = intent.getStringExtra(SmartConfigActivity.EXT_WIFI_SSID);
+		narId = intent.getStringExtra(SmartConfigActivity.EXT_NAR_ID);
+		gateway = intent.getStringExtra(SmartConfigActivity.EXT_GATEWAY);
 
 		setContentView(R.layout.activity_smart_config);
 
 		((BootstrapEditText)findViewById(R.id.wifi_nar_id)).setText(narId);
 		((BootstrapEditText)findViewById(R.id.wifi_ssid)).setText(ssid);
 
-		gatewayEditText = (BootstrapEditText)findViewById(R.id.wifi_gateway);
-		gatewayEditText.setText(gateway);
+		aesKeyEditText = (BootstrapEditText)findViewById(R.id.wifi_sc_key);
+//		aesKeyEditText.setText(gateway);
 
 		setupBtn = (BootstrapButton) findViewById(R.id.btn_setup_device);
 		passEditText = (BootstrapEditText) findViewById(R.id.wifi_pass);
@@ -75,7 +74,7 @@ public class SmartConfigActivity extends ActionBarActivity implements SmartConfi
 		if (!nWM.isWifiConnected()) {
 			Helper.toastIt("Wifi is not connected");
 			return;
-		} else if (!nWM.isInternetConnected()) {
+		} else if (!nWM.isOnline()) {
 			Helper.toastIt("Not connected to internet");
 			return;
 		}
@@ -83,9 +82,9 @@ public class SmartConfigActivity extends ActionBarActivity implements SmartConfi
 		setupBtn.startRotateRight(true, FontAwesomeText.AnimationSpeed.SLOW);
 
 		String pass = passEditText.getText().toString();
-		gateway = gatewayEditText.getText().toString();
+		String aesKey = aesKeyEditText.getText().toString();
 
-		nSCM.startSmartConfig(SmartConfigActivity.this, ssid, pass, gateway, narId);
+		nSCM.startSmartConfig(SmartConfigActivity.this, ssid, pass, gateway, narId, aesKey);
 	}
 
 	@Override

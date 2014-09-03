@@ -3,14 +3,12 @@ package net.narlab.projectnar;
 import android.accounts.Account;
 import android.accounts.AccountAuthenticatorActivity;
 import android.accounts.AccountManager;
-import android.app.Notification;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -29,7 +27,6 @@ import org.apache.http.client.entity.UrlEncodedFormEntity;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.message.BasicNameValuePair;
 import org.apache.http.util.EntityUtils;
-import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.net.HttpURLConnection;
@@ -42,6 +39,7 @@ public class AuthenticatorActivity  extends AccountAuthenticatorActivity {
 	public final static String ARG_AUTH_TYPE = "AUTH_TYPE";
 	public final static String ARG_ACCOUNT_NAME = "ACCOUNT_NAME";
 	public final static String ARG_IS_ADDING_NEW_ACCOUNT = "IS_ADDING_ACCOUNT";
+	public final static String ARG_IS_FROM_LOGIN_ACT = "IS_FROM_LOGIN_ACT";
 
 	private AccountManager mAccountManager;
 	private  String mAuthTokenType;
@@ -53,15 +51,15 @@ public class AuthenticatorActivity  extends AccountAuthenticatorActivity {
         setContentView(R.layout.activity_authenticator);
 
 		mAccountManager = AccountManager.get(getBaseContext());
-		String accountName = getIntent().getStringExtra(ARG_ACCOUNT_NAME);
 
+		// set helper classes' context
 		Helper.setContext(getApplicationContext());
 
 		// register only one account
 		Account[] accList = mAccountManager.getAccountsByType(AccountGeneral.ACCOUNT_TYPE);
 		if (accList.length == 1) {
 			Helper.toastIt("A User is already registered: "+accList[0].name);
-			finish();
+			finishOK();
 		}
 
 		// if there is no account register it
@@ -70,6 +68,7 @@ public class AuthenticatorActivity  extends AccountAuthenticatorActivity {
 			mAuthTokenType = AccountGeneral.AUTHTOKEN_TYPE_FULL_ACCESS;
 		}
 
+		String accountName = getIntent().getStringExtra(ARG_ACCOUNT_NAME);
 		if (accountName != null) {
 			((TextView)findViewById(R.id.auth_username)).setText(accountName);
 		}
@@ -102,14 +101,28 @@ public class AuthenticatorActivity  extends AccountAuthenticatorActivity {
         // as you specify a parent activity in AndroidManifest.xml.
         int id = item.getItemId();
         if (id == R.id.action_settings) {
+			Log.v(Helper.getTag(this), "Clicked: "+id);
             return true;
         }
         return super.onOptionsItemSelected(item);
     }
 
+	@Override
+	public void onBackPressed() {
+		super.onBackPressed();
+		setResult(RESULT_CANCELED);
+		overridePendingTransition(R.anim.open_main, R.anim.close_next);
+	}
+
+	public void finishOK() {
+		setResult(RESULT_OK);
+		finish();
+		overridePendingTransition(R.anim.open_main, R.anim.close_next);
+	}
+
 	public class AsyncRegisterUser extends AsyncTask<Void, Void, String> {
 		private ArrayList<NameValuePair> mData = new ArrayList<NameValuePair>();
-		private String email, pass, TAG= this.getClass().getSimpleName();
+		private String email, pass;
 
 		/**
 		 * constructor
@@ -144,7 +157,9 @@ public class AuthenticatorActivity  extends AccountAuthenticatorActivity {
 				}
 			}
 			catch (Exception e) {
-				e.printStackTrace();
+				Log.e(this.getClass().getSimpleName(), Helper.getExceptionString(e));
+				return null;
+//				e.printStackTrace();
 			}
 			return str;
 		}
@@ -156,13 +171,18 @@ public class AuthenticatorActivity  extends AccountAuthenticatorActivity {
 		protected void onPostExecute(String result) {
 			registerBtn.setEnabled(true);
 
+			if (result == null) {
+				Helper.toastIt("Couldn't authenticate user try again later");
+				return;
+			}
+
 			JSONObject json;
-//			Log.i(TAG + "_res", result);
+//			Log.i(Helper.getTag(this) + "_res", result);
 //			Helper.toastIt(result);
 			try {
 				json = new JSONObject(result);
 				String err = json.optString("error", null);
-				Log.e(TAG+"_err", ""+err);
+//				Log.e(Helper.getTag(this)+"_err", ""+err);
 				if (err == null) { // it was a success
 					Helper.toastIt(json.optString("message")+": "+json.optString("email"));
 
@@ -175,15 +195,15 @@ public class AuthenticatorActivity  extends AccountAuthenticatorActivity {
 					mAccountManager.setAuthToken(account,
 							mAuthTokenType,
 							json.getString("auth_token"));
-//					mAccountManager.setPassword(account, pass);
 
-					finish();
+					finishOK();
 
 				} else {
 					Helper.toastIt(err, Toast.LENGTH_LONG);
 				}
-			} catch (JSONException e) {
-				e.printStackTrace();
+			} catch (Exception e) {
+				Log.e(this.getClass().getSimpleName(), Helper.getExceptionString(e));
+//				e.printStackTrace();
 			}
 
 		}

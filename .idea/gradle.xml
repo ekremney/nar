@@ -10,7 +10,6 @@
           <set>
             <option value="$PROJECT_DIR$" />
             <option value="$PROJECT_DIR$/AndroidBootstrap" />
-            <option value="$PROJECT_DIR$/androidmqttpushmaster" />
             <option value="$PROJECT_DIR$/projectNar" />
           </set>
         </option>

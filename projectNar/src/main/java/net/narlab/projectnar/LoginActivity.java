@@ -7,23 +7,31 @@ import android.animation.AnimatorListenerAdapter;
 import android.annotation.TargetApi;
 import android.app.Activity;
 import android.content.Intent;
+import android.content.SharedPreferences;
+import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
+import android.provider.Settings;
 import android.text.TextUtils;
 import android.util.Log;
+import android.view.Gravity;
 import android.view.KeyEvent;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewTreeObserver;
 import android.view.inputmethod.EditorInfo;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.beardedhen.androidbootstrap.BootstrapButton;
+import com.beardedhen.androidbootstrap.FontAwesomeText;
 
 import net.narlab.projectnar.general.AccountGeneral;
+import net.narlab.projectnar.services.NarMQTTService;
 import net.narlab.projectnar.utils.DataHolder;
 import net.narlab.projectnar.utils.Helper;
 import net.narlab.projectnar.utils.NarWifiManager;
@@ -51,20 +59,25 @@ import java.util.ArrayList;
 @TargetApi(Build.VERSION_CODES.HONEYCOMB)
 public class LoginActivity extends Activity {
 
+	public static final String ARG_PREVENT_AUTO_LOGIN = "LoginAct_ARG_PREVENT_AUTO_LOGIN";
 	/**
 	 * Keep track of the register task to ensure we can cancel it if requested.
 	 */
 	private UserLoginTask mAuthTask = null;
-	private final String TAG = "LoginActivity";
+	private static final String TAG = "LoginActivity";
 
 	// UI references.
 	private EditText mEmailView;
 	private EditText mPasswordView;
-	private View mProgressView;
+	private EditText mServerHostnameView;
+
+	private FontAwesomeText mProgressView;
+
 	private View mLoginFormView;
-	BootstrapButton loginBtn;
+	private View rootView;
 
 	private int rootViewHeight;
+	private AccountManager accMng;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -72,28 +85,67 @@ public class LoginActivity extends Activity {
 		setContentView(R.layout.activity_login);
 		setupActionBar();
 
+		// set this for toasts etc
+		Helper.setContext(getApplicationContext());
+
 		Log.v(TAG, "Account List\n=====");
-		AccountManager accMng = AccountManager.get(getApplicationContext());
+		accMng = AccountManager.get(getApplicationContext());
 		for(Account acc : accMng.getAccountsByType(AccountGeneral.ACCOUNT_TYPE)) {
 			Log.v(TAG, acc.toString());
 		}
 		Log.v(TAG, ".\n=====");
 
+		String mDeviceID = Settings.Secure.getString(this.getContentResolver(), Settings.Secure.ANDROID_ID);
 
+		Log.i(TAG, "Device ID: "+mDeviceID);
+		Intent mServiceIntent = new Intent(this, NarMQTTService.class);
+		mServiceIntent.setData(Uri.parse(mDeviceID));
 
+		// Starts the IntentService
+		startService(mServiceIntent);
+
+/*
+		SharedPreferences.Editor editor = getSharedPreferences(NarMQTTService.TAG, MODE_PRIVATE).edit();
+		editor.putString(NarMQTTService.PREF_DEVICE_ID, mDeviceID);
+		editor.commit();
+
+		NarMQTTService.actionStart(getApplicationContext());
+*/
 		// Set up the register form.
 		mEmailView = (EditText) findViewById(R.id.email);
 		mPasswordView = (EditText) findViewById(R.id.password);
-		loginBtn = (BootstrapButton) findViewById(R.id.nar_user_login_btn);
+		mServerHostnameView = (EditText) findViewById(R.id.server_hostname);
+		BootstrapButton loginBtn = (BootstrapButton) findViewById(R.id.nar_user_btn_login);
+		BootstrapButton registerBtn = (BootstrapButton) findViewById(R.id.nar_user_btn_register);
 
-		Account accList[] = accMng.getAccountsByType(AccountGeneral.ACCOUNT_TYPE);
-		Account acc;
-		if (accList.length == 1) {
-			acc = accList[0];
-			mEmailView.setText(acc.name);
-			mPasswordView.setText(accMng.getPassword(acc));
-			// TODO: add auto login as well
-//			accMng.getAuthToken(acc, AccountGeneral.AUTHTOKEN_TYPE_FULL_ACCESS, null, this, null, null);
+		mLoginFormView = findViewById(R.id.login_form);
+		mProgressView = (FontAwesomeText)findViewById(R.id.login_progress);
+
+		rootView = findViewById(R.id.login_root_view);
+
+		SharedPreferences mPreferences = Helper.getSharedPreferences();
+		mPreferences.registerOnSharedPreferenceChangeListener(
+				new SharedPreferences.OnSharedPreferenceChangeListener() {
+					@Override
+					public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String s) {
+						if (s.equals(DataHolder.PREF_NAME_SERVER_URL)) {
+							DataHolder.setServerHostname(sharedPreferences.getString(s, ""));
+						}
+					}
+				}
+		);
+
+		String serverHostname = Helper.getSharedPreferences().getString(DataHolder.PREF_NAME_SERVER_URL, "");
+		if (serverHostname.length() == 0) {
+			serverHostname = DataHolder.getServerHostname();
+			Helper.editSharedPreferences(DataHolder.PREF_NAME_SERVER_URL, serverHostname);
+		}
+		DataHolder.setServerHostname(serverHostname);
+		mServerHostnameView.setText(serverHostname);
+
+		// try it last so everything will be set
+		if (getIntent() != null && !getIntent().getBooleanExtra(ARG_PREVENT_AUTO_LOGIN, false)) {
+			fillUserCredentials();
 		}
 
 		mPasswordView.setOnEditorActionListener(new TextView.OnEditorActionListener() {
@@ -113,15 +165,25 @@ public class LoginActivity extends Activity {
 				attemptLogin();
 			}
 		});
+		registerBtn.setOnClickListener(new OnClickListener() {
+			@Override
+			public void onClick(View view) {
+				Intent intent = new Intent(LoginActivity.this, AuthenticatorActivity.class);
+				intent.putExtra(AuthenticatorActivity.ARG_IS_FROM_LOGIN_ACT, true);
 
-		mLoginFormView = findViewById(R.id.login_form);
-		mProgressView = findViewById(R.id.login_progress);
+				String accountName = mEmailView.getText().toString();
+				if (!isEmailValid(accountName)) {
+					accountName = null;
+				}
 
-		// set this for toasts
-		Helper.setContext(getApplicationContext());
+				intent.putExtra(AuthenticatorActivity.ARG_ACCOUNT_NAME, accountName);
+				startActivityForResult(intent, DataHolder.AUTH_USER_REQ_CODE);
+				overridePendingTransition (R.anim.open_next, R.anim.close_main);
+			}
+		});
+
 
 		// remove title if soft keyboard open
-		final View rootView = findViewById(R.id.login_root_view);
 		rootView.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
 			@Override
 			public void onGlobalLayout() {
@@ -142,8 +204,15 @@ public class LoginActivity extends Activity {
 				}
 			}
 		});
+
 	}
 
+	public void onChangeUrlClicked(View v) {
+		String serverHostname = mServerHostnameView.getText().toString();
+		Helper.editSharedPreferences(DataHolder.PREF_NAME_SERVER_URL, serverHostname);
+		DataHolder.setServerHostname(serverHostname);
+		Helper.toastIt("New server Url:\n"+serverHostname);
+	}
 	/**
 	 * Set up the {@link android.app.ActionBar}, if the API is available.
 	 */
@@ -159,21 +228,51 @@ public class LoginActivity extends Activity {
 		}
 	}
 
-	/**
-	 * Attempts to sign in or register the account specified by the register form.
-	 * If there are form errors (invalid email, missing fields, etc.), the
-	 * errors are presented and no actual register attempt is made.
-	 */
-	static boolean firstAttempt = true;
+	public void onActivityResult(int requestCode, int resultCode, Intent intent) {
+		if (requestCode == DataHolder.AUTH_USER_REQ_CODE) {
+			if (resultCode == RESULT_OK) {
+				fillUserCredentials();
+			} else {
+				Helper.toastIt("Couldn't register user");
+			}
+		}
+	}
+
+	private void fillUserCredentials() {
+		Account accList[] = accMng.getAccountsByType(AccountGeneral.ACCOUNT_TYPE);
+		final Account acc;
+		if (accList.length == 1) {
+			acc = accList[0];
+			// TODO: change auto login to not send password
+			mEmailView.setText(acc.name);
+			mPasswordView.setText(accMng.getPassword(acc));
+/*			NotificationCompat.Builder mBuilder =
+					new NotificationCompat.Builder(this)
+							.setSmallIcon(R.drawable.nar_notif_icon)
+							.setContentTitle("Narlab")
+							.setContentText("User found: "+acc.name);
+			// Sets an ID for the notification
+			int mNotificationId = 333;
+			// Gets an instance of the NotificationManager service
+			NotificationManager mNotifyMgr =
+					(NotificationManager) getSystemService(NOTIFICATION_SERVICE);
+			// Builds the notification and issues it.
+			mNotifyMgr.notify(mNotificationId, mBuilder.build());
+			//			accMng.getAuthToken(acc, AccountGeneral.AUTHTOKEN_TYPE_FULL_ACCESS, null, this, null, null);*/
+			attemptLogin();
+		}
+	}
+
+		/**
+		 * Attempts to sign in or register the account specified by the register form.
+		 * If there are form errors (invalid email, missing fields, etc.), the
+		 * errors are presented and no actual register attempt is made.
+		 */
 	public void attemptLogin() {
 		NarWifiManager wifiManager;
-		if (firstAttempt) {
-			wifiManager = DataHolder.getNewWifiManager(getApplicationContext());
-		} else {
-			wifiManager = DataHolder.getWifiManager();
-		}
+		wifiManager = DataHolder.getWifiManager();
 
-		if (!wifiManager.isInternetConnected()) {
+		if (!wifiManager.isOnline()) {
 			Helper.toastIt(R.string.internet_disconnected, Toast.LENGTH_LONG);
 		}
 
@@ -253,7 +352,15 @@ public class LoginActivity extends Activity {
 		if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB_MR2) {
 			int shortAnimTime = getResources().getInteger(android.R.integer.config_shortAnimTime);
 
+			if (show) {
+				InputMethodManager imm = (InputMethodManager) getSystemService(
+						INPUT_METHOD_SERVICE);
+				imm.hideSoftInputFromWindow(mPasswordView.getWindowToken(), 0);
+			}
+
 			mLoginFormView.setVisibility(show ? View.GONE : View.VISIBLE);
+			((LinearLayout)rootView).setGravity(show ? Gravity.CENTER : Gravity.TOP);
+
 			mLoginFormView.animate().setDuration(shortAnimTime).alpha(
 					show ? 0 : 1).setListener(new AnimatorListenerAdapter() {
 				@Override
@@ -263,6 +370,7 @@ public class LoginActivity extends Activity {
 			});
 
 			mProgressView.setVisibility(show ? View.VISIBLE : View.GONE);
+			mProgressView.startRotate(true, FontAwesomeText.AnimationSpeed.SLOW);
 			mProgressView.animate().setDuration(shortAnimTime).alpha(
 					show ? 1 : 0).setListener(new AnimatorListenerAdapter() {
 				@Override
@@ -325,14 +433,6 @@ public class LoginActivity extends Activity {
 				return null;
 			}
 
-/*			for (String credential : DUMMY_CREDENTIALS) {
-				String[] pieces = credential.split(":");
-				if (pieces[0].equals(email)) {
-					// Account exists, return true if the password matches.
-					return pieces[1].equals(password);
-				}
-			}*/
-
 			return null;
 		}
 
@@ -350,26 +450,26 @@ public class LoginActivity extends Activity {
 				} else if (json instanceof JSONObject) {
 					toastMsg = ((JSONObject)json).optString("error"
 							,"no error message sent");
-					Log.e(TAG, toastMsg);
+//					Log.e(TAG, toastMsg);
 					Helper.toastIt(toastMsg);
 				} else {
 					// there was an error with server
-					Log.e(TAG, "Unknown error: "+json);
+//					Log.e(TAG, "Unknown error: "+json);
 					Helper.toastIt("There was a server error try again later");
 				}
 			} catch (Exception e) {
-				Log.e(TAG, Helper.getExceptionString(e));
+				Log.e(Helper.getTag(this), Helper.getExceptionString(e));
 //				e.printStackTrace();
 			}
 
 			mAuthTask = null;
-			showProgress(false);
 
 			if (success) {
 				// start application and kill login activity
 				startActivity(new Intent(LoginActivity.this, HomeActivity.class));
 				finish();
 			} else {
+				showProgress(false);
 				if (toastMsg != null) {
 					Helper.toastIt(toastMsg);
 				} else if (this.e == null) {

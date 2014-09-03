@@ -87,7 +87,7 @@
 						android:layout_height="wrap_content"
 						android:layout_margin="5dp"
 						android:hint="@string/new_nar_pass_hint"
-						android:text="ccc"
+						android:text="cccccccccccccccc"
 						android:layout_gravity="center"
 						android:textSize="16sp"
 						android:maxLines="1"

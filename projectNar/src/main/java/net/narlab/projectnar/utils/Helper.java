@@ -1,18 +1,22 @@
 package net.narlab.projectnar.utils;
 
-import android.app.Activity;
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.widget.Toast;
 
 /**
  * @author fma
  * @date 13.08.2014.
+ * these are simply short hand methods
  */
 public class Helper {
 	private static Context C;
 
 	public static void setContext(Context C) {
-		Helper.C = C;
+		if (Helper.C == null) { // don't set unless it is null
+			Helper.C = C;
+		}
+		DataHolder.setContext(C);
 	}
 	public static void toastIt(String msg) {
 		toastIt(msg, Toast.LENGTH_SHORT);
@@ -26,11 +30,21 @@ public class Helper {
 	public static void toastIt(int strId, int len) {
 		toastIt(C.getString(strId), len);
 	}
-	public static String getTag(Object a) {return a.getClass().getSimpleName();}
+	public static String getTag(Object o) {return o.getClass().getSimpleName();}
 
 	public static String getExceptionString(Exception e) {
 		return  ".\nType: "+e.getClass().getSimpleName()
 				+"\nCause: "+e.getCause()
 				+"\nMessage: "+e.getMessage();
+	}
+
+	public static SharedPreferences getSharedPreferences() {
+		return C.getSharedPreferences(DataHolder.PREF_FILE, Context.MODE_PRIVATE);
+	}
+
+	public static void editSharedPreferences(String name, String val) {
+		SharedPreferences.Editor prefEditor = C.getSharedPreferences(DataHolder.PREF_FILE, Context.MODE_PRIVATE).edit();
+		prefEditor.putString(name, val);
+		prefEditor.apply();
 	}
 }

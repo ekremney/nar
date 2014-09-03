@@ -32,23 +32,23 @@ public class NarListAdapter extends ArrayAdapter<Nar> {
 	@Override
 	public View getView(int position, View convertView, ViewGroup parent) {
 
-		// 1. Create inflater
+		// Create inflater
 		LayoutInflater inflater = (LayoutInflater) context
 				.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
 
-		// 2. Get rowView from inflater
+		// Get rowView from inflater
 		View rowView = inflater.inflate(R.layout.nar_list_item, parent, false);
 
 		TextView titleView = (TextView) rowView.findViewById(R.id.nar_item_id);
 
-		titleView.setText(narList.get(position).getId());
+		titleView.setText(narList.get(position).getName());
 
-		// 5. return rowView
+		// return rowView
 		return rowView;
 	}
 
-	public void add(String narId, String lastalive) {
-		this.add(new Nar(narId, lastalive));
+	public void add(String narId, String name, String lastalive) {
+		this.add(new Nar(narId, name, lastalive));
 	}
 	@Override
 	public void add(Nar nar) {

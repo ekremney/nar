@@ -17,7 +17,7 @@ public class NarWifiManager {
 			return String.format(Locale.US, "%d.%d.%d.%d", (ip & 0xff), (ip >> 8 & 0xff), (ip >> 16 & 0xff), (ip >> 24 & 0xff));
 		}
 
-		public static byte[] IntToByteArray(int ip) {
+/*		public static byte[] IntToByteArray(int ip) {
 			byte[] r;
 			r = new byte[]{(byte) ip, (byte) (ip >> 8), (byte) (ip >> 16), (byte) (ip >> 24)};
 			return r;
@@ -30,28 +30,28 @@ public class NarWifiManager {
 			}
 			return 0;
 		}
+*/
 	}
 
-//	private Context C;
 	private WifiManager wManager;
 	private ConnectivityManager wConnManager;
 	private WifiInfo wInfo;
 
 	public NarWifiManager(Context C) {
-//		this.C = C;
+
 		this.wManager = (WifiManager) C.getSystemService(Context.WIFI_SERVICE);
 		this.wConnManager = (ConnectivityManager) C.getSystemService(Context.CONNECTIVITY_SERVICE);
 		this.wInfo = wManager.getConnectionInfo();
 
 		Log.v("NarWM", "Init test================");
-		Log.v("NarWM", "" + wInfo.toString());
-		Log.v("NarWM", "" + wInfo.getBSSID());
-		Log.v("NarWM", "" + wInfo.getSSID());
+		Log.v("NarWM", "wInfo: " + wInfo.toString());
+		Log.v("NarWM", "BSSID: " + wInfo.getBSSID());
+		Log.v("NarWM", "SSID: " + wInfo.getSSID());
 
 		Log.v("NarWM", "Connected: " + isWifiConnected());
 
-		Log.v("NarWM_dns1", IPParser.IntToString(wManager.getDhcpInfo().dns1));
-		Log.v("NarWM_dns2", IPParser.IntToString(wManager.getDhcpInfo().dns2));
+		Log.v("NarWM", "dns1: " + IPParser.IntToString(wManager.getDhcpInfo().dns1));
+		Log.v("NarWM", "dns1: " + IPParser.IntToString(wManager.getDhcpInfo().dns2));
 
 		Log.v("NarWM", "Init ok================");
 	}
@@ -67,12 +67,10 @@ public class NarWifiManager {
         return wifiConnInfo.isConnected();
 	}
 
-	public boolean isInternetConnected() {
-		try {
-			return wConnManager.getActiveNetworkInfo().isConnected();
-		} catch (NullPointerException e) {
-			return false;
-		}
+	public boolean isOnline() {
+		return	wConnManager.getActiveNetworkInfo() != null &&
+				wConnManager.getActiveNetworkInfo().isAvailable() &&
+				wConnManager.getActiveNetworkInfo().isConnected();
 	}
 
 	// Maybe check connection before all?
@@ -81,16 +79,16 @@ public class NarWifiManager {
 		return wInfo.getSSID();
 	}
 
-	// get IP as 32 bit int
+/*	// get IP as 32 bit int
 	public int getIP() {
 		return wInfo.getIpAddress();
 	}
-
+*/
 	// get IP as in xxx.xxx.xxx.xxx format string
-	public String getIPString() {
+/*	public String getIPString() {
 		return IPParser.IntToString(getIP());
 	}
-
+*/
 	// get gateway as 32 bit int
 	public int getGateway() {
 		return wManager.getDhcpInfo().gateway;
@@ -100,7 +98,7 @@ public class NarWifiManager {
 	public String getGatewayString() {
 		return IPParser.IntToString(getGateway());
 	}
-
+/*
 	// get netmask as 32 bit int
 	public int getNetmask() {
 		return wManager.getDhcpInfo().netmask;
@@ -130,5 +128,5 @@ public class NarWifiManager {
 	public String getDNS2String() {
 		return IPParser.IntToString(getDNS2());
 	}
-
+*/
 }

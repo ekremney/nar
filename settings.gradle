@@ -1,3 +1,2 @@
 include ':AndroidBootstrap'
 include ':projectNar'
-include ':androidmqttpushmaster'

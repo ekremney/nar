@@ -47,45 +47,23 @@
 		android:hint="@string/wifi_pass"
 		android:tag="@string/wifi_pass"
 		android:selectAllOnFocus="true"
-		android:inputType="textPassword"
-		android:text="Halim06Sifre13"
+		android:inputType=""
+		android:text="narlab.net1"
 		android:layout_marginLeft="@dimen/act_smart_cfg_mar"
 		android:layout_marginRight="@dimen/act_smart_cfg_mar"
 		android:gravity="center"
 		/>
+		<!-- change input type to textPassword -->
 	<com.beardedhen.androidbootstrap.BootstrapEditText
-		android:id="@+id/wifi_gateway"
+		android:id="@+id/wifi_sc_key"
 		android:layout_width="fill_parent"
 		android:layout_height="wrap_content"
+		android:text="cccccccccccccccc"
 		android:selectAllOnFocus="true"
 		android:layout_marginLeft="@dimen/act_smart_cfg_mar"
 		android:layout_marginRight="@dimen/act_smart_cfg_mar"
 		android:gravity="center"
 		/>
-	<!--
-		bootstrapbutton:be_state="success"
-		bootstrapbutton:bb_roundedCorners="true"
-	-->
-	<!--TextView
-		android:id="@+id/wifi_netmask"
-		android:layout_width="fill_parent"
-		android:layout_height="wrap_content" />
-	<TextView
-		android:id="@+id/wifi_gateway"
-		android:layout_width="fill_parent"
-		android:layout_height="wrap_content" />
-	<TextView
-		android:id="@+id/wifi_ip"
-		android:layout_width="fill_parent"
-		android:layout_height="wrap_content" />
-	<TextView
-		android:id="@+id/wifi_dns1"
-		android:layout_width="fill_parent"
-		android:layout_height="wrap_content" />
-	<TextView
-		android:id="@+id/wifi_dns2"
-		android:layout_width="fill_parent"
-		android:layout_height="wrap_content" /-->
 	<!-- basic button -->
 	<com.beardedhen.androidbootstrap.BootstrapButton
 		android:id="@+id/btn_setup_device"

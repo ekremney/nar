@@ -2,17 +2,15 @@ package net.narlab.projectnar.general;
 
 import net.narlab.projectnar.utils.Helper;
 
-import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
-import java.util.TimeZone;
 
 /**
  * @author Fma
  * @date 07.08.2014
  */
 public class Nar {
-	private String id;
+	private String id, name;
 	private Date lastalive;
 	// holds the current state of nar device (could be changed in future)
 	private boolean state;
@@ -22,8 +20,9 @@ public class Nar {
 	 * @param id of nar
 	 * @param lastalive time of nar
 	 */
-	public Nar(String id, String lastalive) {
+	public Nar(String id, String name, String lastalive) {
 		this.id = id;
+		this.name = name;
 		SimpleDateFormat isoFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 //		isoFormat.setTimeZone(TimeZone.getDefault());
 		try {
@@ -36,18 +35,26 @@ public class Nar {
 	}
 
 	/**
-	 * takes directly from qr reading
-	 * @param params parameters in the following format: prm1=PRM1_VAL|prm2=PRM2_VAL ... (id=IDV|pass=PASSV)
-	 */
-
-	/**
-	 *
 	 * @return id of nar
 	 */
 	public final String getId() {
 		return this.id;
 	}
 
+	/**
+	 * @return name of nar
+	 */
+	public String getName() {
+		return name;
+	}
+
+	/**
+	 * sets name of nar
+	 * @param name new name for nar
+	 */
+	public void setName(String name) {
+		this.name = name;
+	}
 	/**
 	 * @return pass of nar (may need to encrypt in future)
 	 */
@@ -60,19 +67,25 @@ public class Nar {
 	}
 
 	/**
-	 *
-	 * @return in our qr format
+	 * @return nar as our qr format string
 	 */
 	@Override
 	public String toString() {
 		return "id="+this.id+"|lastalive="+this.lastalive;
 	}
 
+	/**
+	 * @param state new state of nar
+	 */
 	public void setState(boolean state) {
 		this.state = state;
 	}
 
+	/**
+	 * @return state of nar
+	 */
 	public boolean getState() {
 		return state;
 	}
+
 }

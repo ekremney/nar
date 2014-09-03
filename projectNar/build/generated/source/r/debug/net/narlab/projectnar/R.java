@@ -254,12 +254,26 @@ theme attribute (in the form
 containing a value of this type.
          */
         public static final int bb_text_gravity=0x7f01005f;
-        /** <p>Must be a string value, using '\\;' to escape characters such as '\\n' or '\\uxxxx' for a unicode character.
+        /**  attr name="bb_type" format="string"/ 
+         <p>May be a string value, using '\\;' to escape characters such as '\\n' or '\\uxxxx' for a unicode character.
 <p>This may also be a reference to a resource (in the form
 "<code>@[<i>package</i>:]<i>type</i>:<i>name</i></code>") or
 theme attribute (in the form
 "<code>?[<i>package</i>:][<i>type</i>:]<i>name</i></code>")
 containing a value of this type.
+<p>May be one of the following constant values.</p>
+<table>
+<colgroup align="left" />
+<colgroup align="left" />
+<colgroup align="left" />
+<tr><th>Constant</th><th>Value</th><th>Description</th></tr>
+<tr><td><code>primary</code></td><td>1</td><td></td></tr>
+<tr><td><code>success</code></td><td>2</td><td></td></tr>
+<tr><td><code>info</code></td><td>3</td><td></td></tr>
+<tr><td><code>warning</code></td><td>4</td><td></td></tr>
+<tr><td><code>danger</code></td><td>5</td><td></td></tr>
+<tr><td><code>inverse</code></td><td>6</td><td></td></tr>
+</table>
          */
         public static final int bb_type=0x7f010059;
         /** <p>Must be an integer value, such as "<code>100</code>".
@@ -1178,137 +1192,148 @@ containing a value of this type.
         public static final int edittext_background_warning=0x7f02006f;
         public static final int ic_launcher=0x7f020070;
         public static final int ic_launcher2=0x7f020071;
-        public static final int nar_icon=0x7f020072;
-        public static final int narlab_icon=0x7f020073;
-        public static final int rectangle=0x7f020074;
-        public static final int sliding_layer_shadow=0x7f020075;
-        public static final int thumbnail_circle=0x7f020076;
-        public static final int thumbnail_circle_container=0x7f020077;
-        public static final int thumbnail_circle_minimal=0x7f020078;
+        public static final int nar_grey_dark_xxhdpi=0x7f020072;
+        public static final int nar_grey_light_xxhdpi=0x7f020073;
+        public static final int nar_icon=0x7f020074;
+        public static final int nar_icon_sm=0x7f020075;
+        public static final int nar_notif_icon=0x7f020076;
+        public static final int narlab_icon=0x7f020077;
+        public static final int rectangle=0x7f020078;
+        public static final int sliding_layer_shadow=0x7f020079;
+        public static final int thumbnail_circle=0x7f02007a;
+        public static final int thumbnail_circle_container=0x7f02007b;
+        public static final int thumbnail_circle_minimal=0x7f02007c;
     }
     public static final class id {
-        public static final int action_bar=0x7f080023;
-        public static final int action_bar_activity_content=0x7f08001b;
-        public static final int action_bar_container=0x7f080022;
-        public static final int action_bar_overlay_layout=0x7f080026;
-        public static final int action_bar_root=0x7f080021;
-        public static final int action_bar_subtitle=0x7f08002a;
-        public static final int action_bar_title=0x7f080029;
-        public static final int action_context_bar=0x7f080024;
-        public static final int action_empty=0x7f080078;
-        public static final int action_logout=0x7f080079;
-        public static final int action_menu_divider=0x7f08001c;
-        public static final int action_menu_presenter=0x7f08001d;
-        public static final int action_mode_close_button=0x7f08002b;
-        public static final int action_settings=0x7f080077;
-        public static final int activity_chooser_view_content=0x7f08002c;
-        public static final int always=0x7f080016;
-        public static final int auth_btn_reg=0x7f080045;
-        public static final int auth_password=0x7f080044;
-        public static final int auth_username=0x7f080043;
-        public static final int beginning=0x7f080011;
-        public static final int btn_def=0x7f08000d;
-        public static final int btn_lg=0x7f08000e;
-        public static final int btn_setup_device=0x7f08005c;
-        public static final int btn_sm=0x7f08000b;
-        public static final int btn_xs=0x7f080009;
-        public static final int camera_preview=0x7f08006e;
-        public static final int checkbox=0x7f080034;
-        public static final int collapseActionView=0x7f080018;
-        public static final int container=0x7f080062;
-        public static final int default_activity_button=0x7f08002f;
-        public static final int dialog=0x7f080019;
-        public static final int dimensionsLabel=0x7f080064;
+        public static final int action_bar=0x7f080029;
+        public static final int action_bar_activity_content=0x7f080021;
+        public static final int action_bar_container=0x7f080028;
+        public static final int action_bar_overlay_layout=0x7f08002c;
+        public static final int action_bar_root=0x7f080027;
+        public static final int action_bar_subtitle=0x7f080030;
+        public static final int action_bar_title=0x7f08002f;
+        public static final int action_context_bar=0x7f08002a;
+        public static final int action_empty=0x7f08007f;
+        public static final int action_logout=0x7f080080;
+        public static final int action_menu_divider=0x7f080022;
+        public static final int action_menu_presenter=0x7f080023;
+        public static final int action_mode_close_button=0x7f080031;
+        public static final int action_settings=0x7f08007e;
+        public static final int activity_chooser_view_content=0x7f080032;
+        public static final int always=0x7f08001c;
+        public static final int auth_btn_reg=0x7f08004b;
+        public static final int auth_password=0x7f08004a;
+        public static final int auth_username=0x7f080049;
+        public static final int beginning=0x7f080017;
+        public static final int btn_def=0x7f080013;
+        public static final int btn_lg=0x7f080014;
+        public static final int btn_setup_device=0x7f080064;
+        public static final int btn_sm=0x7f080011;
+        public static final int btn_xs=0x7f08000f;
+        public static final int camera_preview=0x7f080075;
+        public static final int checkbox=0x7f08003a;
+        public static final int collapseActionView=0x7f08001e;
+        public static final int container=0x7f08006a;
+        public static final int danger=0x7f08000d;
+        public static final int default_activity_button=0x7f080035;
+        public static final int dialog=0x7f08001f;
+        public static final int dimensionsLabel=0x7f08006c;
         public static final int disableHome=0x7f080008;
-        public static final int dropdown=0x7f08001a;
-        public static final int edit_query=0x7f080037;
-        public static final int email=0x7f08004c;
-        public static final int email_login_form=0x7f08004a;
-        public static final int end=0x7f080013;
-        public static final int expand_activities_button=0x7f08002d;
-        public static final int expanded_menu=0x7f080033;
-        public static final int home=0x7f08001e;
+        public static final int dropdown=0x7f080020;
+        public static final int edit_query=0x7f08003d;
+        public static final int email=0x7f080052;
+        public static final int email_login_form=0x7f080050;
+        public static final int end=0x7f080019;
+        public static final int expand_activities_button=0x7f080033;
+        public static final int expanded_menu=0x7f080039;
+        public static final int home=0x7f080024;
         public static final int homeAsUp=0x7f080005;
-        public static final int home_button_add_new=0x7f080069;
-        public static final int icon=0x7f080031;
-        public static final int ifRoom=0x7f080015;
-        public static final int image=0x7f08002e;
-        public static final int item_counter=0x7f080072;
-        public static final int item_icon=0x7f080070;
-        public static final int large=0x7f08000f;
-        public static final int layout=0x7f08005d;
-        public static final int lblColA=0x7f080075;
-        public static final int lblColB=0x7f080076;
-        public static final int lblLeft=0x7f08005e;
-        public static final int lblMiddle=0x7f08005f;
-        public static final int lblRight=0x7f080060;
-        public static final int lblSubTitle=0x7f080074;
-        public static final int lblText=0x7f080065;
-        public static final int lblTitle=0x7f080073;
+        public static final int home_button_add_new=0x7f08006e;
+        public static final int icon=0x7f080037;
+        public static final int ifRoom=0x7f08001b;
+        public static final int image=0x7f080034;
+        public static final int info=0x7f08000b;
+        public static final int inverse=0x7f08000e;
+        public static final int item_counter=0x7f080079;
+        public static final int item_icon=0x7f080077;
+        public static final int large=0x7f080015;
+        public static final int layout=0x7f080065;
+        public static final int lblColA=0x7f08007c;
+        public static final int lblColB=0x7f08007d;
+        public static final int lblLeft=0x7f080066;
+        public static final int lblMiddle=0x7f080067;
+        public static final int lblRight=0x7f080068;
+        public static final int lblSubTitle=0x7f08007b;
+        public static final int lblText=0x7f08006d;
+        public static final int lblTitle=0x7f08007a;
         public static final int listMode=0x7f080001;
-        public static final int listView=0x7f08006a;
-        public static final int list_item=0x7f080030;
-        public static final int login=0x7f08004e;
-        public static final int login_form=0x7f080049;
-        public static final int login_progress=0x7f080048;
-        public static final int login_root_view=0x7f080047;
-        public static final int login_title=0x7f08004b;
-        public static final int middle=0x7f080012;
-        public static final int nar_ctrl_btn_on_off=0x7f080052;
-        public static final int nar_ctrl_btn_smartcfg=0x7f080055;
-        public static final int nar_ctrl_btn_unregister=0x7f080053;
-        public static final int nar_ctrl_lastalive=0x7f080054;
-        public static final int nar_ctrl_nar_title=0x7f080051;
-        public static final int nar_id=0x7f080067;
-        public static final int nar_item_id=0x7f080071;
-        public static final int nar_pass=0x7f080068;
-        public static final int nar_user_btn_register=0x7f080050;
-        public static final int nar_user_login_btn=0x7f08004f;
-        public static final int never=0x7f080014;
-        public static final int new_nar_btn_add=0x7f08006c;
-        public static final int new_nar_btn_qr_scan=0x7f080066;
-        public static final int new_nar_progress=0x7f080056;
-        public static final int new_nar_title=0x7f08006b;
-        public static final int none=0x7f080010;
+        public static final int listView=0x7f08006f;
+        public static final int list_item=0x7f080036;
+        public static final int login=0x7f080054;
+        public static final int login_form=0x7f08004f;
+        public static final int login_progress=0x7f08004e;
+        public static final int login_root_view=0x7f08004d;
+        public static final int login_title=0x7f080051;
+        public static final int middle=0x7f080018;
+        public static final int nar_ctrl_btn_chg_name=0x7f080059;
+        public static final int nar_ctrl_btn_on_off=0x7f08005a;
+        public static final int nar_ctrl_btn_smartcfg=0x7f08005d;
+        public static final int nar_ctrl_btn_unregister=0x7f08005b;
+        public static final int nar_ctrl_lastalive=0x7f08005c;
+        public static final int nar_ctrl_nar_name=0x7f080058;
+        public static final int nar_id=0x7f080071;
+        public static final int nar_item_id=0x7f080078;
+        public static final int nar_pass=0x7f080072;
+        public static final int nar_user_btn_login=0x7f080055;
+        public static final int nar_user_btn_register=0x7f080056;
+        public static final int never=0x7f08001a;
+        public static final int new_nar_btn_add=0x7f080074;
+        public static final int new_nar_btn_qr_scan=0x7f080073;
+        public static final int new_nar_progress=0x7f08005e;
+        public static final int new_nar_title=0x7f080070;
+        public static final int none=0x7f080016;
         public static final int normal=0x7f080000;
-        public static final int pager=0x7f080046;
-        public static final int password=0x7f08004d;
-        public static final int placeholder=0x7f080063;
-        public static final int progress_circular=0x7f08001f;
-        public static final int progress_horizontal=0x7f080020;
-        public static final int radio=0x7f080036;
-        public static final int search_badge=0x7f080039;
-        public static final int search_bar=0x7f080038;
-        public static final int search_button=0x7f08003a;
-        public static final int search_close_btn=0x7f08003f;
-        public static final int search_edit_frame=0x7f08003b;
-        public static final int search_go_btn=0x7f080041;
-        public static final int search_mag_icon=0x7f08003c;
-        public static final int search_plate=0x7f08003d;
-        public static final int search_src_text=0x7f08003e;
-        public static final int search_voice_btn=0x7f080042;
-        public static final int setup_device=0x7f08006d;
-        public static final int shortcut=0x7f080035;
+        public static final int pager=0x7f08004c;
+        public static final int password=0x7f080053;
+        public static final int placeholder=0x7f08006b;
+        public static final int primary=0x7f080009;
+        public static final int progress_circular=0x7f080025;
+        public static final int progress_horizontal=0x7f080026;
+        public static final int radio=0x7f08003c;
+        public static final int search_badge=0x7f08003f;
+        public static final int search_bar=0x7f08003e;
+        public static final int search_button=0x7f080040;
+        public static final int search_close_btn=0x7f080045;
+        public static final int search_edit_frame=0x7f080041;
+        public static final int search_go_btn=0x7f080047;
+        public static final int search_mag_icon=0x7f080042;
+        public static final int search_plate=0x7f080043;
+        public static final int search_src_text=0x7f080044;
+        public static final int search_voice_btn=0x7f080048;
+        public static final int server_hostname=0x7f080057;
+        public static final int shortcut=0x7f08003b;
         public static final int showCustom=0x7f080007;
         public static final int showHome=0x7f080004;
         public static final int showTitle=0x7f080006;
-        public static final int small=0x7f08000c;
-        public static final int split_action_bar=0x7f080025;
-        public static final int submit_area=0x7f080040;
+        public static final int small=0x7f080012;
+        public static final int split_action_bar=0x7f08002b;
+        public static final int submit_area=0x7f080046;
+        public static final int success=0x7f08000a;
         public static final int tabMode=0x7f080002;
-        public static final int title=0x7f080032;
-        public static final int title_wifi_info=0x7f080057;
-        public static final int top_action_bar=0x7f080027;
-        public static final int txtText=0x7f080061;
-        public static final int up=0x7f080028;
+        public static final int title=0x7f080038;
+        public static final int title_wifi_info=0x7f08005f;
+        public static final int top_action_bar=0x7f08002d;
+        public static final int txtText=0x7f080069;
+        public static final int up=0x7f08002e;
         public static final int useLogo=0x7f080003;
-        public static final int view_finder_view=0x7f08006f;
-        public static final int wifi_gateway=0x7f08005b;
-        public static final int wifi_nar_id=0x7f080058;
-        public static final int wifi_pass=0x7f08005a;
-        public static final int wifi_ssid=0x7f080059;
-        public static final int withText=0x7f080017;
-        public static final int xsmall=0x7f08000a;
+        public static final int view_finder_view=0x7f080076;
+        public static final int warning=0x7f08000c;
+        public static final int wifi_nar_id=0x7f080060;
+        public static final int wifi_pass=0x7f080062;
+        public static final int wifi_sc_key=0x7f080063;
+        public static final int wifi_ssid=0x7f080061;
+        public static final int withText=0x7f08001d;
+        public static final int xsmall=0x7f080010;
     }
     public static final class integer {
         public static final int abc_max_action_buttons=0x7f0a0000;
@@ -1352,17 +1377,14 @@ containing a value of this type.
         public static final int bootstrap_thumbnail=0x7f030021;
         public static final int bootstrap_thumbnail_circle=0x7f030022;
         public static final int font_awesome_text=0x7f030023;
-        public static final int fragment_add_device=0x7f030024;
-        public static final int fragment_device_list=0x7f030025;
-        public static final int fragment_new_nar_info=0x7f030026;
-        public static final int fragment_new_nar_wifi=0x7f030027;
-        public static final int fragment_wifi_info=0x7f030028;
-        public static final int merge_camera_preview_view_finder=0x7f030029;
-        public static final int nar_list_item=0x7f03002a;
-        public static final int row_title=0x7f03002b;
-        public static final int row_title_and_subtitle=0x7f03002c;
-        public static final int row_two_columns=0x7f03002d;
-        public static final int support_simple_spinner_dropdown_item=0x7f03002e;
+        public static final int fragment_device_list=0x7f030024;
+        public static final int fragment_new_nar_info=0x7f030025;
+        public static final int merge_camera_preview_view_finder=0x7f030026;
+        public static final int nar_list_item=0x7f030027;
+        public static final int row_title=0x7f030028;
+        public static final int row_title_and_subtitle=0x7f030029;
+        public static final int row_two_columns=0x7f03002a;
+        public static final int support_simple_spinner_dropdown_item=0x7f03002b;
     }
     public static final class menu {
         public static final int authenticator=0x7f0d0000;
@@ -1405,38 +1427,40 @@ containing a value of this type.
         public static final int hello_world=0x7f0b001c;
         public static final int internet_disconnected=0x7f0b001d;
         public static final int login_title=0x7f0b001e;
-        public static final int nar_ctrl_btn_off=0x7f0b001f;
-        public static final int nar_ctrl_btn_off_icon=0x7f0b0020;
-        public static final int nar_ctrl_btn_on=0x7f0b0021;
-        public static final int nar_ctrl_btn_on_icon=0x7f0b0022;
-        public static final int nar_ctrl_start_smartcfg=0x7f0b0023;
-        public static final int nar_ctrl_unregister=0x7f0b0024;
-        public static final int narlab_label=0x7f0b0025;
-        public static final int new_nar_activate=0x7f0b0026;
-        public static final int new_nar_id=0x7f0b0027;
-        public static final int new_nar_id_hint=0x7f0b0028;
-        public static final int new_nar_pass=0x7f0b0029;
-        public static final int new_nar_pass_hint=0x7f0b002a;
-        public static final int prompt_email=0x7f0b002b;
-        public static final int prompt_password=0x7f0b002c;
-        public static final int qr_scan_btn=0x7f0b002d;
-        public static final int server_unreachable=0x7f0b002e;
-        public static final int setup_device=0x7f0b002f;
-        public static final int title_activity_authenticator=0x7f0b0030;
-        public static final int title_activity_login=0x7f0b0031;
-        public static final int title_activity_nar_control_panel=0x7f0b0032;
-        public static final int title_activity_new_nar=0x7f0b0033;
-        public static final int title_activity_simple_scanner=0x7f0b0034;
-        public static final int title_activity_smart_config=0x7f0b0035;
-        public static final int title_add_nar=0x7f0b0036;
-        public static final int title_qr_code=0x7f0b0037;
-        public static final int title_section3=0x7f0b0038;
-        public static final int title_smart_config=0x7f0b0039;
-        public static final int title_wifi_info=0x7f0b003a;
-        public static final int user_auth_btn_register=0x7f0b003b;
-        public static final int wifi_offline=0x7f0b003c;
-        public static final int wifi_pass=0x7f0b003d;
-        public static final int wifi_ssid=0x7f0b003e;
+        public static final int nar_ctrl_btn_chg_name=0x7f0b001f;
+        public static final int nar_ctrl_btn_off=0x7f0b0020;
+        public static final int nar_ctrl_btn_off_icon=0x7f0b0021;
+        public static final int nar_ctrl_btn_on=0x7f0b0022;
+        public static final int nar_ctrl_btn_on_icon=0x7f0b0023;
+        public static final int nar_ctrl_start_smartcfg=0x7f0b0024;
+        public static final int nar_ctrl_unregister=0x7f0b0025;
+        public static final int narlab_label=0x7f0b0026;
+        public static final int new_nar_activate=0x7f0b0027;
+        public static final int new_nar_id=0x7f0b0028;
+        public static final int new_nar_id_hint=0x7f0b0029;
+        public static final int new_nar_name_hint=0x7f0b002a;
+        public static final int new_nar_pass=0x7f0b002b;
+        public static final int new_nar_pass_hint=0x7f0b002c;
+        public static final int prompt_email=0x7f0b002d;
+        public static final int prompt_password=0x7f0b002e;
+        public static final int qr_scan_btn=0x7f0b002f;
+        public static final int server_unreachable=0x7f0b0030;
+        public static final int setup_device=0x7f0b0031;
+        public static final int title_activity_authenticator=0x7f0b0032;
+        public static final int title_activity_login=0x7f0b0033;
+        public static final int title_activity_nar_control_panel=0x7f0b0034;
+        public static final int title_activity_new_nar=0x7f0b0035;
+        public static final int title_activity_simple_scanner=0x7f0b0036;
+        public static final int title_activity_smart_config=0x7f0b0037;
+        public static final int title_add_nar=0x7f0b0038;
+        public static final int title_qr_code=0x7f0b0039;
+        public static final int title_section3=0x7f0b003a;
+        public static final int title_smart_config=0x7f0b003b;
+        public static final int title_wifi_info=0x7f0b003c;
+        public static final int user_auth_btn_register=0x7f0b003d;
+        public static final int wifi_offline=0x7f0b003e;
+        public static final int wifi_pass=0x7f0b003f;
+        public static final int wifi_ssid=0x7f0b0040;
     }
     public static final class style {
         /** 
@@ -2306,7 +2330,7 @@ containing a value of this type.
            <tr><td><code>{@link #BootstrapButton_bb_size net.narlab.projectnar:bb_size}</code></td><td> attr name="bb_size" format="string" / </td></tr>
            <tr><td><code>{@link #BootstrapButton_bb_text_alignment net.narlab.projectnar:bb_text_alignment}</code></td><td></td></tr>
            <tr><td><code>{@link #BootstrapButton_bb_text_gravity net.narlab.projectnar:bb_text_gravity}</code></td><td></td></tr>
-           <tr><td><code>{@link #BootstrapButton_bb_type net.narlab.projectnar:bb_type}</code></td><td></td></tr>
+           <tr><td><code>{@link #BootstrapButton_bb_type net.narlab.projectnar:bb_type}</code></td><td> attr name="bb_type" format="string"/ </td></tr>
            </table>
            @see #BootstrapButton_android_enabled
            @see #BootstrapButton_android_layout_width
@@ -2444,16 +2468,31 @@ containing a value of this type.
         */
         public static final int BootstrapButton_bb_text_gravity = 10;
         /**
-          <p>This symbol is the offset where the {@link net.narlab.projectnar.R.attr#bb_type}
-          attribute's value can be found in the {@link #BootstrapButton} array.
+          <p>
+          @attr description
+           attr name="bb_type" format="string"/ 
 
 
-          <p>Must be a string value, using '\\;' to escape characters such as '\\n' or '\\uxxxx' for a unicode character.
+          <p>May be a string value, using '\\;' to escape characters such as '\\n' or '\\uxxxx' for a unicode character.
 <p>This may also be a reference to a resource (in the form
 "<code>@[<i>package</i>:]<i>type</i>:<i>name</i></code>") or
 theme attribute (in the form
 "<code>?[<i>package</i>:][<i>type</i>:]<i>name</i></code>")
 containing a value of this type.
+<p>May be one of the following constant values.</p>
+<table>
+<colgroup align="left" />
+<colgroup align="left" />
+<colgroup align="left" />
+<tr><th>Constant</th><th>Value</th><th>Description</th></tr>
+<tr><td><code>primary</code></td><td>1</td><td></td></tr>
+<tr><td><code>success</code></td><td>2</td><td></td></tr>
+<tr><td><code>info</code></td><td>3</td><td></td></tr>
+<tr><td><code>warning</code></td><td>4</td><td></td></tr>
+<tr><td><code>danger</code></td><td>5</td><td></td></tr>
+<tr><td><code>inverse</code></td><td>6</td><td></td></tr>
+</table>
+          <p>This is a private symbol.
           @attr name net.narlab.projectnar:bb_type
         */
         public static final int BootstrapButton_bb_type = 4;

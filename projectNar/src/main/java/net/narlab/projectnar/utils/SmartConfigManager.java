@@ -1,17 +1,10 @@
 package net.narlab.projectnar.utils;
 
-import android.app.Activity;
-import android.content.Context;
 import android.util.Log;
 import android.widget.Toast;
 
 import com.integrity_project.smartconfiglib.FirstTimeConfig;
 import com.integrity_project.smartconfiglib.FirstTimeConfigListener;
-
-import net.narlab.projectnar.R;
-
-//import com.integrity_project.smartconfiglib.FirstTimeConfig;
-
 
 public class SmartConfigManager implements FirstTimeConfigListener {
 
@@ -19,13 +12,15 @@ public class SmartConfigManager implements FirstTimeConfigListener {
 	private SmartConfigFinishedListener callerActivity;
 	private boolean started = false;
 
-	public boolean startSmartConfig(SmartConfigFinishedListener caller, String ssid, String pass, String gateway, String deviceName) {
+	public boolean startSmartConfig(SmartConfigFinishedListener caller, String ssid, String pass, String gateway, String deviceName, String aesKey) {
 		this.callerActivity = caller;
 
 		try {
 			if (firstTimeConfig == null) {
-				deviceName = "CC3000";
-				firstTimeConfig = buildFirstTimeConfig(SmartConfigManager.this, ssid, pass, gateway, deviceName);
+				if (deviceName == null) {
+					deviceName = "CC3000";
+				}
+				firstTimeConfig = buildFirstTimeConfig(SmartConfigManager.this, ssid, pass, gateway, deviceName, aesKey);
 			}
 			if (!started && firstTimeConfig != null) {
 				firstTimeConfig.transmitSettings();
@@ -48,24 +43,24 @@ public class SmartConfigManager implements FirstTimeConfigListener {
 			return true;
 		} catch (Exception e) {
 			Helper.toastIt("Couldn't stop Smart Config");
+			Log.e(Helper.getTag(this), Helper.getExceptionString(e));
 			return false;
 		}
 	}
 
-	private FirstTimeConfig buildFirstTimeConfig(FirstTimeConfigListener listener, String ssid, String pass, String gateway, String deviceName)
+	private FirstTimeConfig buildFirstTimeConfig(FirstTimeConfigListener listener, String ssid, String pass, String gateway, String deviceName, String aesKey)
 			throws Exception {
-/*		String aesKey = extras.getString(EXTRA_AES_KEY);
-		byte[] transmissionKey = aesKey.getBytes();*/
+		byte[] transmissionKey = aesKey.getBytes();
 
 		if (deviceName == null || deviceName.length() == 0) {
 			deviceName = "CC3000";
 		}
+
 		// AES key isn't being redacted below because it's public knowledge.
-		Log.d("FirstTimeConfig", "SSID=" + ssid + ", pass=" + pass + ", gatewayIP=" + gateway);
+		Log.d("FirstTimeConfig", "SSID=" + ssid + ", pass=" + pass + ", gatewayIP=" + gateway+", aesKey="+aesKey);
 		Helper.toastIt("First Time build", Toast.LENGTH_SHORT);
-		return new FirstTimeConfig(listener, pass, null, gateway,
-				ssid, deviceName);
-		//		return new FirstTimeConfig(listener, pass, transmissionKey, gatewayIP, ssid);
+//		return new FirstTimeConfig(listener, pass, null, gateway, ssid, deviceName);
+		return new FirstTimeConfig(listener, pass, transmissionKey, gateway, ssid, deviceName);
 	}
 
 	@Override

@@ -1,9 +1,5 @@
 package com.beardedhen.androidbootstrap;
 
-import java.util.Map;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
-
 import android.content.Context;
 import android.content.res.TypedArray;
 import android.graphics.Typeface;
@@ -19,7 +15,9 @@ import android.view.animation.RotateAnimation;
 import android.widget.FrameLayout;
 import android.widget.TextView;
 
-import com.beardedhen.androidbootstrap.R;
+import java.util.Map;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 public class FontAwesomeText extends FrameLayout {
 
