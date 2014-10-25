@@ -1,7 +1,6 @@
 package net.narlab.projectnar.utils;
 
 import android.content.Context;
-import android.util.Log;
 
 import net.narlab.projectnar.general.Nar;
 
@@ -62,7 +61,7 @@ public class DataHolder {
 	}
 
 	public static void setServerHostname(String serverHostname) {
-		DataHolder.serverHostname = serverHostname;
+		DataHolder.serverHostname = serverHostname.trim();
 	}
 	public static String getServerHostname() {
 		return serverHostname;
@@ -70,7 +69,7 @@ public class DataHolder {
 
 	public static void addNars(JSONArray json) {
 		try {
-			Log.w("DH", json.toString());
+//			Log.w("DH", json.toString());
 			for (int i=0; i<json.length(); ++i) {
 				JSONObject jsonOb = json.getJSONObject(i);
 				narList.add(new Nar(jsonOb.getString("nar_id"),

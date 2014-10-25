@@ -51,7 +51,7 @@
 	
 	<color name="bbutton_inverse">#ff0a0a0a</color>
 	<color name="bbutton_inverse_edge">#ff141414</color>
-	<color name="bbutton_inverse_pressed">#ff1f1f1f</color>
+	<color name="bbutton_inverse_pressed">#ff414141</color>
 	<color name="bbutton_inverse_pressed_edge">#ff292929</color>
 	<color name="bbutton_inverse_disabled">#a50a0a0a</color>
 	<color name="bbutton_inverse_disabled_edge">#a5141414</color>

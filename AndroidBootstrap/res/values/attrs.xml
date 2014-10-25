@@ -17,7 +17,7 @@
 		<attr name="bb_text_alignment" format="string"/>
 		<!--attr name="bb_size" format="string" /-->
 
-		<attr name="bb_size">
+		<attr name="bb_size" format="string">
 			<enum name="btn_xs" value="0"/>
 			<enum name="xsmall" value="0"/>
 

@@ -110,7 +110,7 @@
 			bootstrapbutton:fa_icon="fa-refresh" /-->
 	</LinearLayout>
 
-	<com.beardedhen.androidbootstrap.BootstrapButton
+	<!--com.beardedhen.androidbootstrap.BootstrapButton
 		android:id="@+id/nar_ctrl_btn_smartcfg"
 		android:layout_width="wrap_content"
 		android:layout_height="wrap_content"
@@ -123,6 +123,6 @@
 		bootstrapbutton:bb_icon_right="fa-cog"
 		android:layout_marginTop="40dp"
 		android:layout_margin="@dimen/nar_ctrl_button_margin"
-		/>
+		/-->
 
 </LinearLayout>

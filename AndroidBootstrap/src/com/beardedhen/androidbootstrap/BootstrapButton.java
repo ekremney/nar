@@ -148,7 +148,7 @@ public class BootstrapButton extends FrameLayout {
 
 			// if its not default value then parse its enum value
 			if (!bootstrapType.equals("default")) {
-				bootstrapType = BOOTSTRAP_TYPES[ Integer.parseInt(bootstrapType) ];
+				bootstrapType = BOOTSTRAP_TYPES[ a.getInt(R.styleable.BootstrapButton_bb_type, 0) ];
 			}
 		}
 		
@@ -161,7 +161,7 @@ public class BootstrapButton extends FrameLayout {
 
 			// if its not default value then parse its enum value
 			if (!size.equals("default")) {
-				size = BOOTSTRAP_SIZES[ Integer.parseInt(size) ];
+				size = BOOTSTRAP_SIZES[ a.getInt(R.styleable.BootstrapButton_bb_size, 2) ];
 			}
 		}
 
@@ -208,7 +208,6 @@ public class BootstrapButton extends FrameLayout {
 			if (m.find()) {
 
 				if (m.groupCount() == 1) {
-
 					fontSize = Float.valueOf(m.group(1));
 				}
 
@@ -257,8 +256,7 @@ public class BootstrapButton extends FrameLayout {
 		}
 
 		//set up as default
-		if (type == null)
-		{
+		if (type == null) {
 			type = BootstrapTypes.DEFAULT;
 		}
 

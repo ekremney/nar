@@ -112,7 +112,7 @@ public class NarMQTTService extends Service implements MqttSimpleCallback
 
 	// taken from preferences
 	//    host name of the server we're receiving push notifications from
-	private String          brokerHostName       = "";
+//	private String          brokerHostName       = "";
 	// taken from preferences
 	//    topic we want to receive messages about
 	//    can include wildcards - e.g.  '#' matches anything
@@ -195,7 +195,7 @@ public class NarMQTTService extends Service implements MqttSimpleCallback
 		//   this is not the only way to do this - for example, you could use
 		//   the Intent that starts the Service to pass on configuration values
 		SharedPreferences settings = getSharedPreferences(APP_ID, MODE_PRIVATE);
-		brokerHostName = settings.getString("broker", DataHolder.getServerHostname());//"test.mosquitto.org");
+//		brokerHostName = DataHolder.getServerHostname();//"test.mosquitto.org");
 		topicName      = settings.getString("topic",  "CC3000");
 
 		// TODO: change these background data parts they are deprecated
@@ -207,7 +207,7 @@ public class NarMQTTService extends Service implements MqttSimpleCallback
 				new IntentFilter(ConnectivityManager.ACTION_BACKGROUND_DATA_SETTING_CHANGED));*/
 
 		// define the connection to the broker
-		defineConnectionToBroker(brokerHostName);
+		defineConnectionToBroker();
 	}
 
 
@@ -432,6 +432,7 @@ public class NarMQTTService extends Service implements MqttSimpleCallback
 						.setOngoing(isMQTTStatus);
 
 		if (!isMQTTStatus) { // show multi line single notification
+			notificationManager.cancel(MQTT_NOTIFICATION_ONGOING);
 
 			// setup inbox-style
 			NotificationCompat.InboxStyle inboxStyle =
@@ -685,9 +686,9 @@ public class NarMQTTService extends Service implements MqttSimpleCallback
      * Create a client connection object that defines our connection to a
      *   message broker server
      */
-	private void defineConnectionToBroker(String brokerHostName)
+	private void defineConnectionToBroker()
 	{
-		String mqttConnSpec = "tcp://" + brokerHostName + ":" + BROKER_PORT_NUMBER;
+		String mqttConnSpec = "tcp://" + DataHolder.getServerHostname() + ":" + BROKER_PORT_NUMBER;
 		Log.e(getClass().getSimpleName(), mqttConnSpec);
 
 		try
@@ -717,7 +718,7 @@ public class NarMQTTService extends Service implements MqttSimpleCallback
 			// inform the user (for times when the Activity UI isn't running)
 			//   that we failed to connect
 			notifyUser("MQTT", "Unable to connect", true);
-			Log.e(Helper.getTag(this), "Unable to connect to broker: "+this.brokerHostName);
+			Log.e(Helper.getTag(this), "Unable to connect to broker: "+DataHolder.getServerHostname());
 		}
 	}
 
@@ -730,8 +731,8 @@ public class NarMQTTService extends Service implements MqttSimpleCallback
 		{
 			// try to connect
 			mqttClient.connect(generateClientId(), CLEAN_START, keepAliveSeconds);
+			Log.w(Helper.getTag(this), DataHolder.getServerHostname()+":"+BROKER_PORT_NUMBER+"\n"+topicName);
 
-			//
 			// inform the app that the app has successfully connected
 			broadcastServiceStatus("Connected");
 
@@ -761,6 +762,8 @@ public class NarMQTTService extends Service implements MqttSimpleCallback
 			// inform the user (for times when the Activity UI isn't running)
 			//   that we failed to connect
 			notifyUser("MQTT", "Unable to connect - will retry later");
+			Log.w(Helper.getTag(this), DataHolder.getServerHostname() + ":" + BROKER_PORT_NUMBER + "\n" + topicName);
+			Log.e(Helper.getTag(this), "Unable to connect to broker: "+DataHolder.getServerHostname());
 
 			// if something has failed, we wait for one keep-alive period before
 			//   trying again

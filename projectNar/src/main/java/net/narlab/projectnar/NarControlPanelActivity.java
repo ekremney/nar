@@ -17,7 +17,6 @@ import com.beardedhen.androidbootstrap.BootstrapEditText;
 import net.narlab.projectnar.general.Nar;
 import net.narlab.projectnar.utils.DataHolder;
 import net.narlab.projectnar.utils.Helper;
-import net.narlab.projectnar.utils.NarWifiManager;
 
 import org.apache.http.HttpResponse;
 import org.apache.http.NameValuePair;
@@ -118,7 +117,7 @@ public class NarControlPanelActivity extends Activity {
 			v.setEnabled(false);
 			new AsyncUnregisterNarTask(mNar.getId()).execute();
 
-		} else if (vId == R.id.nar_ctrl_btn_smartcfg) {
+		} /*else if (vId == R.id.nar_ctrl_btn_smartcfg) {
 			NarWifiManager nWM = DataHolder.getWifiManager();
 			if (!nWM.isWifiConnected()) {
 				Helper.toastIt("Please connect to the same wifi you are setting up", Toast.LENGTH_LONG);
@@ -131,7 +130,7 @@ public class NarControlPanelActivity extends Activity {
 			intent.putExtra(SmartConfigActivity.EXT_GATEWAY, nWM.getGatewayString());
 			startActivity(intent);
 			overridePendingTransition (R.anim.open_next, R.anim.close_main);
-		} else if (vId == R.id.nar_ctrl_btn_chg_name) {
+		}*/ else if (vId == R.id.nar_ctrl_btn_chg_name) {
 			chgNameBtn.setEnabled(false);
 			String name = narNameEditText.getText().toString();
 			if (name.length() > 0) {
@@ -372,8 +371,7 @@ public class NarControlPanelActivity extends Activity {
 			}
 
 			chgNameBtn.setEnabled(true);
-
-//			Log.w(TAG, result);
+			Log.w(Helper.getTag(this), result);
 			JSONObject json;
 //			Log.i(TAG+"_res", result);
 			try {

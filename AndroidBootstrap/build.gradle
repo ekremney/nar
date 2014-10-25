@@ -9,6 +9,22 @@ android {
         minSdkVersion 7
         targetSdkVersion 17
     }
+
+	def coreAarFile = file('build/outputs/aar/AndroidBootstrap.aar')
+	artifacts {
+		archives coreAarFile
+	}
+	uploadArchives {
+		repositories {
+			mavenDeployer {
+				repository(url: "/home/fma/dev/android/maven_repo")
+				pom.groupId = 'com.fmakdemir.lib'
+				pom.artifactId = 'android-bootstrap-lib'
+				pom.version = '0.1.0'
+			}
+		}
+	}
+
     sourceSets {
         main {
             manifest.srcFile 'AndroidManifest.xml'

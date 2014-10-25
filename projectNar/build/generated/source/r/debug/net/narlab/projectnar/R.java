@@ -222,7 +222,13 @@ containing a value of this type.
          */
         public static final int bb_roundedCorners=0x7f01005c;
         /**  attr name="bb_size" format="string" / 
-         <p>Must be one of the following constant values.</p>
+         <p>May be a string value, using '\\;' to escape characters such as '\\n' or '\\uxxxx' for a unicode character.
+<p>This may also be a reference to a resource (in the form
+"<code>@[<i>package</i>:]<i>type</i>:<i>name</i></code>") or
+theme attribute (in the form
+"<code>?[<i>package</i>:][<i>type</i>:]<i>name</i></code>")
+containing a value of this type.
+<p>May be one of the following constant values.</p>
 <table>
 <colgroup align="left" />
 <colgroup align="left" />
@@ -1213,12 +1219,12 @@ containing a value of this type.
         public static final int action_bar_subtitle=0x7f080030;
         public static final int action_bar_title=0x7f08002f;
         public static final int action_context_bar=0x7f08002a;
-        public static final int action_empty=0x7f08007f;
-        public static final int action_logout=0x7f080080;
+        public static final int action_empty=0x7f08007e;
+        public static final int action_logout=0x7f08007f;
         public static final int action_menu_divider=0x7f080022;
         public static final int action_menu_presenter=0x7f080023;
         public static final int action_mode_close_button=0x7f080031;
-        public static final int action_settings=0x7f08007e;
+        public static final int action_settings=0x7f08007d;
         public static final int activity_chooser_view_content=0x7f080032;
         public static final int always=0x7f08001c;
         public static final int auth_btn_reg=0x7f08004b;
@@ -1227,17 +1233,17 @@ containing a value of this type.
         public static final int beginning=0x7f080017;
         public static final int btn_def=0x7f080013;
         public static final int btn_lg=0x7f080014;
-        public static final int btn_setup_device=0x7f080064;
+        public static final int btn_setup_device=0x7f080063;
         public static final int btn_sm=0x7f080011;
         public static final int btn_xs=0x7f08000f;
-        public static final int camera_preview=0x7f080075;
+        public static final int camera_preview=0x7f080074;
         public static final int checkbox=0x7f08003a;
         public static final int collapseActionView=0x7f08001e;
-        public static final int container=0x7f08006a;
+        public static final int container=0x7f080069;
         public static final int danger=0x7f08000d;
         public static final int default_activity_button=0x7f080035;
         public static final int dialog=0x7f08001f;
-        public static final int dimensionsLabel=0x7f08006c;
+        public static final int dimensionsLabel=0x7f08006b;
         public static final int disableHome=0x7f080008;
         public static final int dropdown=0x7f080020;
         public static final int edit_query=0x7f08003d;
@@ -1248,26 +1254,26 @@ containing a value of this type.
         public static final int expanded_menu=0x7f080039;
         public static final int home=0x7f080024;
         public static final int homeAsUp=0x7f080005;
-        public static final int home_button_add_new=0x7f08006e;
+        public static final int home_button_add_new=0x7f08006d;
         public static final int icon=0x7f080037;
         public static final int ifRoom=0x7f08001b;
         public static final int image=0x7f080034;
         public static final int info=0x7f08000b;
         public static final int inverse=0x7f08000e;
-        public static final int item_counter=0x7f080079;
-        public static final int item_icon=0x7f080077;
+        public static final int item_counter=0x7f080078;
+        public static final int item_icon=0x7f080076;
         public static final int large=0x7f080015;
-        public static final int layout=0x7f080065;
-        public static final int lblColA=0x7f08007c;
-        public static final int lblColB=0x7f08007d;
-        public static final int lblLeft=0x7f080066;
-        public static final int lblMiddle=0x7f080067;
-        public static final int lblRight=0x7f080068;
-        public static final int lblSubTitle=0x7f08007b;
-        public static final int lblText=0x7f08006d;
-        public static final int lblTitle=0x7f08007a;
+        public static final int layout=0x7f080064;
+        public static final int lblColA=0x7f08007b;
+        public static final int lblColB=0x7f08007c;
+        public static final int lblLeft=0x7f080065;
+        public static final int lblMiddle=0x7f080066;
+        public static final int lblRight=0x7f080067;
+        public static final int lblSubTitle=0x7f08007a;
+        public static final int lblText=0x7f08006c;
+        public static final int lblTitle=0x7f080079;
         public static final int listMode=0x7f080001;
-        public static final int listView=0x7f08006f;
+        public static final int listView=0x7f08006e;
         public static final int list_item=0x7f080036;
         public static final int login=0x7f080054;
         public static final int login_form=0x7f08004f;
@@ -1277,25 +1283,24 @@ containing a value of this type.
         public static final int middle=0x7f080018;
         public static final int nar_ctrl_btn_chg_name=0x7f080059;
         public static final int nar_ctrl_btn_on_off=0x7f08005a;
-        public static final int nar_ctrl_btn_smartcfg=0x7f08005d;
         public static final int nar_ctrl_btn_unregister=0x7f08005b;
         public static final int nar_ctrl_lastalive=0x7f08005c;
         public static final int nar_ctrl_nar_name=0x7f080058;
-        public static final int nar_id=0x7f080071;
-        public static final int nar_item_id=0x7f080078;
-        public static final int nar_pass=0x7f080072;
+        public static final int nar_id=0x7f080070;
+        public static final int nar_item_id=0x7f080077;
+        public static final int nar_pass=0x7f080071;
         public static final int nar_user_btn_login=0x7f080055;
         public static final int nar_user_btn_register=0x7f080056;
         public static final int never=0x7f08001a;
-        public static final int new_nar_btn_add=0x7f080074;
-        public static final int new_nar_btn_qr_scan=0x7f080073;
-        public static final int new_nar_progress=0x7f08005e;
-        public static final int new_nar_title=0x7f080070;
+        public static final int new_nar_btn_add=0x7f080073;
+        public static final int new_nar_btn_qr_scan=0x7f080072;
+        public static final int new_nar_progress=0x7f08005d;
+        public static final int new_nar_title=0x7f08006f;
         public static final int none=0x7f080016;
         public static final int normal=0x7f080000;
         public static final int pager=0x7f08004c;
         public static final int password=0x7f080053;
-        public static final int placeholder=0x7f08006b;
+        public static final int placeholder=0x7f08006a;
         public static final int primary=0x7f080009;
         public static final int progress_circular=0x7f080025;
         public static final int progress_horizontal=0x7f080026;
@@ -1321,17 +1326,17 @@ containing a value of this type.
         public static final int success=0x7f08000a;
         public static final int tabMode=0x7f080002;
         public static final int title=0x7f080038;
-        public static final int title_wifi_info=0x7f08005f;
+        public static final int title_wifi_info=0x7f08005e;
         public static final int top_action_bar=0x7f08002d;
-        public static final int txtText=0x7f080069;
+        public static final int txtText=0x7f080068;
         public static final int up=0x7f08002e;
         public static final int useLogo=0x7f080003;
-        public static final int view_finder_view=0x7f080076;
+        public static final int view_finder_view=0x7f080075;
         public static final int warning=0x7f08000c;
-        public static final int wifi_nar_id=0x7f080060;
-        public static final int wifi_pass=0x7f080062;
-        public static final int wifi_sc_key=0x7f080063;
-        public static final int wifi_ssid=0x7f080061;
+        public static final int wifi_nar_id=0x7f08005f;
+        public static final int wifi_pass=0x7f080061;
+        public static final int wifi_sc_key=0x7f080062;
+        public static final int wifi_ssid=0x7f080060;
         public static final int withText=0x7f08001d;
         public static final int xsmall=0x7f080010;
     }
@@ -2421,7 +2426,13 @@ containing a value of this type.
            attr name="bb_size" format="string" / 
 
 
-          <p>Must be one of the following constant values.</p>
+          <p>May be a string value, using '\\;' to escape characters such as '\\n' or '\\uxxxx' for a unicode character.
+<p>This may also be a reference to a resource (in the form
+"<code>@[<i>package</i>:]<i>type</i>:<i>name</i></code>") or
+theme attribute (in the form
+"<code>?[<i>package</i>:][<i>type</i>:]<i>name</i></code>")
+containing a value of this type.
+<p>May be one of the following constant values.</p>
 <table>
 <colgroup align="left" />
 <colgroup align="left" />

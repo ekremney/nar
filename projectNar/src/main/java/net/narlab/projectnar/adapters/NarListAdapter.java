@@ -1,7 +1,6 @@
 package net.narlab.projectnar.adapters;
 
 import android.content.Context;
-import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
@@ -29,22 +28,30 @@ public class NarListAdapter extends ArrayAdapter<Nar> {
 		this.narList = narList;
 	}
 
+	private static class NarViewHolder {
+		public TextView titleView;
+	}
+
+	NarViewHolder narViewHolder;
+
 	@Override
 	public View getView(int position, View convertView, ViewGroup parent) {
 
-		// Create inflater
-		LayoutInflater inflater = (LayoutInflater) context
-				.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+		if (convertView == null) {
+			// Get rowView from inflater
+			convertView = View.inflate(context, R.layout.nar_list_item, null);
 
-		// Get rowView from inflater
-		View rowView = inflater.inflate(R.layout.nar_list_item, parent, false);
+			narViewHolder = new NarViewHolder();
+			narViewHolder.titleView = (TextView) convertView.findViewById(R.id.nar_item_id);
+			convertView.setTag(narViewHolder);
+		} else {
+			narViewHolder = (NarViewHolder) convertView.getTag();
+		}
 
-		TextView titleView = (TextView) rowView.findViewById(R.id.nar_item_id);
+		narViewHolder.titleView.setText(narList.get(position).getName());
 
-		titleView.setText(narList.get(position).getName());
-
-		// return rowView
-		return rowView;
+		// return view
+		return convertView;
 	}
 
 	public void add(String narId, String name, String lastalive) {

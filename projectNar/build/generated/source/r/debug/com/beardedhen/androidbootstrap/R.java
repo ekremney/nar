@@ -121,32 +121,32 @@ public final class R {
 		public static final int thumbnail_circle_minimal = 0x7f02007c;
 	}
 	public static final class id {
-		public static final int action_settings = 0x7f08007e;
+		public static final int action_settings = 0x7f08007d;
 		public static final int btn_def = 0x7f080013;
 		public static final int btn_lg = 0x7f080014;
 		public static final int btn_sm = 0x7f080011;
 		public static final int btn_xs = 0x7f08000f;
-		public static final int container = 0x7f08006a;
+		public static final int container = 0x7f080069;
 		public static final int danger = 0x7f08000d;
-		public static final int dimensionsLabel = 0x7f08006c;
+		public static final int dimensionsLabel = 0x7f08006b;
 		public static final int image = 0x7f080034;
 		public static final int info = 0x7f08000b;
 		public static final int inverse = 0x7f08000e;
 		public static final int large = 0x7f080015;
-		public static final int layout = 0x7f080065;
-		public static final int lblColA = 0x7f08007c;
-		public static final int lblColB = 0x7f08007d;
-		public static final int lblLeft = 0x7f080066;
-		public static final int lblMiddle = 0x7f080067;
-		public static final int lblRight = 0x7f080068;
-		public static final int lblSubTitle = 0x7f08007b;
-		public static final int lblText = 0x7f08006d;
-		public static final int lblTitle = 0x7f08007a;
-		public static final int placeholder = 0x7f08006b;
+		public static final int layout = 0x7f080064;
+		public static final int lblColA = 0x7f08007b;
+		public static final int lblColB = 0x7f08007c;
+		public static final int lblLeft = 0x7f080065;
+		public static final int lblMiddle = 0x7f080066;
+		public static final int lblRight = 0x7f080067;
+		public static final int lblSubTitle = 0x7f08007a;
+		public static final int lblText = 0x7f08006c;
+		public static final int lblTitle = 0x7f080079;
+		public static final int placeholder = 0x7f08006a;
 		public static final int primary = 0x7f080009;
 		public static final int small = 0x7f080012;
 		public static final int success = 0x7f08000a;
-		public static final int txtText = 0x7f080069;
+		public static final int txtText = 0x7f080068;
 		public static final int warning = 0x7f08000c;
 		public static final int xsmall = 0x7f080010;
 	}

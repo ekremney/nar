@@ -208,7 +208,7 @@ public class LoginActivity extends Activity {
 	}
 
 	public void onChangeUrlClicked(View v) {
-		String serverHostname = mServerHostnameView.getText().toString();
+		String serverHostname = mServerHostnameView.getText().toString().trim();
 		Helper.editSharedPreferences(DataHolder.PREF_NAME_SERVER_URL, serverHostname);
 		DataHolder.setServerHostname(serverHostname);
 		Helper.toastIt("New server Url:\n"+serverHostname);
@@ -246,28 +246,16 @@ public class LoginActivity extends Activity {
 			// TODO: change auto login to not send password
 			mEmailView.setText(acc.name);
 			mPasswordView.setText(accMng.getPassword(acc));
-/*			NotificationCompat.Builder mBuilder =
-					new NotificationCompat.Builder(this)
-							.setSmallIcon(R.drawable.nar_notif_icon)
-							.setContentTitle("Narlab")
-							.setContentText("User found: "+acc.name);
-			// Sets an ID for the notification
-			int mNotificationId = 333;
-			// Gets an instance of the NotificationManager service
-			NotificationManager mNotifyMgr =
-					(NotificationManager) getSystemService(NOTIFICATION_SERVICE);
-			// Builds the notification and issues it.
-			mNotifyMgr.notify(mNotificationId, mBuilder.build());
-			//			accMng.getAuthToken(acc, AccountGeneral.AUTHTOKEN_TYPE_FULL_ACCESS, null, this, null, null);*/
+//			accMng.getAuthToken(acc, AccountGeneral.AUTHTOKEN_TYPE_FULL_ACCESS, null, this, null, null);*/
 			attemptLogin();
 		}
 	}
 
-		/**
-		 * Attempts to sign in or register the account specified by the register form.
-		 * If there are form errors (invalid email, missing fields, etc.), the
-		 * errors are presented and no actual register attempt is made.
-		 */
+	/**
+	 * Attempts to sign in or register the account specified by the register form.
+	 * If there are form errors (invalid email, missing fields, etc.), the
+	 * errors are presented and no actual register attempt is made.
+	 */
 	public void attemptLogin() {
 		NarWifiManager wifiManager;
 		wifiManager = DataHolder.getWifiManager();
