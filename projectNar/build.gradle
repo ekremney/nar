@@ -9,16 +9,17 @@ android {
 		minSdkVersion 14
 		targetSdkVersion 19
 	}
-
+/*
 	buildTypes {
 		release {
 			runProguard false
 			proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.txt'
 		}
 	}
-}
+*/}
 
 dependencies {
+//	compile 'com.beardedhen:androidbootstrap:+'
 	compile project(':AndroidBootstrap')
 	compile files('libs/smartconfiglib.jar')
 	compile files('libs/wmqtt.jar')
