@@ -1,7 +1,5 @@
 package com.beardedhen.androidbootstrap;
 
-import java.util.HashMap;
-import java.util.Map;
 import android.content.Context;
 import android.content.res.TypedArray;
 import android.graphics.Typeface;
@@ -13,6 +11,9 @@ import android.view.ViewGroup;
 import android.widget.FrameLayout;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+
+import java.util.HashMap;
+import java.util.Map;
 
 public class BootstrapThumbnail extends FrameLayout
 {

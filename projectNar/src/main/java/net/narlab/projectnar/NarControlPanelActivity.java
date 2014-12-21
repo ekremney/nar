@@ -9,7 +9,6 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.beardedhen.androidbootstrap.BootstrapButton;
 import com.beardedhen.androidbootstrap.BootstrapEditText;
@@ -18,17 +17,15 @@ import net.narlab.projectnar.general.Nar;
 import net.narlab.projectnar.utils.DataHolder;
 import net.narlab.projectnar.utils.Helper;
 
-import org.apache.http.HttpResponse;
 import org.apache.http.NameValuePair;
-import org.apache.http.StatusLine;
+import org.apache.http.client.ClientProtocolException;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.entity.UrlEncodedFormEntity;
 import org.apache.http.client.methods.HttpPost;
+import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.message.BasicNameValuePair;
-import org.apache.http.util.EntityUtils;
-import org.json.JSONObject;
 
-import java.net.HttpURLConnection;
+import java.io.IOException;
 import java.util.ArrayList;
 
 public class NarControlPanelActivity extends Activity {
@@ -39,7 +36,8 @@ public class NarControlPanelActivity extends Activity {
 	public static final String EXT_NAR_POSITION = "NarCtrlPanelAct_nar_position";
 	private Nar mNar;
 
-	private BootstrapButton unregisterBtn, onOffBtn, chgNameBtn;
+	private BootstrapButton onOffBtn;
+	private BootstrapButton chgNameBtn;
 	private BootstrapEditText narNameEditText;
 	private Intent mResultIntent;
 
@@ -51,15 +49,14 @@ public class NarControlPanelActivity extends Activity {
 
 		Intent intent = getIntent();
 		int position = intent.getIntExtra(EXT_NAR_POSITION, 0);
-		mNar = DataHolder.getNarList().get(position);
+		mNar = DataHolder.getNarListAdapter().get(position);
 
 
 		Helper.toastIt(""+mNar.getLastalive());
-		((TextView)findViewById(R.id.nar_ctrl_lastalive)).setText(mNar.getLastaliveS());
+//		((TextView)findViewById(R.id.nar_ctrl_lastalive)).setText(mNar.getLastaliveS());
 
 		((TextView)findViewById(R.id.nar_ctrl_nar_name)).setText(mNar.getName());
 
-		unregisterBtn = (BootstrapButton) findViewById(R.id.nar_ctrl_btn_unregister);
 		onOffBtn = (BootstrapButton) findViewById(R.id.nar_ctrl_btn_on_off);
 		chgNameBtn = (BootstrapButton) findViewById(R.id.nar_ctrl_btn_chg_name);
 		narNameEditText = (BootstrapEditText) findViewById(R.id.nar_ctrl_nar_name);
@@ -101,41 +98,27 @@ public class NarControlPanelActivity extends Activity {
 		int vId = v.getId();
 		if (vId == R.id.nar_ctrl_btn_on_off) {
 			onOffBtn.setEnabled(false);
-			String state = onOffBtn.getText().toString();
-			String message;
+			String message = "1";
 
-			// send reverse of current
-			if ( state.equals(getString(R.string.nar_ctrl_btn_on)) ) {
-				message = "off";
-			} else {
-				message = "on";
-			}
 			new AsyncSendMessageToNar(mNar.getId(), message).execute();
 
 		} else if (vId == R.id.nar_ctrl_btn_unregister) {
 			// disable until a response comes
 			v.setEnabled(false);
-			new AsyncUnregisterNarTask(mNar.getId()).execute();
+			Intent resultIntent = getResultIntent();
+			resultIntent.putExtra(EXT_NAR_ID, mNar.getId());
+			resultIntent.putExtra(EXT_NAR_DELETED, true);
+			setResult(Activity.RESULT_OK, resultIntent);
+			finish();
+			overridePendingTransition(R.anim.open_main, R.anim.close_next);
 
-		} /*else if (vId == R.id.nar_ctrl_btn_smartcfg) {
-			NarWifiManager nWM = DataHolder.getWifiManager();
-			if (!nWM.isWifiConnected()) {
-				Helper.toastIt("Please connect to the same wifi you are setting up", Toast.LENGTH_LONG);
-				return;
-			}
-
-			Intent intent = new Intent(this, SmartConfigActivity.class);
-			intent.putExtra(SmartConfigActivity.EXT_NAR_ID, mNar.getId());
-			intent.putExtra(SmartConfigActivity.EXT_WIFI_SSID, nWM.getSSID());
-			intent.putExtra(SmartConfigActivity.EXT_GATEWAY, nWM.getGatewayString());
-			startActivity(intent);
-			overridePendingTransition (R.anim.open_next, R.anim.close_main);
-		}*/ else if (vId == R.id.nar_ctrl_btn_chg_name) {
+		} else if (vId == R.id.nar_ctrl_btn_chg_name) {
 			chgNameBtn.setEnabled(false);
 			String name = narNameEditText.getText().toString();
-			if (name.length() > 0) {
-				new AsyncChangeNameTask(mNar.getId(), name).execute();
+			if (name.length() > 3 && name.length() < 32) {
+				mNar.setName(name);
 			}
+			chgNameBtn.setEnabled(true);
 		}
 	}
 
@@ -144,94 +127,6 @@ public class NarControlPanelActivity extends Activity {
 			mResultIntent = new Intent();
 		}
 		return mResultIntent;
-	}
-
-	// used for unregistering nar from this account
-	public class AsyncUnregisterNarTask extends AsyncTask<Void, Void, String> {
-		private static final String TAG = "AsyncUnregisterNarTask";
-		private String narId;
-
-		/**
-		 * constructor
-		 */
-		public AsyncUnregisterNarTask(String narId) {
-			this.narId = narId;
-		}
-
-		/**
-		 * background
-		 */
-		@Override
-		protected String doInBackground(Void... voids) {
-			byte[] result;
-			String str = "";
-			HttpClient client = DataHolder.getHttpClient();
-			String url = DataHolder.getServerUrl()+"/android/unregister_nar/"+narId;
-			HttpPost post = new HttpPost(url);
-
-			try {
-
-				HttpResponse response = client.execute(post);
-				StatusLine statusLine = response.getStatusLine();
-				if(statusLine.getStatusCode() == HttpURLConnection.HTTP_OK){
-					result = EntityUtils.toByteArray(response.getEntity());
-					str = new String(result, "UTF-8");
-				}
-			}
-			catch (Exception e) {
-				Log.e(Helper.getTag(this), Helper.getExceptionString(e));
-			}
-			return str;
-		}
-
-		/**
-		 * on getting result
-		 */
-		@Override
-		protected void onPostExecute(String result) {
-			if (result.equals("logged_out")) {
-				android.os.Process.killProcess(android.os.Process.myPid());
-				System.exit(0);
-			}
-
-			unregisterBtn.setEnabled(true);
-
-			JSONObject json;
-			Log.i(TAG + "_res", result);
-			try {
-				json = new JSONObject(result);
-				String err = json.optString("error", null);
-
-				if (err == null) {
-					String message = json.optString("message", null);
-					if (message == null) {
-						return;
-					}
-					Log.i(TAG+"_message", message);
-
-					Intent resultIntent = getResultIntent();
-					resultIntent.putExtra(EXT_NAR_ID, narId);
-					resultIntent.putExtra(EXT_NAR_DELETED, true);
-					setResult(Activity.RESULT_OK, resultIntent);
-					NarControlPanelActivity.this.finish();
-					overridePendingTransition(R.anim.open_main, R.anim.close_next);
-
-				} else {
-					Toast.makeText(getApplicationContext(), err, Toast.LENGTH_SHORT).show();
-					if (err.equals("Nar is not registered")) {
-						Intent resultIntent = getResultIntent();
-						resultIntent.putExtra(EXT_NAR_ID, narId);
-						resultIntent.putExtra(EXT_NAR_DELETED, true);
-						setResult(Activity.RESULT_OK, resultIntent);
-						NarControlPanelActivity.this.finish();
-						overridePendingTransition(R.anim.open_main, R.anim.close_next);
-					}
-				}
-			} catch (Exception e) {
-				Log.e(Helper.getTag(this), Helper.getExceptionString(e));
-			}
-
-		}
 	}
 
 	public class AsyncSendMessageToNar extends AsyncTask<Void, Void, String> {
@@ -243,6 +138,7 @@ public class NarControlPanelActivity extends Activity {
 		 */
 		public AsyncSendMessageToNar(String narId, String message) {
 			this.narId = narId;
+			mData.add(new BasicNameValuePair("nar_id", narId.replace(' ', '_')));
 			mData.add(new BasicNameValuePair("message", message));
 		}
 
@@ -251,26 +147,25 @@ public class NarControlPanelActivity extends Activity {
 		 */
 		@Override
 		protected String doInBackground(Void... voids) {
-			byte[] result;
-			String str = "";
-			HttpClient client = DataHolder.getHttpClient();
-			HttpPost post = new HttpPost(DataHolder.getServerUrl()+"/android/message/"+narId);
+			String result = narId+"Sent message: "+mData.get(0).getValue();
+			// Create a new HttpClient and Post Header
+			HttpClient httpclient = new DefaultHttpClient();
+			HttpPost httppost = new HttpPost("http://128.199.52.88:5000/");
 
 			try {
-				// set up post data
-				post.setEntity(new UrlEncodedFormEntity(mData, "UTF-8"));
+				// Add your data
+				httppost.setEntity(new UrlEncodedFormEntity(mData));
 
-				HttpResponse response = client.execute(post);
-				StatusLine statusLine = response.getStatusLine();
-				if(statusLine.getStatusCode() == HttpURLConnection.HTTP_OK){
-					result = EntityUtils.toByteArray(response.getEntity());
-					str = new String(result, "UTF-8");
-				}
+				// Execute HTTP Post Request
+				//HttpResponse response =
+				httpclient.execute(httppost);
+
+			} catch (ClientProtocolException e) {
+				// TODO Auto-generated catch block
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
 			}
-			catch (Exception e) {
-				Log.e(Helper.getTag(this), Helper.getExceptionString(e));
-			}
-			return str;
+			return result;
 		}
 
 		/**
@@ -278,125 +173,9 @@ public class NarControlPanelActivity extends Activity {
 		 */
 		@Override
 		protected void onPostExecute(String result) {
-			if (result.equals("logged_out")) {
-				android.os.Process.killProcess(android.os.Process.myPid());
-				System.exit(0);
-			}
-
+			Log.i(getClass().getSimpleName()+"_res", result);
 			onOffBtn.setEnabled(true);
-
-			JSONObject json;
-//			Log.i(TAG+"_res", result);
-			try {
-				json = new JSONObject(result);
-				String err = json.optString("error", null);
-//				Log.e(TAG+"_err", ""+err);
-				if (err == null) {
-					String reply = json.optString("reply", null);
-					Boolean newState = json.optBoolean("state", !mNar.getState());
-					if (reply == null) {
-						reply = "No reply";
-					}
-					Helper.toastIt(reply);
-
-					mNar.setState(newState);
-					if (newState) {
-						onOffBtn.setBootstrapType("success");
-						onOffBtn.setRightIcon(getString(R.string.nar_ctrl_btn_on_icon));
-						onOffBtn.setText(getString(R.string.nar_ctrl_btn_on));
-					} else {
-						onOffBtn.setBootstrapType("danger");
-						onOffBtn.setRightIcon(getString(R.string.nar_ctrl_btn_off_icon));
-						onOffBtn.setText(getString(R.string.nar_ctrl_btn_off));
-					}
-
-				} else {
-					Helper.toastIt(err, Toast.LENGTH_LONG);
-				}
-			} catch (Exception e) {
-				Log.e(Helper.getTag(this), Helper.getExceptionString(e));
-			}
-
 		}
 	}
 
-	public class AsyncChangeNameTask extends AsyncTask<Void, Void, String> {
-		private ArrayList<NameValuePair> mData = new ArrayList<NameValuePair>();
-		private String narId, newNarName;
-
-		/**
-		 * constructor
-		 */
-		public AsyncChangeNameTask(String narId, String newNarName) {
-			this.narId = narId;
-			this.newNarName = newNarName;
-			mData.add(new BasicNameValuePair("name", newNarName));
-		}
-
-		/**
-		 * background
-		 */
-		@Override
-		protected String doInBackground(Void... voids) {
-			byte[] result;
-			String str = "";
-			HttpClient client = DataHolder.getHttpClient();
-			HttpPost post = new HttpPost(DataHolder.getServerUrl()+"/android/change_name/"+narId);
-
-			try {
-				// set up post data
-				post.setEntity(new UrlEncodedFormEntity(mData, "UTF-8"));
-
-				HttpResponse response = client.execute(post);
-				StatusLine statusLine = response.getStatusLine();
-				if(statusLine.getStatusCode() == HttpURLConnection.HTTP_OK){
-					result = EntityUtils.toByteArray(response.getEntity());
-					str = new String(result, "UTF-8");
-				}
-			}
-			catch (Exception e) {
-				Log.e(Helper.getTag(this), Helper.getExceptionString(e));
-			}
-			return str;
-		}
-
-		/**
-		 * on getting result
-		 */
-		@Override
-		protected void onPostExecute(String result) {
-			if (result.equals("logged_out")) {
-				android.os.Process.killProcess(android.os.Process.myPid());
-				System.exit(0);
-			}
-
-			chgNameBtn.setEnabled(true);
-			Log.w(Helper.getTag(this), result);
-			JSONObject json;
-//			Log.i(TAG+"_res", result);
-			try {
-				json = new JSONObject(result);
-				String err = json.optString("error", null);
-//				Log.e(TAG+"_err", ""+err);
-				if (err == null) {
-					String message = json.optString("message", null);
-					if (json.optBoolean("status", false)) {
-						getResultIntent().putExtra(EXT_NAR_NAME_CHG, true);
-					}
-					if (message== null) {
-						message = "No Message";
-					}
-					Helper.toastIt(message);
-
-					narNameEditText.setText(newNarName);
-					mNar.setName(newNarName);
-				} else {
-					Helper.toastIt("Error: "+err, Toast.LENGTH_LONG);
-				}
-			} catch (Exception e) {
-				Log.e(Helper.getTag(this), Helper.getExceptionString(e));
-			}
-
-		}
-	}
 }

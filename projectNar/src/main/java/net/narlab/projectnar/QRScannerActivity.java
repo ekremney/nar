@@ -14,7 +14,6 @@ import me.dm7.barcodescanner.zbar.ZBarScannerView;
 
 public class QRScannerActivity extends ActionBarActivity implements ZBarScannerView.ResultHandler {
     public final static String EXT_QR_RESULT_NAR_ID = "QRScanner_qr_result_nar_id";
-	public final static String EXT_QR_RESULT_NAR_PASS = "QRScanner_qr_result_nar_pass";
 	private final static String TAG = "QRScannerActivity";
 	private ZBarScannerView mScannerView;
 
@@ -48,19 +47,20 @@ public class QRScannerActivity extends ActionBarActivity implements ZBarScannerV
 //        Toast.makeText(this, "Contents = " + rawResult.getContents(), Toast.LENGTH_SHORT).show();
 		// parse result
 
-		String narId = "", narPass = "";
+		String narId = "";
 		String[] pr_l = rawResult.getContents().split("\\|");
+		int result = Activity.RESULT_OK;
 		for (String pr_s: pr_l) {
 			String[] pr = pr_s.split("=");
 			if (pr.length != 2) {
 				Log.e(TAG, "Malformed parameter segment => " + pr_s);
+				result = Activity.RESULT_CANCELED;
 			}
-			if (pr[0].equals("id")) {
+			if (pr[0].equals("nar_id")) {
 				narId = pr[1];
-			} else if (pr[0].equals("pass")) {
-				narPass = pr[1];
 			} else {
 				Log.e(TAG, "Unknown [parameter:value] => ["+pr[0]+":"+pr[1]+"]");
+				result = Activity.RESULT_CANCELED;
 			}
 		}
 
@@ -68,8 +68,7 @@ public class QRScannerActivity extends ActionBarActivity implements ZBarScannerV
         // return result by intent
         Intent resultIntent = new Intent();
         resultIntent.putExtra(EXT_QR_RESULT_NAR_ID, narId);
-		resultIntent.putExtra(EXT_QR_RESULT_NAR_PASS, narPass);
-        setResult(Activity.RESULT_OK, resultIntent);
+        setResult(result, resultIntent);
         finish();
 	}
 }

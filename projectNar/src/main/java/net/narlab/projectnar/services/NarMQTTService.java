@@ -196,7 +196,7 @@ public class NarMQTTService extends Service implements MqttSimpleCallback
 		//   the Intent that starts the Service to pass on configuration values
 		SharedPreferences settings = getSharedPreferences(APP_ID, MODE_PRIVATE);
 //		brokerHostName = DataHolder.getServerHostname();//"test.mosquitto.org");
-		topicName      = settings.getString("topic",  "CC3000");
+		topicName      = settings.getString("topic",  "/nar/android");
 
 		// TODO: change these background data parts they are deprecated
 		// register to be notified whenever the user changes their preferences
@@ -415,7 +415,7 @@ public class NarMQTTService extends Service implements MqttSimpleCallback
 		ntfGroup = isMQTTStatus ? NTF_GROUP_MQTT_STATUS : NTF_GROUP_MQTT_MESSAGES;
 		mNotificationId = isMQTTStatus ? MQTT_NOTIFICATION_ONGOING : MQTT_NOTIFICATION_UPDATE;
 
-		Log.e("Notifier", ".\ntitle: "+title+"\ntext: "+text+"\ngroup: "+ntfGroup);
+		Log.i("Notifier", ".\ntitle: "+title+"\ntext: "+text+"\ngroup: "+ntfGroup);
 
 		Bitmap bm = BitmapFactory.decodeResource(getResources(), R.drawable.nar_icon);
 
@@ -462,18 +462,6 @@ public class NarMQTTService extends Service implements MqttSimpleCallback
 		// show notification
 		notificationManager.notify(mNotificationId, mBuilder.build());
 
-/*
-		// TODO: add on click notification actions (clear events list etc)
-		Intent notificationIntent = new Intent(this, LoginActivity.class);
-		PendingIntent contentIntent = PendingIntent.getActivity(this, 0,
-				notificationIntent,
-				PendingIntent.FLAG_UPDATE_CURRENT);
-		notification.setLatestEventInfo(this, title, body, contentIntent);
-		notificationManager.notify(MQTT_NOTIFICATION_UPDATE, notification);
-		// Simply open the parent activity
-		PendingIntent pi = PendingIntent.getActivity(this, 0,
-				new Intent(this, LoginActivity.class), 0);
-*/
 	}
 
 
@@ -552,7 +540,7 @@ public class NarMQTTService extends Service implements MqttSimpleCallback
 		// inform the app that the Service has successfully connected
 		broadcastServiceStatus(status);
 	}
-
+	/// TODO: disconnect after logout
 	public void disconnect()
 	{
 		disconnectFromBroker();
@@ -665,7 +653,7 @@ public class NarMQTTService extends Service implements MqttSimpleCallback
 			//
 			// inform the user (for times when the Activity UI isn't running)
 			//   that there is new data available
-			notifyUser("New data received", topic+": "+messageBody);
+			notifyUser("New data received", topic+": "+(messageBody.equals("okay")?"Nar çalıştırıldı":messageBody));
 		}
 
 		// receiving this message will have kept the connection alive for us, so
@@ -1076,19 +1064,15 @@ public class NarMQTTService extends Service implements MqttSimpleCallback
 	{
 		String previousValue;
 
-		if (value.length() == 0)
-		{
+		if (value.length() == 0) {
 			previousValue = dataCache.remove(key);
-		}
-		else
-		{
+		} else {
 			previousValue = dataCache.put(key, value);
 		}
 
 		// is this a new value? or am I receiving something I already knew?
 		//  we return true if this is something new
-		return ((previousValue == null) ||
-				(!previousValue.equals(value)));
+		return true;//((previousValue == null) || (!previousValue.equals(value)));
 	}
 
 	// provide a public interface, so Activities that bind to the Service can

@@ -58,4 +58,18 @@ public class NarList extends ArrayList<Nar> {
 	public int size() {
 		return narList.size();
 	}
+
+	@Override
+	public String toString() {
+		String s = null;
+		for (Nar n: narList) {
+			if (s == null) {
+				s = "{";
+			} else {
+				s += ", ";
+			}
+			s += n.getId();
+		}
+		return s+"}";
+	}
 }

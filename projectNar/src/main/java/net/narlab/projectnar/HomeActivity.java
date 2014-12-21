@@ -2,8 +2,10 @@ package net.narlab.projectnar;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
+import android.provider.Settings;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.ActionBarActivity;
@@ -16,6 +18,7 @@ import android.widget.ListView;
 import android.widget.Toast;
 
 import net.narlab.projectnar.adapters.NarListAdapter;
+import net.narlab.projectnar.services.NarMQTTService;
 import net.narlab.projectnar.utils.DataHolder;
 import net.narlab.projectnar.utils.Helper;
 
@@ -45,15 +48,21 @@ public class HomeActivity extends ActionBarActivity {
 		super.onCreate(savedInstanceState);
 
 		setContentView(R.layout.fragment_device_list);
+		Helper.setContext(getApplicationContext());
 
 		final ListView listview = (ListView) findViewById(R.id.listView);
 
+
+		String mDeviceID = Settings.Secure.getString(this.getContentResolver(), Settings.Secure.ANDROID_ID);
+		Log.i(getClass().getSimpleName(), "Device ID: "+mDeviceID);
+		Intent mServiceIntent = new Intent(this, NarMQTTService.class);
+		mServiceIntent.setData(Uri.parse(mDeviceID));
+		// Starts the IntentService
+		startService(mServiceIntent);
+
 		// 1. pass context and data to the custom adapter
 		// get data from global nar list
-		narListAdapter = new NarListAdapter(this, DataHolder.getNarList());
-//		Log.e("NarListSize", ""+narList.size());
-
-		// = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, list);
+		narListAdapter = DataHolder.getNarListAdapter();
 		listview.setAdapter(narListAdapter);
 
 		listview.setOnItemClickListener(new AdapterView.OnItemClickListener() {
@@ -69,6 +78,10 @@ public class HomeActivity extends ActionBarActivity {
 			}
 
 		});
+
+		String narListStr = Helper.getNarListFromPrefs();
+		Log.i("NarList", narListStr);
+		DataHolder.addNars(narListStr);
 /*
 		setContentView(R.layout.activity_home);
 
@@ -102,19 +115,15 @@ public class HomeActivity extends ActionBarActivity {
 		} else if (id == R.id.action_empty) {
 			Log.d("SettingsMenu", "Empty Action yey");
 			return true;
-		} else if (id == R.id.action_logout) {
-			Intent intent = new Intent(this, LoginActivity.class);
-			intent.putExtra(LoginActivity.ARG_PREVENT_AUTO_LOGIN, true);
-			startActivity(intent);
+		} else if (id == R.id.action_exit) {
 			finish();
-			overridePendingTransition (R.anim.open_next, R.anim.close_main);
 			return true;
 		}
 		return super.onOptionsItemSelected(item);
 	}
 
 /*	disable for now
-
+*/
 	private static long back_pressed = 0;
 
 	@Override
@@ -127,7 +136,7 @@ public class HomeActivity extends ActionBarActivity {
 		}
 		back_pressed = System.currentTimeMillis();
 	}
-*/
+
 
 	/**
 	 * Called when the user clicks a button-used for generic button click events-
@@ -174,13 +183,19 @@ public class HomeActivity extends ActionBarActivity {
 					final String narId = intent.getStringExtra(NarControlPanelActivity.EXT_NAR_ID);
 					Helper.toastIt("Nar with id deleted: "+narId, Toast.LENGTH_LONG);
 					final View view = lastView;
+//					lastView.setEnabled(false);
 
 					if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
-						view.animate().setDuration(2000).alpha(0)
+						view.animate().setDuration(1000).alpha(0)
 								.withEndAction(new Runnable() {
 									@Override
 									public void run() {
 										narListAdapter.remove(narId);
+										for(int i=0;i<narListAdapter.getCount();i++)
+										{
+											System.out.println("Adapter Count:"+narListAdapter.getCount()+" "+narListAdapter.get(i));
+
+										}
 										view.setAlpha(1);
 									}
 								});

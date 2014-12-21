@@ -8,8 +8,7 @@ import android.widget.TextView;
 
 import net.narlab.projectnar.R;
 import net.narlab.projectnar.general.Nar;
-
-import java.util.ArrayList;
+import net.narlab.projectnar.general.NarList;
 
 /**
  * @author fma
@@ -18,9 +17,9 @@ import java.util.ArrayList;
 public class NarListAdapter extends ArrayAdapter<Nar> {
 
 	private final Context context;
-	private final ArrayList<Nar> narList;
+	private final NarList narList;
 
-	public NarListAdapter(Context context, ArrayList<Nar> narList) {
+	public NarListAdapter(Context context, NarList narList) {
 
 		super(context, R.layout.nar_list_item, narList);
 
@@ -49,13 +48,14 @@ public class NarListAdapter extends ArrayAdapter<Nar> {
 		}
 
 		narViewHolder.titleView.setText(narList.get(position).getName());
+		narViewHolder.titleView.setTextColor(context.getResources().getColor(R.color.black));
 
 		// return view
 		return convertView;
 	}
 
 	public void add(String narId, String name, String lastalive) {
-		this.add(new Nar(narId, name, lastalive));
+		add(new Nar(narId, name, lastalive));
 	}
 	@Override
 	public void add(Nar nar) {
@@ -64,12 +64,13 @@ public class NarListAdapter extends ArrayAdapter<Nar> {
 	}
 
 	public void remove(String item_id) {
-		for(Nar nar: narList) {
-			if (nar.getId().equals(item_id)) {
-				narList.remove(nar);
-				this.notifyDataSetChanged();
-				return;
-			}
-		}
+		narList.remove(item_id);
+//		Log.i("NL", narList.toString());
+		this.notifyDataSetChanged();
 	}
+
+	public Nar get(int position) {
+		return narList.get(position);
+	}
+
 }

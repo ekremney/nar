@@ -5,14 +5,14 @@
     android:layout_height="match_parent"
     android:paddingLeft="@dimen/activity_horizontal_margin"
     android:paddingRight="@dimen/activity_horizontal_margin"
-    android:paddingTop="@dimen/activity_vertical_margin"
+    android:paddingTop="50dp"
     android:paddingBottom="@dimen/activity_vertical_margin"
     tools:context="net.narlab.projectnar.NarControlPanelActivity"
 	android:orientation="vertical"
 	android:background="@color/white">
 
 	<LinearLayout
-		android:layout_width="wrap_content"
+		android:layout_width="match_parent"
 		android:layout_height="wrap_content"
 		android:orientation="horizontal"
 		android:layout_gravity="center"
@@ -46,12 +46,13 @@
 	</LinearLayout>
 
 	<LinearLayout
-		android:layout_width="wrap_content"
+		android:layout_width="match_parent"
 		android:layout_height="wrap_content"
 		android:orientation="horizontal"
 		android:layout_gravity="center">
 		<com.beardedhen.androidbootstrap.BootstrapButton
 			android:id="@+id/nar_ctrl_btn_on_off"
+			android:layout_weight="1"
 			android:layout_width="wrap_content"
 			android:layout_height="wrap_content"
 			bootstrapbutton:bb_type="success"
@@ -59,9 +60,7 @@
 			android:text="@string/nar_ctrl_btn_on"
 			android:layout_gravity="center"
 			android:onClick="onButtonClicked"
-			bootstrapbutton:bb_roundedCorners="true"
 			bootstrapbutton:bb_icon_right="@string/nar_ctrl_btn_on_icon"
-			android:layout_margin="@dimen/nar_ctrl_button_margin"
 		/>
 		<!-- Off state variables:
 			bb_icon_right="fa-power-off"
@@ -69,6 +68,7 @@
 			text="nar_ctrl_btn_off"-->
 		<com.beardedhen.androidbootstrap.BootstrapButton
 			android:id="@+id/nar_ctrl_btn_unregister"
+			android:layout_weight="1"
 			android:layout_width="wrap_content"
 			android:layout_height="wrap_content"
 			bootstrapbutton:bb_type="danger"
@@ -76,13 +76,11 @@
 			android:text="@string/nar_ctrl_unregister"
 			android:layout_gravity="center"
 			android:onClick="onButtonClicked"
-			bootstrapbutton:bb_roundedCorners="true"
 			bootstrapbutton:bb_icon_right="fa-trash-o"
-			android:layout_margin="@dimen/nar_ctrl_button_margin"
 			/>
 	</LinearLayout>
 
-	<LinearLayout
+	<!--LinearLayout
 		android:layout_width="wrap_content"
 		android:layout_height="wrap_content"
 		android:orientation="horizontal"
@@ -104,11 +102,11 @@
 			bootstrapbutton:bb_icon_right="fa-refresh"
 			android:layout_gravity="center"
 			/>
-		<!--com.beardedhen.androidbootstrap.FontAwesomeText
+		<com.beardedhen.androidbootstrap.FontAwesomeText
 			android:layout_width="wrap_content"
 			android:layout_height="wrap_content"
-			bootstrapbutton:fa_icon="fa-refresh" /-->
-	</LinearLayout>
+			bootstrapbutton:fa_icon="fa-refresh" />
+	</LinearLayout-->
 
 	<!--com.beardedhen.androidbootstrap.BootstrapButton
 		android:id="@+id/nar_ctrl_btn_smartcfg"
